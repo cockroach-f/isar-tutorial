@@ -78,13 +78,9 @@
 
 最后 BatchNorm + Softmax 输出 6 类概率。
 
-*（请对照原文 Fig. 1——因版权未在站点上转载期刊原图）*
+![图 7-2 原文 Fig. 1：DB-SSIT 总体框架（4 个层级 stage 堆叠）。](../paper_figs/p1_DBSSIT_fig1.png)
 
-**图 7-2 原文 Fig. 1：DB-SSIT 总体框架（4 个层级 stage 堆叠）。**
-
-*（请对照原文 Fig. 3——因版权未在站点上转载期刊原图）*
-
-**图 7-3 原文 Fig. 3：极化散射特征提取块 PSFEB 的结构。**
+![图 7-3 原文 Fig. 3：极化散射特征提取块 PSFEB 的结构。](../paper_figs/p1_DBSSIT_fig3.png)
 
 ## 7.4 数据集
 
@@ -97,9 +93,7 @@
 | 扩增 | 随机旋转（–180° 到 180°）、水平/竖直翻转、高斯噪声（μ=0，σ=0.05）、椒盐噪声（密度 0.1），共扩增到 3024 幅 |
 | 划分 | 训练 : 验证 : 测试 = 7 : 2 : 1 |
 
-*（请对照原文 Fig. 6——因版权未在站点上转载期刊原图）*
-
-**图 7-4 原文 Fig. 6：6 类目标的 HH、HV、VV 三种极化 ISAR 像。**
+![图 7-4 原文 Fig. 6：6 类目标的 HH、HV、VV 三种极化 ISAR 像。](../paper_figs/p1_DBSSIT_fig6.png)
 
 !!! info "直觉"
 
@@ -139,9 +133,7 @@
 
 **可视化**：原文 Fig. 8 用 Grad-CAM 对比 Class 1、5、6 的热力图；Fig. 9 为 t-SNE；Fig. 10 为混淆矩阵。
 
-*（请对照原文 Fig. 8——因版权未在站点上转载期刊原图）*
-
-**图 7-5 原文 Fig. 8：不同模型的 Grad-CAM 热力图（(a) Class 1，(b) Class 5，(c) Class 6）。DB-SSIT 既覆盖主散射区域，又能捕捉边缘细节。**
+![图 7-5 原文 Fig. 8：不同模型的 Grad-CAM 热力图（(a) Class 1，(b) Class 5，(c) Class 6）。DB-SSIT 既覆盖主散射区域，又能捕捉边缘细节。](../paper_figs/p1_DBSSIT_fig8.png)
 
 ## 7.6 优点与局限
 

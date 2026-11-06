@@ -73,9 +73,7 @@
 $$L = -\tfrac12\Big(\overline{\ln\sigma(\mathrm{Re})\odot l}\Big)^2 - \tfrac12\Big(\overline{\ln\sigma(\mathrm{Im})\odot l}\Big)^2,$$
 其中 $l$ 为 one-hot 标签，$\odot$ 只取正确类别的值。原文式 (8)–(13) 推导了复值 BN（2×2 协方差白化）和 CV-Linear 的反向传播。
 
-*（请对照原文 Fig. 2——因版权未在站点上转载期刊原图）*
-
-**图 8-2 原文 Fig. 2：CV-GNN 对复值数据的图推理详细结构。**
+![图 8-2 原文 Fig. 2：CV-GNN 对复值数据的图推理详细结构。](../paper_figs/p2_CVGNN_fig2.png)
 
 ## 8.4 数据集
 
@@ -86,9 +84,7 @@ $$L = -\tfrac12\Big(\overline{\ln\sigma(\mathrm{Re})\odot l}\Big)^2 - \tfrac12\B
 | 样本数 | 每类仿真 100 幅，其中 30 幅用于训练，其余测试 |
 | 仿真参数 | 带宽 240 MHz，载频 5.4 GHz，转角 –1.92°～1.92°，转速 0.1 rad/s，转动加速度 5000 rad/s²（原文印刷值），图像 128×128 |
 
-*（请对照原文 Fig. 5——因版权未在站点上转载期刊原图）*
-
-**图 8-3 原文 Fig. 5：数据集示例。(a)–(f) 部分仿真散焦像；(g) 空间站实测散焦像；(h) 重聚焦结果。**
+![图 8-3 原文 Fig. 5：数据集示例。(a)–(f) 部分仿真散焦像；(g) 空间站实测散焦像；(h) 重聚焦结果。](../paper_figs/p2_CVGNN_fig5.png)
 
 !!! info "直觉"
 
