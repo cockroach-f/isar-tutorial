@@ -29,4 +29,8 @@ docs/
 
 ## 部署
 
-推送到 `main` 后，GitHub Actions 会自动构建并发布到 GitHub Pages。
+当前站点由 `gh-pages` 分支托管（本地 `mkdocs build` 后推送）。
+
+若你的 GitHub token 具备 `workflow` 权限，可把仓库里的
+`.github/workflows/pages.yml`（见本仓库历史或重新添加）推上去，
+改为 Actions 自动构建，并把 Pages 源切到 “GitHub Actions”。
