@@ -1,0 +1,12 @@
+/* Slightly roomier math and tables */
+.md-typeset table:not([class]) {
+  font-size: 0.78rem;
+}
+.md-typeset .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.md-typeset video {
+  border-radius: 0.3rem;
+  background: #000;
+}

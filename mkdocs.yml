@@ -1,0 +1,100 @@
+site_name: ISAR 目标识别入门与文献带读
+site_description: 从雷达回波到深度学习——面向电子信息工程本科生的 ISAR 目标识别系统教学与七篇前沿文献带读
+site_author: light
+site_url: https://cockroach-f.github.io/isar-tutorial/
+repo_url: https://github.com/cockroach-f/isar-tutorial
+repo_name: cockroach-f/isar-tutorial
+edit_uri: edit/main/docs/
+use_directory_urls: false
+copyright: Copyright &copy; 2026 light · 教学用途 · 期刊原图因版权未转载
+
+theme:
+  name: material
+  language: zh
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - footnotes
+  - attr_list
+  - md_in_html
+  - def_list
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+extra_javascript:
+  - javascripts/katex.js
+  - https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js
+  - https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js
+
+extra_css:
+  - https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css
+  - stylesheets/extra.css
+
+nav:
+  - 前言: index.md
+  - 动画视频: videos.md
+  - Part A 基础:
+      - 第 0 章 数学与信号准备: part-a/A0_math.md
+      - 第 1 章 雷达基础: part-a/A1_radar.md
+      - 第 2 章 ISAR 成像: part-a/A2_isar.md
+      - 第 3 章 雷达极化: part-a/A3_pol.md
+      - 第 4 章 识别难点: part-a/A4_hard.md
+      - 第 5 章 深度学习入门（上）: part-a/A5_dl.md
+      - 第 6 章 深度学习入门（下）: part-a/A6_dl2.md
+  - Part B 逐篇带读:
+      - 第 7 章 DB-SSIT: part-b/B1_dbssit.md
+      - 第 8 章 CV-GNN: part-b/B2_cvgnn.md
+      - 第 9 章 MSN: part-b/B3_msn.md
+      - 第 10 章 CvPGT: part-b/B4_cvpgt.md
+      - 第 11 章 REMI: part-b/B5_remi.md
+      - 第 12 章 MLFR: part-b/B6_mlfr.md
+      - 第 13 章 DCA-Net: part-b/B7_dcanet.md
+  - Part C 综合:
+      - 第 14 章 横向对比: part-c/C1_synthesis.md
+      - 第 15 章 阅读路线与入门项目: part-c/C2_projects.md
+      - 第 16 章 术语表: part-c/C3_glossary.md
+  - 附录: appendix.md
