@@ -230,6 +230,12 @@ def demote_code_heading(text: str) -> str:
     )
 
 
+
+def unwrap_raw_html(text: str) -> str:
+    """Pandoc ```{=html} fences → raw HTML for MkDocs."""
+    import re as _re
+    return _re.sub(r"```\{=html\}\n(.*?)```", r"\1\n", text, flags=_re.S)
+
 def convert_file(src_name: str, dest_rel: str) -> dict:
     src = SRC / src_name
     raw = src.read_text(encoding="utf-8")
@@ -239,6 +245,7 @@ def convert_file(src_name: str, dest_rel: str) -> dict:
     raw = drop_part_heading(raw)
     raw = demote_code_heading(raw)
     raw = convert_divs(raw)
+    raw = unwrap_raw_html(raw)
 
     depth = dest_rel.count("/")  # index.md -> 0, part-a/x.md -> 1
     raw, omitted = convert_images(raw, depth)
