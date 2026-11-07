@@ -1,8 +1,9 @@
+import os
 """从论文 PDF 中按图注(Fig./Figure N)自动裁剪原文插图。用法: python extract_paper_figs.py
 输出: ../paper_figs/<paper>_fig<N>.png
 启发式: 找到图注块, 判定其所在栏, 向上搜索最近的正文段落(长文本块)作为上边界。"""
 import fitz, re, os, sys
-SRC = '/workspace/isar-papers'
+SRC = os.environ.get('ISAR_PAPERS_DIR', 'papers')
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'paper_figs')
 os.makedirs(OUT, exist_ok=True)
 PAPERS = {'p1_DBSSIT':'01M68FJ1SEYH802Y8V3ZW4VWNC.pdf','p2_CVGNN':'01M68FJ1R3GHZ8V9GSG40HVVH8.pdf',

@@ -1,6 +1,6 @@
 # 附录 A 代码、图与视频清单
 
-所有文件位于 `/workspace/isar-tutorial/` 下。依赖：Python 3、numpy、scipy、matplotlib、ffmpeg；项目代码另需 PyTorch 与 torchvision（CPU 版即可）。
+所有代码位于本站点的 `code/` 目录。依赖：Python 3、numpy、scipy、matplotlib、ffmpeg；项目代码另需 PyTorch 与 torchvision（CPU 版即可）。
 
 | 文件 | 作用 |
 |---|---|

@@ -1,5 +1,5 @@
 site_name: ISAR 目标识别入门与文献带读
-site_description: 从雷达回波到深度学习——面向电子信息工程本科生的 ISAR 目标识别系统教学与七篇前沿文献带读
+site_description: 从雷达回波到深度学习——面向初学者的 ISAR 目标识别系统教学与七篇前沿文献带读
 site_author: light
 site_url: https://cockroach-f.github.io/isar-tutorial/
 repo_url: https://github.com/cockroach-f/isar-tutorial

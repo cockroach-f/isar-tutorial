@@ -2,11 +2,12 @@
 """Convert Pandoc-flavored chapters_v2 markdown to MkDocs Material."""
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 
-SRC = Path("/workspace/isar-tutorial/chapters_v2")
-DST = Path("/workspace/isar-pages/docs")
+SRC = Path(os.environ.get("ISAR_CHAPTERS_DIR", "chapters"))
+DST = Path(__file__).resolve().parent / "docs"
 
 # source file -> (relative dest under docs/, nav title)
 MAP = {
