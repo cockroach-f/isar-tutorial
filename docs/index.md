@@ -1,11 +1,5 @@
 # 前言：这份文档怎么用
 
-!!! note "关于期刊原图"
-
-    Part B 中引用的期刊论文原图已在作者授权下收录于本站点（`paper_figs/`）。自绘简化框图与仿真图同样可在站内查看。
-
-
-
 **读者画像。** 本文档面向电子信息工程专业二年级本科生：学过“信号与系统”（傅里叶变换、卷积、采样），会用 Python 或 MATLAB，但对雷达成像与深度学习了解不多。读完后你应当能够：
 
 1. 说清楚 ISAR（逆合成孔径雷达）图像是怎么从雷达回波“算”出来的，以及它的分辨率由什么决定；
@@ -30,13 +24,6 @@
 | 5 | REMI | REMI: Few-Shot ISAR Target Classification via Robust Embedding and Manifold Inference | IEEE TNNLS, vol. 36, no. 4, 2025 | 西安电子科技大学 |
 | 6 | MLFR | Few-Shot Multistatic ISAR Target Classification Based on Multilevel Feature Reconstruction | IEEE TGRS, vol. 63, 2025 | 西安电子科技大学 |
 | 7 | DCA-Net | Compact Polarimetric ISAR Space Target Components Recognition With Dual-Branch Correlation Aggregation Graph Attention Network | IEEE TGRS, vol. 63, 2025 | 国防科技大学 |
-
-**第 2 版改了什么。** 第 1 版的基础部分写得太紧凑。第 2 版在保留原有结构、图、代码和已核实内容的基础上：
-
-1. 新增第 0 章（复数、I/Q、傅里叶变换、采样、DFT、相关），把第 5 章拆成“深度学习入门（上）/（下）”两章；
-2. 每个基础概念都补充了直觉类比、带具体数字的例题（共 30 余个，数值均用 Python 验算）、完整推导和新配图（`figures/v2_*.png`）；
-3. 论文章节（第 7–13 章）开头增加“基础回链”框，方法的每一步都标出对应的基础小节，并配一句话的通俗解释；
-4. 公式改用 MathJax 排版，统一编号，矩阵、多行推导与分段函数均经过逐页渲染检查。
 
 **几种彩色框的含义。**
 
@@ -70,4 +57,4 @@
 
 > **关于准确性的约定。** 文中所有论文数据（参数、数据集规模、实验数值）均逐条对照论文原文（含表格截图）核对；凡是原文表述不清、可能有印刷错误或我无法核实的地方，用 **【存疑】** 标出，并在附录 B 汇总。仿真图均为教学用简化模型，数值不代表论文结果。“自绘”图为作者根据原文理解重新绘制的简化示意，原文图则注明“原文 Fig. x”。
 
-> **视频。** HTML 版中可直接播放 4 段动画（每段 24–38 秒）；PDF 版中以关键帧代替并给出文件路径。
+> **视频。** 站内「动画视频」页及相关章节可直接播放 4 段动画（每段 24–38 秒）。

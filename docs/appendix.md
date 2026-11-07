@@ -14,7 +14,6 @@
 | `code/project1_train_resnet18.py` | 入门项目 1：ResNet18 训练与测试（随机划分 / 按方位划分） |
 | `code/project2_protonet.py` | 入门项目 2：原型网络少样本识别（基类 / 新类不相交，episode 训练） |
 | `code/dbssit_lite.py` | DB-SSIT 思想的教学简化版网络与 6 维极化特征（**非官方代码**） |
-| `build/build.py`、`build/style.css` | 由 `chapters/*.md` 生成 HTML 与 PDF |
 
 **视频**
 
