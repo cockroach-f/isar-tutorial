@@ -16,7 +16,7 @@
 - **作者**：Haoxuan Yuan, Hongbo Li, Yun Zhang（通讯）, Muyao Li, Chenxi Wei；哈尔滨工业大学
 - **出处**：IEEE Transactions on Aerospace and Electronic Systems, vol. 60, no. 4, Aug. 2024, doi: 10.1109/TAES.2024.3382222
 
-**一句话概括**：在 CV-GNN（CV-GNN）的基础上，先用“随机成像参数”生成的复值图块做对比学习，让编码器对分辨率、散焦、旋转不敏感；再把图像切成重叠 patch、以 patch 为节点构图，用复值图推理（局部）+ 复值 Transformer（全局）提取特征；最后用 GNN 完成少样本分类。
+**一句话概括**：在 CV-GNN的基础上，先用“随机成像参数”生成的复值图块做对比学习，让编码器对分辨率、散焦、旋转不敏感；再把图像切成重叠 patch、以 patch 为节点构图，用复值图推理（局部）+ 复值 Transformer（全局）提取特征；最后用 GNN 完成少样本分类。
 
 ## 10.2 背景与动机
 

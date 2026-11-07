@@ -200,7 +200,7 @@ $\alpha$、$\beta$ 分别为内、外循环学习率。类比：不是教学生�
 | 原型网络 ProtoNet | 每类支持嵌入的均值为“原型”，查询按到原型的距离分类 | CV-GNN、MSN、REMI、MLFR |
 | 匹配网络 Matching Net | 查询与每个支持样本做注意力加权 | MSN |
 | 孪生网络 Siamese | 学“两张图是否同类” | MSN |
-| 关系网络 RelationNet | 用一个可学习的网络 $g(\cdot)$ 输出两样本的“关系分数” | MSN、CvPGT、REMI、MLFR（MLFR 的推理模块即基于此） |
+| 关系网络 RelationNet | 用一个可学习的网络 $g(\cdot)$ 输出两样本的“关系分数” | MSN、CvPGT、REMI、MLFR（其推理模块即基于此） |
 | GNN 少样本 | 样本当节点，消息传递标签（6.2 节） | CV-GNN、MSN、CvPGT |
 | TPN | 转导式传播，利用查询集之间的关系 | REMI、MLFR |
 | MGA-Net | 基于 GAT 的方法 | REMI、MLFR |
