@@ -51,6 +51,10 @@
 - BN + 2×2 最大池化（步长 2）降维；
 - 两个 1×1 卷积：32 → 6（保留关键极化信息）→ 3（匹配后续模块输入）。
 
+![图 7-2 原文 Fig. 2：极化多尺度预处理模块。](../paper_figs/p1_DBSSIT_fig2.png){ width="55%" loading=lazy }
+
+> **读图：** 从上往下看：6 维极化特征先做多尺度卷积、BatchNorm 和池化，再经两个 1×1 卷积压缩通道，正好对应上面步骤 1 的文字。
+
 ### 步骤 2：4 个层级 Stage（原文 Fig. 1）
 
 !!! note "基础回链"
@@ -66,6 +70,10 @@
 - **SFEB（空间特征提取块，原文 Fig. 4）**：3×3 卷积 → 3×3 深度卷积 → 3×3 卷积；然后是空间注意力：沿通道做平均和最大池化（原文式 (20)–(22)），用 3/5/7 多尺度深度可分离卷积、1×1 卷积、BN、LeakyReLU(0.01)、sigmoid 得到空间权重并相乘。
 - 两分支输出**拼接（C）**后进入下一个 stage。
 
+![图 7-3 原文 Fig. 4：空间特征提取块 SFEB 的结构。](../paper_figs/p1_DBSSIT_fig4.png){ width="80%" loading=lazy }
+
+> **读图：** 上排是主干：3×3 卷积 → 3×3 深度卷积 → 3×3 卷积 → 空间注意力 SA；下方虚线框展开了 SA（MaxPool 与 AvgPool 拼接后卷积）。SFEB 与 PSFEB 并列，构成“双分支”中的空间分支。
+
 ### 步骤 3：局部–全局融合块 LGFB（原文 Fig. 5）
 
 !!! note "基础回链"
@@ -78,9 +86,13 @@
 
 最后 BatchNorm + Softmax 输出 6 类概率。
 
-![图 7-2 原文 Fig. 1：DB-SSIT 总体框架（4 个层级 stage 堆叠）。](../paper_figs/p1_DBSSIT_fig1.png)
+![图 7-4 原文 Fig. 1：DB-SSIT 总体框架（4 个层级 stage 堆叠）。](../paper_figs/p1_DBSSIT_fig1.png)
 
-![图 7-3 原文 Fig. 3：极化散射特征提取块 PSFEB 的结构。](../paper_figs/p1_DBSSIT_fig3.png)
+![图 7-5 原文 Fig. 3：极化散射特征提取块 PSFEB 的结构。](../paper_figs/p1_DBSSIT_fig3.png)
+
+![图 7-6 原文 Fig. 5：局部–全局融合模块的结构。](../paper_figs/p1_DBSSIT_fig5.png){ width="70%" loading=lazy }
+
+> **读图：** 左列是主干，右侧两个灰框分别放大了带池化的多头自注意力（E-MHSA）和 LFFN（1×1 卷积 → 3×3 深度卷积 → 1×1 卷积）。看图时重点找“全局注意力”和“局部卷积”是怎样交替出现的。
 
 ## 7.4 数据集
 
@@ -93,11 +105,15 @@
 | 扩增 | 随机旋转（–180° 到 180°）、水平/竖直翻转、高斯噪声（μ=0，σ=0.05）、椒盐噪声（密度 0.1），共扩增到 3024 幅 |
 | 划分 | 训练 : 验证 : 测试 = 7 : 2 : 1 |
 
-![图 7-4 原文 Fig. 6：6 类目标的 HH、HV、VV 三种极化 ISAR 像。](../paper_figs/p1_DBSSIT_fig6.png)
+![图 7-7 原文 Fig. 6：6 类目标的 HH、HV、VV 三种极化 ISAR 像。](../paper_figs/p1_DBSSIT_fig6.png)
 
 !!! info "直觉"
 
     原文还提到“采用平均加权策略由三路回波生成极化 ISAR 图像”，但没有给出更多细节【存疑：具体加权方式不明】。
+
+![图 7-8 原文 Fig. 7：不同类型的合成图像。](../paper_figs/p1_DBSSIT_fig7.png){ width="80%" loading=lazy }
+
+> **读图：** 这是送入网络前的合成图像示例，可与上面 Fig. 6 的单极化图对照。具体合成方式以原文正文为准。
 
 ## 7.5 实验设置与结果
 
@@ -133,7 +149,15 @@
 
 **可视化**：原文 Fig. 8 用 Grad-CAM 对比 Class 1、5、6 的热力图；Fig. 9 为 t-SNE；Fig. 10 为混淆矩阵。
 
-![图 7-5 原文 Fig. 8：不同模型的 Grad-CAM 热力图（(a) Class 1，(b) Class 5，(c) Class 6）。DB-SSIT 既覆盖主散射区域，又能捕捉边缘细节。](../paper_figs/p1_DBSSIT_fig8.png)
+![图 7-9 原文 Fig. 9：不同模型在同一测试集上的特征降维（t-SNE）可视化。](../paper_figs/p1_DBSSIT_fig9.png){ width="100%" loading=lazy }
+
+> **读图：** 每个点是一个测试样本，颜色代表类别。簇越紧凑、不同颜色分得越开，说明特征越容易区分。t-SNE 只能定性比较，布局本身没有物理意义。
+
+![图 7-10 原文 Fig. 10：不同模型在同一测试集上的混淆矩阵。](../paper_figs/p1_DBSSIT_fig10.png){ width="100%" loading=lazy }
+
+> **读图：** 行是真实类别、列是预测类别：对角线越深越好，非对角格子说明哪两类容易混淆。可以比较最后一幅 DB-SSIT 与其他模型的非对角元素。
+
+![图 7-11 原文 Fig. 8：不同模型的 Grad-CAM 热力图（(a) Class 1，(b) Class 5，(c) Class 6）。DB-SSIT 既覆盖主散射区域，又能捕捉边缘细节。](../paper_figs/p1_DBSSIT_fig8.png)
 
 ## 7.6 优点与局限
 

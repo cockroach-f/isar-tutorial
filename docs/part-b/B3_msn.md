@@ -28,9 +28,13 @@
 
     注意：这里的 “Meta-Learner” 是 Stacking 中“第二层学习器”的意思，**与少样本学习中的“元学习”（meta-learning，学会学习）不是一回事**。
 
+![图 9-1 原文 Fig. 3：ISAR 图像识别的总体难点。](../paper_figs/p3_MSN_fig3.png){ width="90%" loading=lazy }
+
+> **读图：** 左侧列出 ISAR 成像特点与分类要求，右侧把“难点”和“对应对策”配成对。可以把它当作 MSN 设计动机的总览。
+
 ## 9.3 方法分步讲解
 
-![图 9-1 MSN 简化框图（自绘，对应原文 Fig. 5–10）](../figures/B3_msn_simple.png)
+![图 9-2 MSN 简化框图（自绘，对应原文 Fig. 5–10）](../figures/B3_msn_simple.png)
 
 ### 步骤 1：预处理（原文 Fig. 4）
 
@@ -42,6 +46,10 @@
 2. **幂变换** $J = H^{\alpha}$（原文式 (5)）：压缩动态范围，让弱散射点更明显；
 3. **能量归一化**（原文式 (6)）【存疑：抽取的公式形式不清，通常为 $K = J/\sqrt{\sum|J|^2}$】；
 4. **数据扩增**：左右、上下镜像，扩增为原来的 4 倍。
+
+![图 9-3 原文 Fig. 4：ISAR 图像预处理示例。(a) 原始数据；(b) 增强 Lee 滤波；(c) 幂变换；(d) 能量归一化。](../paper_figs/p3_MSN_fig4.png){ width="100%" loading=lazy }
+
+> **读图：** 从 (a) 到 (d) 依次看：滤波压低斑点噪声，幂变换让弱散射点更明显，能量归一化统一亮度尺度。
 
 ### 步骤 2：基学习器 1 —— ResNet50 + 旋转注意力模块 RAM（原文 Fig. 5–7）
 
@@ -57,6 +65,18 @@ ISAR 像中目标的方向随姿态变化，作者设计 RAM 来获得一定的�
 
 RAM 插在每个 bottleneck 最后一个 ReLU 之后；ResNet50 使用 ImageNet 预训练、冻结卷积层，只训练全连接层与 RAM，输入 224×224。
 
+![图 9-4 原文 Fig. 5：旋转注意力模块 RAM 的结构。](../paper_figs/p3_MSN_fig5.png){ width="85%" loading=lazy }
+
+> **读图：** 左侧把特征图旋转出多个角度，中间分别做空间注意力，右侧取平均融合。目的是让注意力对目标姿态（旋转）更稳健。
+
+![图 9-5 原文 Fig. 6：旋转操作示意。](../paper_figs/p3_MSN_fig6.png){ width="60%" loading=lazy }
+
+> **读图：** 演示像素坐标旋转后怎样映射回网格：旋转后的位置通常落在格点之间，需要用邻近像素插值。
+
+![图 9-6 原文 Fig. 7：把 RAM 模块加入 ResNet50 后的网络结构。](../paper_figs/p3_MSN_fig7.png){ width="90%" loading=lazy }
+
+> **读图：** 上排是 ResNet50 的四个 stage，下方放大了插入 RAM 的瓶颈块，可以看出 RAM 放在哪一层。
+
 ### 步骤 3：基学习器 2 —— GCN（原文 Fig. 8）
 
 !!! note "基础回链"
@@ -65,6 +85,10 @@ RAM 插在每个 bottleneck 最后一个 ReLU 之后；ResNet50 使用 ImageNet 
 
 与第 6.2 节的少样本 GNN 相同：CNN 特征 ⊕ one-hot 标签作为节点，邻接 $A_{ij} = \mathrm{MLP}(|x_i - x_j|)$ 再按行 softmax（原文式 (13)–(14)），图卷积用 Leaky ReLU（原文式 (15)），交叉熵损失。
 
+![图 9-7 原文 Fig. 8：图卷积网络（GCN）结构。](../paper_figs/p3_MSN_fig8.png){ width="90%" loading=lazy }
+
+> **读图：** 流程是先提取特征，再把样本当节点、用学习到的相似度构图，最后做图卷积分类。与第 6.2 节的少样本 GNN 思路一致。
+
 ### 步骤 4：基学习器 3 —— 关系网络 RN（原文 Fig. 9）
 
 !!! note "基础回链"
@@ -72,6 +96,10 @@ RAM 插在每个 bottleneck 最后一个 ReLU 之后；ResNet50 使用 ImageNet 
     一句话：让一个小网络学“两张图像不像”，输出 0–1 的分数（→ 第 6.3.2 节）。
 
 嵌入网络 $f$ 提取特征，拼接后由关系模块 $g$ 输出 0–1 的关系分数 $r_{ij} = g(C(f(x_i), f(x_j)))$，以均方误差逼近 1（同类）/0（异类）（原文式 (17)–(18)）。
+
+![图 9-8 原文 Fig. 9：关系网络（RN）结构。](../paper_figs/p3_MSN_fig9.png){ width="75%" loading=lazy }
+
+> **读图：** 嵌入模块 f 提取特征，把查询样本与每个支持样本的特征拼接后送入关系模块 g，输出关系分数，分数最高的就是预测类别。
 
 ### 步骤 5：元学习器 —— 自适应加权 XGBoost（原文 Fig. 10、Algorithm 1）
 
@@ -83,7 +111,7 @@ RAM 插在每个 bottleneck 最后一个 ReLU 之后；ResNet50 使用 ImageNet 
 - **自适应加权**：每个基学习器给出的概率向量的**方差**乘以一个可学习权重 $q_\alpha$ 作为样本权重（原文式 (19)）；$q_\alpha$ 初始为 1/3，用梯度更新，学习率 η = 0.1（原文式 (27)–(28)）。直觉：概率向量方差大 → 该基学习器“很有把握”；
 - 初始预测设为最大概率而非 0.5（原文式 (25)）；分裂增益也加权（原文式 (26)）。
 
-![图 9-2 原文 Fig. 10：MSN 的整体分类流程。](../paper_figs/p3_MSN_fig10.png)
+![图 9-9 原文 Fig. 10：MSN 的整体分类流程。](../paper_figs/p3_MSN_fig10.png)
 
 ## 9.4 数据集
 
@@ -103,7 +131,7 @@ RAM 插在每个 bottleneck 最后一个 ReLU 之后；ResNet50 使用 ImageNet 
 | 0.7 | 82 / 118 | 328 / 472 |
 | 1.2 | 109 / 91 | 436 / 364 |
 
-![图 9-3 原文 Fig. 11：5 颗卫星的仿真 ISAR 像。](../paper_figs/p3_MSN_fig11.png)
+![图 9-10 原文 Fig. 11：5 颗卫星的仿真 ISAR 像。](../paper_figs/p3_MSN_fig11.png)
 
 ## 9.5 实验设置与结果
 
@@ -133,8 +161,30 @@ RAM 插在每个 bottleneck 最后一个 ReLU 之后；ResNet50 使用 ImageNet 
 
 - 在所有比例下 MSN 都最好；训练样本越少，优势越明显（K/N = 0.2 时比 ProtoNet 高 3.54 个百分点）；
 - 混淆矩阵（原文 Tables IV–VII）给出的 Kappa：ResNet50+RAM 0.92，GCN 0.96，RN 0.94，MSN 0.99；
+
+![图 9-11 原文 Fig. 12：损失与精度曲线。(a) ResNet50；(b) ResNet50 + RAM；(c) RN；(d) GCN。](../paper_figs/p3_MSN_fig12.png){ width="100%" loading=lazy }
+
+> **读图：** 四个基学习器各自的训练/验证曲线。重点看是否收敛、训练与验证之间有没有明显差距（过拟合）。
+
 - 原文 Fig. 13 的 Grad-CAM 显示加入 RAM 后注意力更集中在目标上；Fig. 14 给出特征重要性分布（自适应加权 XGBoost 中 f0–f4 的得分为 28、54、50、35、58）；
+
+![图 9-12 原文 Fig. 13：Grad-CAM 注意力热力图。(a) 卫星 1–5 的原始 ISAR 像；(b) 加入 RAM 后的热力图。](../paper_figs/p3_MSN_fig13.png){ width="100%" loading=lazy }
+
+> **读图：** 热区越集中在目标散射区域越好。对照正文：加入 RAM 后注意力更集中在目标上。
+
+![图 9-13 原文 Fig. 14：特征重要性分布。(a) 自适应加权 XGBoost；(b) 普通 XGBoost。](../paper_figs/p3_MSN_fig14.png){ width="100%" loading=lazy }
+
+> **读图：** 纵轴是三个基学习器输出的各维特征，横轴是 XGBoost 给出的重要性。比较两幅图里重要性分布的差异，理解“自适应加权”改变了什么。
+
 - 实测 Tiangong-1 实验（原文 Fig. 16）中，所有方法的分类置信度均超过 90%，MSN 最高。
+
+![图 9-14 原文 Fig. 15：不同姿态下的实测 ISAR 像。](../paper_figs/p3_MSN_fig15.png){ width="75%" loading=lazy }
+
+> **读图：** 这是实测验证用的天宫一号图像示例，与上面 Fig. 11 的仿真像对比，实测图像更不规则、背景更复杂。
+
+![图 9-15 原文 Fig. 16：不同方法的分类置信度。](../paper_figs/p3_MSN_fig16.png){ width="60%" loading=lazy }
+
+> **读图：** 柱高是各方法对实测样本的分类置信度。各方法都在 0.9 以上，差距不大，解读时不要过度放大。
 
 !!! note "说明"
 

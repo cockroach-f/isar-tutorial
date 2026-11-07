@@ -25,13 +25,21 @@
 - **为什么用简缩极化**：全极化系统复杂、实测数据难获取；简缩极化只有 2 个通道，但仍携带散射机理信息（第 3.5 节）；
 - **为什么用图**（原文 Fig. 1、Fig. 2）：同一部件的多个冗余框之间（局部关系）、同类部件之间（全局关系）存在可利用的相关性。
 
-![图 13-1 原文 Fig. 3：简缩极化伪彩色 ISAR 像（R=|S_LL|，G=|S_LL−S_RL|，B=|S_RL|）。](../paper_figs/p7_DCANet_fig3.png)
+![图 13-1 原文 Fig. 1：本文动机。(a) 用于构图的局部与全局部件关系拓扑；(b) 图特征的相干叠加。](../paper_figs/p7_DCANet_fig1.png){ width="75%" loading=lazy }
+
+> **读图：** (a) 展示同一部件的多个冗余框（局部关系）和同类部件之间（全局关系）怎样连成图；(b) 说明通过图聚合，同类部件的特征可以相干增强。
+
+![图 13-2 原文 Fig. 2：基于 CNN 与基于 GNN 的识别流程对比。](../paper_figs/p7_DCANet_fig2.png){ width="70%" loading=lazy }
+
+> **读图：** (a) 是常规 CNN 检测流程；(b)(c) 在检测头后加入图推理与信息反馈。DCA-Net 属于 (c) 的无锚框反馈方式。
+
+![图 13-3 原文 Fig. 3：简缩极化伪彩色 ISAR 像（R=|S_LL|，G=|S_LL−S_RL|，B=|S_RL|）。](../paper_figs/p7_DCANet_fig3.png)
 
 ## 13.3 方法分步讲解
 
-![图 13-2 DCA-Net 简化框图（自绘，对应原文 Fig. 4–6）](../figures/B7_dcanet_simple.png)
+![图 13-4 DCA-Net 简化框图（自绘，对应原文 Fig. 4–6）](../figures/B7_dcanet_simple.png)
 
-![图 13-3 原文 Fig. 4：DCA-Net 框架。](../paper_figs/p7_DCANet_fig4.png)
+![图 13-5 原文 Fig. 4：DCA-Net 框架。](../paper_figs/p7_DCANet_fig4.png)
 
 ### 输入
 
@@ -68,6 +76,10 @@ $I = [\mathrm{Re}\,S_{LL}, \mathrm{Im}\,S_{LL}, \mathrm{Re}\,S_{RL}, \mathrm{Im}
 
 效果：图节点数从 $16^2+32^2+64^2 = 5376$ 降到平均 1519（**减少 71.74%**），在 oall 子集上训练时间从 3.62 h 降到 2.31 h（**减少 36.19%**）。
 
+![图 13-6 原文 Fig. 5：MGNF 模块流程图。](../paper_figs/p7_DCANet_fig5.png){ width="85%" loading=lazy }
+
+> **读图：** 从左到右：提取锚点特征 → 估计多高斯分布 → 过滤背景节点 → 得到稀疏的目标节点，用于后续构图。
+
 **(3) DCAG 双分支相关聚合图（原文 Fig. 6）**
 
 - **局部分支**：NMS 把候选框分为“最优框”与“被抑制框”；计算两者的旋转 IoU（原文式 (6)–(7)）；**同类且 IoU ≥ k = 0.1** 时连边；用 GAT 聚合（注意力打分采用 $\mathrm{LeakyReLU}(z_1+z_2)$ 的加和形式，原文式 (8)–(10)）——让冗余框把信息“汇报”给最优框；
@@ -75,6 +87,10 @@ $I = [\mathrm{Re}\,S_{LL}, \mathrm{Im}\,S_{LL}, \mathrm{Re}\,S_{RL}, \mathrm{Im}
 - **残差融合**：5 个卷积块（3×3 卷积 + SiLU）（原文式 (15)）。
 
 **(4) 检测头 2** 输出精修后的框与类别。
+
+![图 13-7 原文 Fig. 6：DCAG 模块的详细结构。](../paper_figs/p7_DCANet_fig6.png){ width="90%" loading=lazy }
+
+> **读图：** 上半是全局图构建，下半是局部图构建，两路图特征最后融合。对应正文的“双分支相关聚合”。
 
 ### 损失
 
@@ -107,6 +123,18 @@ $L = \sum_s \alpha_s(L_{cls} + \lambda_s L_{reg})$，$\alpha = \lambda = 2$；�
 作者称这是首个包含 5 类以上部件的简缩极化 ISAR 卫星数据集。
 
 **实验协议**：在 4 个子集上分别训练，在 3 个俯仰角测试集上测试，共 12 种组合，报告平均值。对比方法：O-FCOS、PSC、O-RTMdet、O-ATSS、S2A-Net、O-FRCNN、O-RRCNN（基于 GNN）。平台：mmrotate；4 × A800；Adam，权重衰减 0.05；100 epoch；前 5 个 epoch 学习率从 1e-5 预热到 1e-3，后半程余弦衰减。
+
+![图 13-8 原文 Fig. 7：六颗卫星的精细 CAD 模型（左）与伪彩色 ISAR 像（右）。](../paper_figs/p7_DCANet_fig7.png){ width="45%" loading=lazy }
+
+> **读图：** CAD 图中不同颜色代表不同部件类别；右侧是对应的简缩极化伪彩色 ISAR 像，可以对照看每类部件在 ISAR 像里大致是什么样。
+
+![图 13-9 原文 Fig. 8：ISAR 空间目标部件标注方法示意。](../paper_figs/p7_DCANet_fig8.png){ width="80%" loading=lazy }
+
+> **读图：** 左上表列出部件类型（本体、太阳翼、天线、附件、光学镜头等），下方演示在三维模型上标注后投影到成像平面得到旋转框。
+
+![图 13-10 原文 Fig. 9：六颗卫星的 (a) 部件数量、(b) 部件面积、(c) 部件长宽比、(d) 部件朝向角直方图。](../paper_figs/p7_DCANet_fig9.png){ width="50%" loading=lazy }
+
+> **读图：** 这张图说明部件尺度、长宽比差异很大，对应背景中的“困难”一条。
 
 ## 13.5 实验结果
 
@@ -154,7 +182,35 @@ $L = \sum_s \alpha_s(L_{cls} + \lambda_s L_{reg})$，$\alpha = \lambda = 2$；�
 
 **其他分析**：原文 Fig. 11 的混淆矩阵显示，板状附件的召回率比 O-RTMdet 高 30.52 个百分点，杆状附件比 O-RRCNN 高 3.66 个百分点，但**所有方法对附件类的召回率都偏低**；Fig. 12 统计每个最优框平均约有 6 个冗余框；Fig. 15、17 给出 Spearman 相关分析：局部图的平均相关系数为 0.855（类别概率）和 0.811（IoU），全局图约 0.5。
 
-![图 13-4 原文 Fig. 10：不同方法的部件识别结果对比（红圈标出差异，O-RRCNN 漏检了 HISEA-1 的许多小板状附件）。](../paper_figs/p7_DCANet_fig10.png)
+![图 13-11 原文 Fig. 10：不同方法的部件识别结果对比（红圈标出差异，O-RRCNN 漏检了 HISEA-1 的许多小板状附件）。](../paper_figs/p7_DCANet_fig10.png)
+
+![图 13-12 原文 Fig. 11：40°、45°、50° 三个俯仰角下的归一化混淆矩阵对比：(a) O-RTMdet；(b) O-RRCNN；(c) DCA-Net。](../paper_figs/p7_DCANet_fig11.png){ width="50%" loading=lazy }
+
+> **读图：** 对角线是各部件类别的召回率，重点看板状附件、杆状附件两行，对应正文“其他分析”里的召回率提升。
+
+![图 13-13 原文 Fig. 12：(a) 局部最优 OBB 数量与 (b) 每个最优 OBB 平均对应的冗余 OBB 数量直方图。](../paper_figs/p7_DCANet_fig12.png){ width="70%" loading=lazy }
+
+> **读图：** 说明每个部件周围常有多个冗余候选框，这是局部构图的依据。
+
+![图 13-14 原文 Fig. 13：不加 (c) 与加入 (d) DCAG 模块时多层深度特征的热力图；(a)(b) 为伪彩色 ISAR 像与部件标注。](../paper_figs/p7_DCANet_fig13.png){ width="70%" loading=lazy }
+
+> **读图：** 比较 (c)(d)：加入 DCAG 后，热区是否更贴合标注的部件位置，尤其是弱散射部件。
+
+![图 13-15 原文 Fig. 14：局部构图中目标节点与周围源节点的 OBB 可视化。(a)(b) 为板状附件；(c)(d) 为太阳翼。](../paper_figs/p7_DCANet_fig14.png){ width="70%" loading=lazy }
+
+> **读图：** 图中显示局部图里哪些候选框被连到同一个目标节点上，帮助理解“同一部件的冗余框互相支撑”。
+
+![图 13-16 原文 Fig. 15：局部图的 Spearman 相关系数。](../paper_figs/p7_DCANet_fig15.png){ width="75%" loading=lazy }
+
+> **读图：** 衡量局部图中节点特征之间的相关程度，可与 Fig. 17 的全局图对照。
+
+![图 13-17 原文 Fig. 16：全局构图中目标节点与周围源节点的 OBB 可视化。(a)(b) 分别为板状附件和太阳翼的情况。](../paper_figs/p7_DCANet_fig16.png){ width="70%" loading=lazy }
+
+> **读图：** 与 Fig. 14 对照：全局图把同类但不相邻的部件也连了起来。
+
+![图 13-18 原文 Fig. 17：全局图的 Spearman 相关系数。](../paper_figs/p7_DCANet_fig17.png){ width="75%" loading=lazy }
+
+> **读图：** 与 Fig. 15 对照，比较局部图与全局图的相关性特点；具体结论以原文讨论为准。
 
 ## 13.6 优点与局限
 

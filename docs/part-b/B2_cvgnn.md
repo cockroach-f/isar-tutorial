@@ -31,9 +31,13 @@
 - 现有分类模型多为实值网络，只用幅度，**忽略了实部与虚部之间关系所蕴含的高阶项信息**；
 - 同时，空间目标样本少，需要少样本方法。
 
+![图 8-1 原文 Fig. 1：机动与慢速空间目标的天基 ISAR 成像几何及成像结果。](../paper_figs/p2_CVGNN_fig1.png){ width="85%" loading=lazy }
+
+> **读图：** 上半部分是雷达与目标的轨道几何，下半部分左为聚焦像、右为机动目标的散焦像。注意散焦像沿横向的拖尾，这正是 CV-GNN 想“不重聚焦直接识别”的输入。
+
 ## 8.3 方法分步讲解
 
-![图 8-1 CV-GNN 简化框图（自绘，对应原文 Fig. 2、Fig. 6）](../figures/B2_cvgnn_simple.png)
+![图 8-2 CV-GNN 简化框图（自绘，对应原文 Fig. 2、Fig. 6）](../figures/B2_cvgnn_simple.png)
 
 ### 步骤 1：复值特征提取
 
@@ -63,6 +67,14 @@
 - **邻接矩阵**：节点特征“减去自身的转置”取绝对值得到关系，即 $|x_i - x_j|$，实部、虚部分别计算，再经 **CV-Softmax**：$\sigma(\mathrm{Re}) + j\,\sigma(\mathrm{Im})$（原文式 (5)）；
 - **图卷积**：$\mathbf x^{(k+1)} = \rho\big(\sum_{B\in\mathcal A} B\,\mathbf x^{(k)}\,\theta\big)$（原文式 (4)），其中乘法按复数规则展开（原文式 (6)）。
 
+![图 8-3 原文 Fig. 3：邻接层示意图。](../paper_figs/p2_CVGNN_fig3.png){ width="85%" loading=lazy }
+
+> **读图：** 两两节点的特征先求差的绝对值，再经过多层复值卷积 + 复值 BN + ReLU，最后 softmax，得到可学习的边权。
+
+![图 8-4 原文 Fig. 4：图卷积层示意图。](../paper_figs/p2_CVGNN_fig4.png){ width="85%" loading=lazy }
+
+> **读图：** 节点由“样本表示 ⊕ 复值标签”构成；图卷积用邻接层给出的边权聚合邻居，再经复值线性层更新节点。上下两部分分别对应正文的邻接层和图卷积层。
+
 ### 步骤 4：输出与损失
 
 !!! note "基础回链"
@@ -73,7 +85,11 @@
 $$L = -\tfrac12\Big(\overline{\ln\sigma(\mathrm{Re})\odot l}\Big)^2 - \tfrac12\Big(\overline{\ln\sigma(\mathrm{Im})\odot l}\Big)^2,$$
 其中 $l$ 为 one-hot 标签，$\odot$ 只取正确类别的值。原文式 (8)–(13) 推导了复值 BN（2×2 协方差白化）和 CV-Linear 的反向传播。
 
-![图 8-2 原文 Fig. 2：CV-GNN 对复值数据的图推理详细结构。](../paper_figs/p2_CVGNN_fig2.png)
+![图 8-5 原文 Fig. 2：CV-GNN 对复值数据的图推理详细结构。](../paper_figs/p2_CVGNN_fig2.png)
+
+![图 8-6 原文 Fig. 6：CV-GNN 的整体结构（逐层配置）。](../paper_figs/p2_CVGNN_fig6.png){ width="85%" loading=lazy }
+
+> **读图：** 左栏是复值特征提取网络的逐层参数，右栏是邻接层与图卷积模块的堆叠方式，可以和步骤 1–3 一一对照。
 
 ## 8.4 数据集
 
@@ -84,7 +100,7 @@ $$L = -\tfrac12\Big(\overline{\ln\sigma(\mathrm{Re})\odot l}\Big)^2 - \tfrac12\B
 | 样本数 | 每类仿真 100 幅，其中 30 幅用于训练，其余测试 |
 | 仿真参数 | 带宽 240 MHz，载频 5.4 GHz，转角 –1.92°～1.92°，转速 0.1 rad/s，转动加速度 5000 rad/s²（原文印刷值），图像 128×128 |
 
-![图 8-3 原文 Fig. 5：数据集示例。(a)–(f) 部分仿真散焦像；(g) 空间站实测散焦像；(h) 重聚焦结果。](../paper_figs/p2_CVGNN_fig5.png)
+![图 8-7 原文 Fig. 5：数据集示例。(a)–(f) 部分仿真散焦像；(g) 空间站实测散焦像；(h) 重聚焦结果。](../paper_figs/p2_CVGNN_fig5.png)
 
 !!! info "直觉"
 
@@ -96,7 +112,15 @@ $$L = -\tfrac12\Big(\overline{\ln\sigma(\mathrm{Re})\odot l}\Big)^2 - \tfrac12\B
 
 **消融 1（原文 Fig. 7，损失曲线）**：在聚焦数据上，CV-GNN 与 RV-GNN 的损失曲线相近；在散焦数据上，RV-GNN 的损失在约 0.2 附近波动，CV-GNN 能收敛——说明复值信息对散焦数据更关键。
 
+![图 8-8 原文 Fig. 7：CV-GNN 与 RV-GNN 的损失曲线。](../paper_figs/p2_CVGNN_fig7.png){ width="70%" loading=lazy }
+
+> **读图：** 四条曲线分别是两种网络在聚焦和散焦数据上的训练损失。重点比较散焦数据上 RV-GNN 与 CV-GNN 的收敛位置，对应正文的消融 1。
+
 **消融 2（原文 Fig. 8）**：当训练类别数达到 5、每类样本达到 14 时，CV-GNN 精度超过 90%，而 CV-CNN 只有约 70%——说明 GNN 的少样本推理能力。
+
+![图 8-9 原文 Fig. 8：总体精度与 Kappa 系数曲线。(a) 随类别数变化；(b) 随训练样本数变化。](../paper_figs/p2_CVGNN_fig8.png){ width="90%" loading=lazy }
+
+> **读图：** 横轴分别是类别数和每类训练样本数，纵轴是 OA 或 Kappa。看 CV-GNN 曲线与 CV-CNN 等对比方法之间的差距怎样随横轴变化。
 
 **表 8-1 对比实验（原文 Table II，随机选取 5 类、每类 20 个样本训练；各列为每类精度 %）**
 
