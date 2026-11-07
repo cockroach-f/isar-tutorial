@@ -20,7 +20,7 @@
 | 转台模型 | Turntable Model | 平动补偿后，目标等效为绕中心旋转 | 2.2 |
 | 多普勒 | Doppler | 由径向速度引起的频移，ISAR 中正比于横向坐标 | 2.2 |
 | RD 算法 | Range-Doppler Algorithm | 距离压缩 + 方位 FFT 的 ISAR 成像算法 | 2.3 |
-| BP / PFA | Back Projection / Polar Format Algorithm | 后向投影 / 极坐标格式成像算法（论文 5 / 论文 7 使用） | 2.7 |
+| BP / PFA | Back Projection / Polar Format Algorithm | 后向投影 / 极坐标格式成像算法（REMI / DCA-Net 使用） | 2.7 |
 | 积累角 | Accumulation Angle $\Delta\theta$ | 成像期间目标相对雷达转过的总角度 | 2.4 |
 | 散焦 | Defocus | 非匀速转动等导致的图像模糊 | 2.5 |
 | MTRC | Migration Through Resolution Cells | 越分辨单元走动 | 2.5 |

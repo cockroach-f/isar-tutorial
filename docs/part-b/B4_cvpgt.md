@@ -1,4 +1,4 @@
-# 第 10 章 论文 4：CvPGT —— 复值 Patch 图 Transformer 少样本识别
+# 第 10 章 CvPGT —— 复值 Patch 图 Transformer 少样本识别
 
 !!! tip "本章目标"
 
@@ -16,7 +16,7 @@
 - **作者**：Haoxuan Yuan, Hongbo Li, Yun Zhang（通讯）, Muyao Li, Chenxi Wei；哈尔滨工业大学
 - **出处**：IEEE Transactions on Aerospace and Electronic Systems, vol. 60, no. 4, Aug. 2024, doi: 10.1109/TAES.2024.3382222
 
-**一句话概括**：在 CV-GNN（论文 2）的基础上，先用“随机成像参数”生成的复值图块做对比学习，让编码器对分辨率、散焦、旋转不敏感；再把图像切成重叠 patch、以 patch 为节点构图，用复值图推理（局部）+ 复值 Transformer（全局）提取特征；最后用 GNN 完成少样本分类。
+**一句话概括**：在 CV-GNN（CV-GNN）的基础上，先用“随机成像参数”生成的复值图块做对比学习，让编码器对分辨率、散焦、旋转不敏感；再把图像切成重叠 patch、以 patch 为节点构图，用复值图推理（局部）+ 复值 Transformer（全局）提取特征；最后用 GNN 完成少样本分类。
 
 ## 10.2 背景与动机
 
@@ -64,9 +64,9 @@
 
 !!! note "基础回链"
 
-    一句话：与论文 2、3 相同的少样本 GNN（→ 第 6.2 节）。
+    一句话：与 CV-GNN、MSN 相同的少样本 GNN（→ 第 6.2 节）。
 
-与论文 2、3 的少样本 GNN 相同：$E_f$ ⊕ one-hot 作为节点，邻接 $\mathrm{MLP}(|x_i - x_j|)$ + softmax（原文式 (18)），Leaky ReLU 节点更新（式 (19)），交叉熵损失（式 (20)）。
+与 CV-GNN、MSN 的少样本 GNN 相同：$E_f$ ⊕ one-hot 作为节点，邻接 $\mathrm{MLP}(|x_i - x_j|)$ + softmax（原文式 (18)），Leaky ReLU 节点更新（式 (19)），交叉熵损失（式 (20)）。
 
 ## 10.4 数据集
 
@@ -126,7 +126,7 @@
 
 - 对比学习的增强方式**物理可解释**，消融显示它是最关键的组件；
 - 局部（patch 图）+ 全局（Transformer、整图嵌入）双重建模；
-- 训练类与测试类不相交，且测试集的转动参数与训练集不同（Task 2–4），设置比论文 3 更严格；
+- 训练类与测试类不相交，且测试集的转动参数与训练集不同（Task 2–4），设置比 MSN 更严格；
 - 有实验室实测验证。
 
 **局限**：
@@ -150,4 +150,4 @@
 
 !!! abstract "小结"
 
-    CvPGT 把论文 2 的复值 GNN 升级为“物理增强对比学习 + 局部/全局 patch 图 Transformer + GNN 分类”的完整框架。最值得学习的是：**数据增强可以来源于成像物理**——这是 ISAR 识别区别于普通图像识别的关键思想之一。
+    CvPGT 把 CV-GNN 的复值 GNN 升级为“物理增强对比学习 + 局部/全局 patch 图 Transformer + GNN 分类”的完整框架。最值得学习的是：**数据增强可以来源于成像物理**——这是 ISAR 识别区别于普通图像识别的关键思想之一。

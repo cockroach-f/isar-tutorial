@@ -1,4 +1,4 @@
-# 第 13 章 论文 7：DCA-Net —— 简缩极化 ISAR 卫星部件级识别
+# 第 13 章 DCA-Net —— 简缩极化 ISAR 卫星部件级识别
 
 !!! tip "本章目标"
 
@@ -186,4 +186,4 @@ $L = \sum_s \alpha_s(L_{cls} + \lambda_s L_{reg})$，$\alpha = \lambda = 2$；�
 
 !!! abstract "小结"
 
-    DCA-Net 把 ISAR 识别推进到“部件级”，并展示了图注意力在检测精修中的作用。它与论文 1 一起构成“极化 ISAR 识别”方向：论文 1 用全极化做目标分类，论文 7 用简缩极化做部件检测。
+    DCA-Net 把 ISAR 识别推进到“部件级”，并展示了图注意力在检测精修中的作用。它与 DB-SSIT 一起构成“极化 ISAR 识别”方向：DB-SSIT 用全极化做目标分类，DCA-Net 用简缩极化做部件检测。

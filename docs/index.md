@@ -13,17 +13,17 @@
 - **Part B 逐篇带读**（第 7–13 章）：每篇论文按“背景与动机 → 要解决的问题 → 方法分步 → 数据与实验 → 结果 → 优缺点 → 本科生可复现内容 → 自测题”展开；同时给出自绘简化框图，并引用原文关键图（标注原文图号）。
 - **Part C 综合**（第 14–16 章）：分类体系、横向对比表、研究趋势、阅读路线、入门项目、术语表；附录列出所有“存疑/未能核实”之处。
 
-**七篇论文一览**（文中简称“论文 1–7”）：
+**七篇论文一览**（文中用方法简称指代）：
 
-| 编号 | 简称 | 题目（缩写） | 出处 | 单位 |
+| 方法 | 中文说明 | 题目（缩写） | 出处 | 单位 |
 |---|---|---|---|---|
-| 1 | DB-SSIT | Terahertz Polarimetric ISAR Target Recognition Based on a Dual-Branch Spatial-Scatter Interaction Transformer | Electromagnetic Science, 2025 | 上海理工大学 |
-| 2 | CV-GNN | Complex-Valued Graph Neural Network on Space Target Classification for Defocused ISAR Images | IEEE GRSL, vol. 19, 2022 | 哈尔滨工业大学 |
-| 3 | MSN | Meta-Learner-Based Stacking Network on Space Target Recognition for ISAR Images | IEEE JSTARS, vol. 14, 2021 | 哈尔滨工业大学 |
-| 4 | CvPGT | Few-Shot Classification for ISAR Images of Space Targets by Complex-Valued Patch Graph Transformer | IEEE TAES, vol. 60, no. 4, 2024 | 哈尔滨工业大学 |
-| 5 | REMI | REMI: Few-Shot ISAR Target Classification via Robust Embedding and Manifold Inference | IEEE TNNLS, vol. 36, no. 4, 2025 | 西安电子科技大学 |
-| 6 | MLFR | Few-Shot Multistatic ISAR Target Classification Based on Multilevel Feature Reconstruction | IEEE TGRS, vol. 63, 2025 | 西安电子科技大学 |
-| 7 | DCA-Net | Compact Polarimetric ISAR Space Target Components Recognition With Dual-Branch Correlation Aggregation Graph Attention Network | IEEE TGRS, vol. 63, 2025 | 国防科技大学 |
+| DB-SSIT | 双分支空间-散射交互 Transformer | Terahertz Polarimetric ISAR Target Recognition Based on a Dual-Branch Spatial-Scatter Interaction Transformer | Electromagnetic Science, 2025 | 上海理工大学 |
+| CV-GNN | 复值图神经网络 | Complex-Valued Graph Neural Network on Space Target Classification for Defocused ISAR Images | IEEE GRSL, vol. 19, 2022 | 哈尔滨工业大学 |
+| MSN | 元学习器堆叠集成网络 | Meta-Learner-Based Stacking Network on Space Target Recognition for ISAR Images | IEEE JSTARS, vol. 14, 2021 | 哈尔滨工业大学 |
+| CvPGT | 复值 Patch 图 Transformer | Few-Shot Classification for ISAR Images of Space Targets by Complex-Valued Patch Graph Transformer | IEEE TAES, vol. 60, no. 4, 2024 | 哈尔滨工业大学 |
+| REMI | 鲁棒嵌入与流形推理 | REMI: Few-Shot ISAR Target Classification via Robust Embedding and Manifold Inference | IEEE TNNLS, vol. 36, no. 4, 2025 | 西安电子科技大学 |
+| MLFR | 多层级特征重建 | Few-Shot Multistatic ISAR Target Classification Based on Multilevel Feature Reconstruction | IEEE TGRS, vol. 63, 2025 | 西安电子科技大学 |
+| DCA-Net | 双分支相关聚合图注意力网络 | Compact Polarimetric ISAR Space Target Components Recognition With Dual-Branch Correlation Aggregation Graph Attention Network | IEEE TGRS, vol. 63, 2025 | 国防科技大学 |
 
 **几种彩色框的含义。**
 
