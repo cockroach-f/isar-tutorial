@@ -131,7 +131,7 @@
 
 ![图 11-9 原文 Fig. 8：各场景 3-way 1-shot / 5-shot 的混淆矩阵。](../paper_figs/p5_REMI_fig8.png){ width="100%" loading=lazy }
 
-> **读图：** 截图上方带有原文的一张结果表，下方是各场景、各设置的混淆矩阵，看哪几类卫星最容易混淆。
+> **读图：** (a)–(h) 分别对应不同场景与 1-shot / 5-shot 设置。看对角线深浅和非对角格子，找出哪几类卫星最容易互相混淆。
 
 ![图 11-10 原文 Fig. 9：(a)–(d) 场景 I–IV 的分类精度直方图。](../paper_figs/p5_REMI_fig9.png){ width="100%" loading=lazy }
 
