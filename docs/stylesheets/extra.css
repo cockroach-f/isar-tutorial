@@ -10,3 +10,17 @@
   border-radius: 0.3rem;
   background: #000;
 }
+
+/* ---- Wider reading layout ---- */
+.md-grid { max-width: 1680px; }
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--primary { width: 11rem; }
+  .md-sidebar--secondary { width: 11rem; }
+}
+/* Medium desktops: hide right TOC so the article keeps room (left nav still has page TOC) */
+@media screen and (min-width: 76.25em) and (max-width: 89.99em) {
+  .md-sidebar--secondary { display: none; }
+}
+.md-typeset img, .md-typeset video { max-width: 100%; height: auto; }
+.md-typeset .katex-display, .md-typeset .arithmatex { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+.md-typeset table:not([class]) { display: block; overflow-x: auto; }
