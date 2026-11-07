@@ -1,0 +1,1920 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="从雷达回波到深度学习——面向初学者的 ISAR 目标识别系统教学与七篇前沿文献带读">
+      
+      
+        <meta name="author" content="light">
+      
+      
+        <link rel="canonical" href="https://cockroach-f.github.io/isar-tutorial/part-b/B7_dcanet.html">
+      
+      
+        <link rel="prev" href="B6_mlfr.html">
+      
+      
+        <link rel="next" href="../part-c/C1_synthesis.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>第 13 章 DCA-Net - ISAR 目标识别入门与文献带读</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#13-dca-net-isar" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="ISAR 目标识别入门与文献带读" class="md-header__button md-logo" aria-label="ISAR 目标识别入门与文献带读" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ISAR 目标识别入门与文献带读
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 13 章 DCA-Net
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cockroach-f/isar-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cockroach-f/isar-tutorial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="ISAR 目标识别入门与文献带读" class="md-nav__button md-logo" aria-label="ISAR 目标识别入门与文献带读" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ISAR 目标识别入门与文献带读
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cockroach-f/isar-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cockroach-f/isar-tutorial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    前言
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../videos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    动画视频
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A 基础
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part A 基础
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A0_math.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 数学与信号准备
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A1_radar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 雷达基础
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A2_isar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 ISAR 成像
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A3_pol.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 雷达极化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A4_hard.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 识别难点
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A5_dl.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 深度学习入门（上）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A6_dl2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 深度学习入门（下）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B 逐篇带读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part B 逐篇带读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B1_dbssit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 DB-SSIT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B2_cvgnn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 CV-GNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B3_msn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 MSN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B4_cvpgt.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 CvPGT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B5_remi.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 REMI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B6_mlfr.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 MLFR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 DCA-Net
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="B7_dcanet.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 DCA-Net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#131" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 基本信息
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 背景与动机
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 方法分步讲解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.3 方法分步讲解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        输入
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1rtmdet-anchor-free" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        阶段 1：RTMdet 基础检测器（无锚框 anchor-free）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-table-i" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        阶段 2：精修（原文 Table I 给出伪代码）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        损失
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 数据集
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 实验结果
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#136" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.6 优点与局限
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#137" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.7 本科生可以复现什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#138" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.8 自测题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C 综合
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part C 综合
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C1_synthesis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 横向对比
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C2_projects.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 阅读路线与入门项目
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C3_glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 术语表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendix.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#131" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 基本信息
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 背景与动机
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 方法分步讲解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.3 方法分步讲解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        输入
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1rtmdet-anchor-free" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        阶段 1：RTMdet 基础检测器（无锚框 anchor-free）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-table-i" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        阶段 2：精修（原文 Table I 给出伪代码）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        损失
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 数据集
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 实验结果
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#136" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.6 优点与局限
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#137" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.7 本科生可以复现什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#138" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.8 自测题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="13-dca-net-isar">第 13 章 DCA-Net —— 简缩极化 ISAR 卫星部件级识别<a class="headerlink" href="#13-dca-net-isar" title="Permanent link">&para;</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">本章目标</p>
+<ol>
+<li>理解从“目标级分类”到“部件级识别（旋转框检测）”的任务升级；</li>
+<li>掌握 DCA-Net 的两阶段结构：RTMdet 基础检测器、MGNF 锚点过滤、DCAG 双分支图注意力；</li>
+<li>读懂检测指标（P、R、F1、mAP50）与跨俯仰角实验的结论。</li>
+</ol>
+</div>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p><strong>读这一章前，建议先看：</strong> 简缩极化 <span class="arithmatex">\(S_{LL}\)</span>、<span class="arithmatex">\(S_{RL}\)</span>（→ 第 3.5 节，例题 3.4）；卷积与 CNN（→ 第 5.3、5.4 节）；GAT（→ 第 6.2 节）；Precision / Recall / F1 / IoU / mAP50（→ 第 6.7 节）。</p>
+</div>
+<h2 id="131">13.1 基本信息<a class="headerlink" href="#131" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>题目</strong>：Compact Polarimetric ISAR Space Target Components Recognition With Dual-Branch Correlation Aggregation Graph Attention Network</li>
+<li><strong>作者</strong>：Ming-Dian Li, Shun-Ping Xiao, Si-Wei Chen（通讯）；国防科技大学电子科学学院</li>
+<li><strong>出处</strong>：IEEE Transactions on Geoscience and Remote Sensing, vol. 63, 2025, Art. no. 5107917, doi: 10.1109/TGRS.2025.3607102（2025 年 9 月 8 日发表）</li>
+</ul>
+<p><strong>一句话概括</strong>：用简缩极化（DCP：<span class="arithmatex">\(S_{LL}\)</span>、<span class="arithmatex">\(S_{RL}\)</span>）ISAR 像作为输入，在 RTMdet 旋转框检测器之上增加“多高斯掩膜过滤 + 局部/全局双分支图注意力”的精修阶段，识别卫星上 9 类部件；在自建的 6 颗卫星、16577 个标注部件的数据集上，平均 mAP50 达到 71.78%，比 O-RTMdet 高 5.23 个百分点。</p>
+<h2 id="132">13.2 背景与动机<a class="headerlink" href="#132" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>任务升级</strong>：知道“这是哪颗卫星”还不够，还想知道“太阳翼在哪、天线朝向如何”——这对判断卫星功能、状态很重要。于是任务变成<strong>部件级识别</strong>：用<strong>旋转框（OBB）</strong>框出每个部件并分类；</li>
+<li><strong>困难</strong>：部件散射弱且不均匀；尺度、长宽比差异大（原文 Fig. 9）；CNN 检测器单独看每个候选框，忽略了部件之间的关系；</li>
+<li><strong>为什么用简缩极化</strong>：全极化系统复杂、实测数据难获取；简缩极化只有 2 个通道，但仍携带散射机理信息（第 3.5 节）；</li>
+<li><strong>为什么用图</strong>（原文 Fig. 1、Fig. 2）：同一部件的多个冗余框之间（局部关系）、同类部件之间（全局关系）存在可利用的相关性。</li>
+</ul>
+<p><img alt="图 13-1 原文 Fig. 1：本文动机。(a) 用于构图的局部与全局部件关系拓扑；(b) 图特征的相干叠加。" loading="lazy" src="../paper_figs/p7_DCANet_fig1.png" width="75%" /></p>
+<blockquote>
+<p><strong>读图：</strong> (a) 展示同一部件的多个冗余框（局部关系）和同类部件之间（全局关系）怎样连成图；(b) 说明通过图聚合，同类部件的特征可以相干增强。</p>
+</blockquote>
+<p><img alt="图 13-2 原文 Fig. 2：基于 CNN 与基于 GNN 的识别流程对比。" loading="lazy" src="../paper_figs/p7_DCANet_fig2.png" width="70%" /></p>
+<blockquote>
+<p><strong>读图：</strong> (a) 是常规 CNN 检测流程；(b)(c) 在检测头后加入图推理与信息反馈。DCA-Net 属于 (c) 的无锚框反馈方式。</p>
+</blockquote>
+<p><img alt="图 13-3 原文 Fig. 3：简缩极化伪彩色 ISAR 像（R=|S_LL|，G=|S_LL−S_RL|，B=|S_RL|）。" src="../paper_figs/p7_DCANet_fig3.png" /></p>
+<h2 id="133">13.3 方法分步讲解<a class="headerlink" href="#133" title="Permanent link">&para;</a></h2>
+<p><img alt="图 13-4 DCA-Net 简化框图（自绘，对应原文 Fig. 4–6）" src="../figures/B7_dcanet_simple.png" /></p>
+<p><img alt="图 13-5 原文 Fig. 4：DCA-Net 框架。" src="../paper_figs/p7_DCANet_fig4.png" /></p>
+<h3 id="_1">输入<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p>一句话：简缩极化的两个复通道拆成实部、虚部，共 4 个实数通道（<span class="arithmatex">\(S_{LL}\)</span>、<span class="arithmatex">\(S_{RL}\)</span> 的含义与手算见例题 3.4）。</p>
+</div>
+<p><span class="arithmatex">\(I = [\mathrm{Re}\,S_{LL}, \mathrm{Im}\,S_{LL}, \mathrm{Re}\,S_{RL}, \mathrm{Im}\,S_{RL}]\)</span>，4×256×256（原文式 (3)）。注意这里保留了复数信息（以实部/虚部双通道的方式）。</p>
+<h3 id="1rtmdet-anchor-free">阶段 1：RTMdet 基础检测器（无锚框 anchor-free）<a class="headerlink" href="#1rtmdet-anchor-free" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p>一句话：一个现成的旋转框检测器，在每个位置预测“这里有没有部件、框多大、转了多少度”。卷积/BN/激活见第 5 章。</p>
+</div>
+<ul>
+<li>骨干：CSP 块 + 5×5 深度卷积，输出 P1–P5；</li>
+<li>颈部：PAFPN，融合 P3–P5 三个层级；</li>
+<li>检测头 1：2 个卷积块（3×3 卷积 + BN + SiLU）+ 3 个 1×1 卷积 → 框参数 <span class="arithmatex">\(\{x, y, h, w\}\)</span>、角度 <span class="arithmatex">\(\theta\)</span>、9 类分数。</li>
+</ul>
+<h3 id="2-table-i">阶段 2：精修（原文 Table I 给出伪代码）<a class="headerlink" href="#2-table-i" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p>一句话：先用简单的图像阈值去掉大部分背景候选（MGNF），再用两个图注意力分支让候选框之间互相参考（DCAG，GAT 见第 6.2 节）。旋转 IoU 的含义见第 6.7 节。</p>
+</div>
+<p><strong>(1) 拼接所有层级的锚点特征</strong> <span class="arithmatex">\(f_{all}\)</span>（原文式 (4)）。</p>
+<p><strong>(2) MGNF 多高斯节点过滤（原文 Fig. 5）</strong>——无监督地去掉背景锚点：</p>
+<ul>
+<li>在 5×5 窗口内做<strong>高斯加权自适应阈值</strong> → 二值图；</li>
+<li>用 marching squares 提取边界 → 凸包 → 目标掩膜；</li>
+<li>分别对 <span class="arithmatex">\(|S_{LL}|\)</span>、<span class="arithmatex">\(|S_{RL}|\)</span>、<span class="arithmatex">\(|S_{LL}-S_{RL}|\)</span> 三种特征做，再<strong>取并集（OR）</strong>（原文式 (5)）；</li>
+<li>中心落在掩膜外的锚点被剔除。</li>
+</ul>
+<p>效果：图节点数从 <span class="arithmatex">\(16^2+32^2+64^2 = 5376\)</span> 降到平均 1519（<strong>减少 71.74%</strong>），在 oall 子集上训练时间从 3.62 h 降到 2.31 h（<strong>减少 36.19%</strong>）。</p>
+<p><img alt="图 13-6 原文 Fig. 5：MGNF 模块流程图。" loading="lazy" src="../paper_figs/p7_DCANet_fig5.png" width="85%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 从左到右：提取锚点特征 → 估计多高斯分布 → 过滤背景节点 → 得到稀疏的目标节点，用于后续构图。</p>
+</blockquote>
+<p><strong>(3) DCAG 双分支相关聚合图（原文 Fig. 6）</strong></p>
+<ul>
+<li><strong>局部分支</strong>：NMS 把候选框分为“最优框”与“被抑制框”；计算两者的旋转 IoU（原文式 (6)–(7)）；<strong>同类且 IoU ≥ k = 0.1</strong> 时连边；用 GAT 聚合（注意力打分采用 <span class="arithmatex">\(\mathrm{LeakyReLU}(z_1+z_2)\)</span> 的加和形式，原文式 (8)–(10)）——让冗余框把信息“汇报”给最优框；</li>
+<li><strong>全局分支</strong>：在最优框之间，用类别分数向量的<strong>余弦相似度</strong>（原文式 (11)）建 kNN 图（k = 5 最好），GAT 聚合时以 IoU 为边属性（原文式 (12)–(14)）——让相似部件互相“参考”；</li>
+<li><strong>残差融合</strong>：5 个卷积块（3×3 卷积 + SiLU）（原文式 (15)）。</li>
+</ul>
+<p><strong>(4) 检测头 2</strong> 输出精修后的框与类别。</p>
+<p><img alt="图 13-7 原文 Fig. 6：DCAG 模块的详细结构。" loading="lazy" src="../paper_figs/p7_DCANet_fig6.png" width="90%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 上半是全局图构建，下半是局部图构建，两路图特征最后融合。对应正文的“双分支相关聚合”。</p>
+</blockquote>
+<h3 id="_2">损失<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p>一句话：分类损失 + 框回归损失；<span class="arithmatex">\(-\log(\mathrm{IoU})\)</span> 在框完全重合时为 0，重合越少越大。</p>
+</div>
+<p><span class="arithmatex">\(L = \sum_s \alpha_s(L_{cls} + \lambda_s L_{reg})\)</span>，<span class="arithmatex">\(\alpha = \lambda = 2\)</span>；回归损失 <span class="arithmatex">\(L_{reg} = -\log(\mathrm{IoU})\)</span>（原文式 (17)）；分类用 Quality Focal Loss（原文式 (18)–(19)）。</p>
+<h2 id="134">13.4 数据集<a class="headerlink" href="#134" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容（原文 Sec. IV-A、Tables II–III）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>卫星</td>
+<td>6 颗：HISEA-1, Radarsat-2, Capella, QPS-SAR, Worldview-4, StarLink（精细 CAD 模型，原文 Fig. 7）</td>
+</tr>
+<tr>
+<td>电磁计算</td>
+<td>FEKO，DCP 模式（LL、RL）</td>
+</tr>
+<tr>
+<td>观测</td>
+<td>成像中心方位 0–90°（步长 1°），俯仰角 40°、45°、50°；极坐标格式算法（PFA）成像</td>
+</tr>
+<tr>
+<td>雷达参数</td>
+<td>中心频率 16 GHz（Ku 波段），带宽 2 GHz，积累角 5°，256×256</td>
+</tr>
+<tr>
+<td>规模</td>
+<td>共 1638 帧（= 6 × 91 × 3），9 类部件共 16577 个标注</td>
+</tr>
+<tr>
+<td>标注方法</td>
+<td>在三维点云上标注部件，考虑遮挡后投影到成像平面（原文 Fig. 8）</td>
+</tr>
+<tr>
+<td>划分</td>
+<td>按俯仰角分为 o40、o45、o50、oall 四个子集，各按 8:1:1 划分</td>
+</tr>
+</tbody>
+</table>
+<p><strong>9 类部件的标注数量（原文 Table III）</strong></p>
+<table>
+<thead>
+<tr>
+<th>部件</th>
+<th>数量</th>
+<th>部件</th>
+<th>数量</th>
+<th>部件</th>
+<th>数量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>长方体本体</td>
+<td>455</td>
+<td>多边形本体</td>
+<td>819</td>
+<td>板状本体</td>
+<td>273</td>
+</tr>
+<tr>
+<td>太阳翼</td>
+<td>4299</td>
+<td>抛物面天线</td>
+<td>1365</td>
+<td>平板天线</td>
+<td>546</td>
+</tr>
+<tr>
+<td>板状附件</td>
+<td>7183</td>
+<td>杆状附件</td>
+<td>1364</td>
+<td>光学镜头</td>
+<td>273</td>
+</tr>
+</tbody>
+</table>
+<p>作者称这是首个包含 5 类以上部件的简缩极化 ISAR 卫星数据集。</p>
+<p><strong>实验协议</strong>：在 4 个子集上分别训练，在 3 个俯仰角测试集上测试，共 12 种组合，报告平均值。对比方法：O-FCOS、PSC、O-RTMdet、O-ATSS、S2A-Net、O-FRCNN、O-RRCNN（基于 GNN）。平台：mmrotate；4 × A800；Adam，权重衰减 0.05；100 epoch；前 5 个 epoch 学习率从 1e-5 预热到 1e-3，后半程余弦衰减。</p>
+<p><img alt="图 13-8 原文 Fig. 7：六颗卫星的精细 CAD 模型（左）与伪彩色 ISAR 像（右）。" loading="lazy" src="../paper_figs/p7_DCANet_fig7.png" width="45%" /></p>
+<blockquote>
+<p><strong>读图：</strong> CAD 图中不同颜色代表不同部件类别；右侧是对应的简缩极化伪彩色 ISAR 像，可以对照看每类部件在 ISAR 像里大致是什么样。</p>
+</blockquote>
+<p><img alt="图 13-9 原文 Fig. 8：ISAR 空间目标部件标注方法示意。" loading="lazy" src="../paper_figs/p7_DCANet_fig8.png" width="80%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 左上表列出部件类型（本体、太阳翼、天线、附件、光学镜头等），下方演示在三维模型上标注后投影到成像平面得到旋转框。</p>
+</blockquote>
+<p><img alt="图 13-10 原文 Fig. 9：六颗卫星的 (a) 部件数量、(b) 部件面积、(c) 部件长宽比、(d) 部件朝向角直方图。" loading="lazy" src="../paper_figs/p7_DCANet_fig9.png" width="50%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 这张图说明部件尺度、长宽比差异很大，对应背景中的“困难”一条。</p>
+</blockquote>
+<h2 id="135">13.5 实验结果<a class="headerlink" href="#135" title="Permanent link">&para;</a></h2>
+<p><strong>表 13-1 平均检测性能（12 种训练/测试组合的均值，%）与计算量（原文 Table XI，输入 4×256×256）</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>Precision</th>
+<th>Recall</th>
+<th>F1</th>
+<th>mAP50</th>
+<th>GFLOPs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O-FCOS</td>
+<td>70.32</td>
+<td>67.08</td>
+<td>68.25</td>
+<td>64.17</td>
+<td>13.367</td>
+</tr>
+<tr>
+<td>PSC</td>
+<td>64.78</td>
+<td>64.74</td>
+<td>64.47</td>
+<td>59.88</td>
+<td>13.382</td>
+</tr>
+<tr>
+<td>O-RTMdet</td>
+<td>79.09</td>
+<td>68.14</td>
+<td>71.23</td>
+<td>66.55</td>
+<td>12.839</td>
+</tr>
+<tr>
+<td>O-ATSS</td>
+<td>74.20</td>
+<td>67.21</td>
+<td>69.71</td>
+<td>65.03</td>
+<td>13.433</td>
+</tr>
+<tr>
+<td>S2A-Net</td>
+<td>61.94</td>
+<td>52.06</td>
+<td>54.99</td>
+<td>50.02</td>
+<td>13.579</td>
+</tr>
+<tr>
+<td>O-FRCNN</td>
+<td>62.47</td>
+<td>68.96</td>
+<td>64.58</td>
+<td>65.69</td>
+<td>40.600</td>
+</tr>
+<tr>
+<td>O-RRCNN</td>
+<td>70.00</td>
+<td>69.93</td>
+<td>69.27</td>
+<td>66.57</td>
+<td>73.171</td>
+</tr>
+<tr>
+<td><strong>DCA-Net</strong></td>
+<td><strong>80.52</strong></td>
+<td><strong>74.35</strong></td>
+<td><strong>76.61</strong></td>
+<td><strong>71.78</strong></td>
+<td>16.635</td>
+</tr>
+</tbody>
+</table>
+<p>解读：相比 O-RTMdet（其基础检测器），P / R / F1 / mAP50 分别提升 1.43 / 6.21 / 5.38 / 5.23 个百分点——<strong>提升主要来自召回率</strong>，即找回了更多原本漏检的部件；相比同为图方法的 O-RRCNN，mAP50 高 5.21，而计算量只有其约 1/4.4。</p>
+<p><strong>表 13-2 跨俯仰角 mAP50（%，行：训练集；列：测试俯仰角 40° / 45° / 50°）</strong></p>
+<table>
+<thead>
+<tr>
+<th>训练集</th>
+<th>DCA-Net</th>
+<th>O-RTMdet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>o40</td>
+<td>86.20 / 69.40 / 52.60</td>
+<td>70.20 / 62.60 / 48.30</td>
+</tr>
+<tr>
+<td>o45</td>
+<td>70.70 / 77.40 / 60.90</td>
+<td>68.10 / 67.20 / 58.40</td>
+</tr>
+<tr>
+<td>o50</td>
+<td>59.20 / 66.60 / 76.70</td>
+<td>52.80 / 63.00 / 68.70</td>
+</tr>
+<tr>
+<td>oall</td>
+<td>82.70 / 79.60 / 79.30</td>
+<td>81.90 / 79.50 / 77.90</td>
+</tr>
+</tbody>
+</table>
+<p>解读：<strong>俯仰角一变，性能明显下降</strong>（例如 o40 训练，在 50° 测试只有 52.60），说明部件识别对观测几何非常敏感；用全部俯仰角训练（oall）最稳。</p>
+<p><strong>表 13-3 消融实验（原文 Tables VIII–X，%，P / R / F1 / mAP50）</strong></p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th>P</th>
+<th>R</th>
+<th>F1</th>
+<th>mAP50</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无 DCAG（即 O-RTMdet）</td>
+<td>79.09</td>
+<td>68.14</td>
+<td>71.23</td>
+<td>66.55</td>
+</tr>
+<tr>
+<td>仅局部分支</td>
+<td>81.06</td>
+<td>73.28</td>
+<td>76.23</td>
+<td>70.19</td>
+</tr>
+<tr>
+<td>仅全局分支</td>
+<td>81.39</td>
+<td>73.02</td>
+<td>76.15</td>
+<td>70.03</td>
+</tr>
+<tr>
+<td>双分支（DCA-Net）</td>
+<td>80.52</td>
+<td>74.35</td>
+<td>76.61</td>
+<td>71.78</td>
+</tr>
+<tr>
+<td>图层数 = 2</td>
+<td>82.65</td>
+<td>72.85</td>
+<td>76.39</td>
+<td>70.53</td>
+</tr>
+<tr>
+<td>图层数 = 3</td>
+<td>81.50</td>
+<td>71.99</td>
+<td>75.43</td>
+<td>70.02</td>
+</tr>
+<tr>
+<td>kNN k = 3</td>
+<td>80.34</td>
+<td>73.99</td>
+<td>76.37</td>
+<td>71.05</td>
+</tr>
+<tr>
+<td>kNN k = 7</td>
+<td>81.75</td>
+<td>73.30</td>
+<td>76.39</td>
+<td>70.86</td>
+</tr>
+<tr>
+<td>kNN k = 9</td>
+<td>81.22</td>
+<td>73.32</td>
+<td>76.23</td>
+<td>70.53</td>
+</tr>
+</tbody>
+</table>
+<p>（DCA-Net 默认 1 层图、k = 5。）</p>
+<p><strong>其他分析</strong>：原文 Fig. 11 的混淆矩阵显示，板状附件的召回率比 O-RTMdet 高 30.52 个百分点，杆状附件比 O-RRCNN 高 3.66 个百分点，但<strong>所有方法对附件类的召回率都偏低</strong>；Fig. 12 统计每个最优框平均约有 6 个冗余框；Fig. 15、17 给出 Spearman 相关分析：局部图的平均相关系数为 0.855（类别概率）和 0.811（IoU），全局图约 0.5。</p>
+<p><img alt="图 13-11 原文 Fig. 10：不同方法的部件识别结果对比（红圈标出差异，O-RRCNN 漏检了 HISEA-1 的许多小板状附件）。" src="../paper_figs/p7_DCANet_fig10.png" /></p>
+<p><img alt="图 13-12 原文 Fig. 11：40°、45°、50° 三个俯仰角下的归一化混淆矩阵对比：(a) O-RTMdet；(b) O-RRCNN；(c) DCA-Net。" loading="lazy" src="../paper_figs/p7_DCANet_fig11.png" width="50%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 对角线是各部件类别的召回率，重点看板状附件、杆状附件两行，对应正文“其他分析”里的召回率提升。</p>
+</blockquote>
+<p><img alt="图 13-13 原文 Fig. 12：(a) 局部最优 OBB 数量与 (b) 每个最优 OBB 平均对应的冗余 OBB 数量直方图。" loading="lazy" src="../paper_figs/p7_DCANet_fig12.png" width="70%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 说明每个部件周围常有多个冗余候选框，这是局部构图的依据。</p>
+</blockquote>
+<p><img alt="图 13-14 原文 Fig. 13：不加 (c) 与加入 (d) DCAG 模块时多层深度特征的热力图；(a)(b) 为伪彩色 ISAR 像与部件标注。" loading="lazy" src="../paper_figs/p7_DCANet_fig13.png" width="70%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 比较 (c)(d)：加入 DCAG 后，热区是否更贴合标注的部件位置，尤其是弱散射部件。</p>
+</blockquote>
+<p><img alt="图 13-15 原文 Fig. 14：局部构图中目标节点与周围源节点的 OBB 可视化。(a)(b) 为板状附件；(c)(d) 为太阳翼。" loading="lazy" src="../paper_figs/p7_DCANet_fig14.png" width="70%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 图中显示局部图里哪些候选框被连到同一个目标节点上，帮助理解“同一部件的冗余框互相支撑”。</p>
+</blockquote>
+<p><img alt="图 13-16 原文 Fig. 15：局部图的 Spearman 相关系数。" loading="lazy" src="../paper_figs/p7_DCANet_fig15.png" width="75%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 衡量局部图中节点特征之间的相关程度，可与 Fig. 17 的全局图对照。</p>
+</blockquote>
+<p><img alt="图 13-17 原文 Fig. 16：全局构图中目标节点与周围源节点的 OBB 可视化。(a)(b) 分别为板状附件和太阳翼的情况。" loading="lazy" src="../paper_figs/p7_DCANet_fig16.png" width="70%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 与 Fig. 14 对照：全局图把同类但不相邻的部件也连了起来。</p>
+</blockquote>
+<p><img alt="图 13-18 原文 Fig. 17：全局图的 Spearman 相关系数。" loading="lazy" src="../paper_figs/p7_DCANet_fig17.png" width="75%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 与 Fig. 15 对照，比较局部图与全局图的相关性特点；具体结论以原文讨论为准。</p>
+</blockquote>
+<h2 id="136">13.6 优点与局限<a class="headerlink" href="#136" title="Permanent link">&para;</a></h2>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>任务新：首次在简缩极化 ISAR 上做 9 类部件的旋转框识别，数据集标注方法（三维点云投影 + 遮挡）严谨；</li>
+<li>图结构设计贴合检测问题：局部图整合冗余框，全局图利用同类部件；MGNF 无监督去背景，显著降低计算；</li>
+<li>计算量适中（16.635 GFLOPs），远低于两阶段 O-RRCNN。</li>
+</ul>
+<p><strong>局限</strong>：</p>
+<ul>
+<li>纯仿真数据，只有 6 颗卫星；跨俯仰角泛化差；</li>
+<li>附件类（小、弱）召回仍低；</li>
+<li>极化信息仅以实部/虚部通道输入，网络中没有显式利用极化物理（作者也表示伪彩色中各颜色的物理意义将在后续研究）。</li>
+</ul>
+<h2 id="137">13.7 本科生可以复现什么<a class="headerlink" href="#137" title="Permanent link">&para;</a></h2>
+<ul>
+<li>用 <code>isar_core.compact_pol_from_linear</code> 对仿真目标生成 <span class="arithmatex">\(S_{LL}\)</span>、<span class="arithmatex">\(S_{RL}\)</span> 并合成伪彩色（第 3 章图 3-2 已演示）；</li>
+<li>安装 mmrotate，用 DOTA 格式标注少量仿真 ISAR 像中的“本体/太阳翼”旋转框，训练 RTMdet-R 基线——这是进入检测方向的最佳入口；</li>
+<li>复现 MGNF：<code>skimage.filters.threshold_local(method='gaussian')</code> + <code>skimage.measure.find_contours</code> + 凸包，统计锚点过滤比例。</li>
+</ul>
+<h2 id="138">13.8 自测题<a class="headerlink" href="#138" title="Permanent link">&para;</a></h2>
+<ol>
+<li>部件级识别与目标级分类相比，输出、标注、评价指标分别有什么不同？</li>
+<li>为什么在互易条件下 <span class="arithmatex">\(S_{RL}\)</span> 等于 Pauli 的奇次散射分量？</li>
+<li>MGNF 为什么要对三种特征的掩膜取“并集”而不是“交集”？</li>
+<li>局部图与全局图的边分别是怎么定义的？它们各自解决什么问题？</li>
+<li>根据表 13-2，如果实际雷达的俯仰角与训练数据不同，你会怎样改进训练策略？</li>
+</ol>
+<div class="admonition abstract">
+<p class="admonition-title">小结</p>
+<p>DCA-Net 把 ISAR 识别推进到“部件级”，并展示了图注意力在检测精修中的作用。它与 DB-SSIT 一起构成“极化 ISAR 识别”方向：DB-SSIT 用全极化做目标分类，DCA-Net 用简缩极化做部件检测。</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 light · 教学用途 · 期刊原图因版权未转载
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="../javascripts/katex.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>

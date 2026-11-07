@@ -1,0 +1,1404 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="从雷达回波到深度学习——面向初学者的 ISAR 目标识别系统教学与七篇前沿文献带读">
+      
+      
+        <meta name="author" content="light">
+      
+      
+        <link rel="canonical" href="https://cockroach-f.github.io/isar-tutorial/appendix.html">
+      
+      
+        <link rel="prev" href="part-c/C3_glossary.html">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>附录 - ISAR 目标识别入门与文献带读</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    
+      <link rel="stylesheet" href="stylesheets/extra.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#a" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="index.html" title="ISAR 目标识别入门与文献带读" class="md-header__button md-logo" aria-label="ISAR 目标识别入门与文献带读" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ISAR 目标识别入门与文献带读
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              附录
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cockroach-f/isar-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cockroach-f/isar-tutorial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="ISAR 目标识别入门与文献带读" class="md-nav__button md-logo" aria-label="ISAR 目标识别入门与文献带读" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ISAR 目标识别入门与文献带读
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cockroach-f/isar-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cockroach-f/isar-tutorial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    前言
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="videos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    动画视频
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A 基础
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part A 基础
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-a/A0_math.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 数学与信号准备
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-a/A1_radar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 雷达基础
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-a/A2_isar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 ISAR 成像
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-a/A3_pol.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 雷达极化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-a/A4_hard.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 识别难点
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-a/A5_dl.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 深度学习入门（上）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-a/A6_dl2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 深度学习入门（下）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B 逐篇带读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part B 逐篇带读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-b/B1_dbssit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 DB-SSIT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-b/B2_cvgnn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 CV-GNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-b/B3_msn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 MSN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-b/B4_cvpgt.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 CvPGT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-b/B5_remi.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 REMI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-b/B6_mlfr.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 MLFR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-b/B7_dcanet.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 DCA-Net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C 综合
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part C 综合
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-c/C1_synthesis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 横向对比
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-c/C2_projects.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 阅读路线与入门项目
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="part-c/C3_glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 术语表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="appendix.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="a">附录 A 代码、图与视频清单<a class="headerlink" href="#a" title="Permanent link">&para;</a></h1>
+<p>所有代码位于本站点的 <code>code/</code> 目录。依赖：Python 3、numpy、scipy、matplotlib、ffmpeg；项目代码另需 PyTorch 与 torchvision（CPU 版即可）。</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code/isar_core.py</code></td>
+<td>核心仿真库：点散射体目标、转台回波、HRRP、RD 成像、LFM 与匹配滤波、极化（典型散射矩阵、Pauli、6 维特征、简缩极化）、散射中心提取与 kNN 构图、参数化随机目标</td>
+</tr>
+<tr>
+<td><code>code/make_figures.py</code></td>
+<td>生成 Part A 的仿真图（<code>figures/A01–A20</code>）</td>
+</tr>
+<tr>
+<td><code>code/make_figures_v2.py</code></td>
+<td>基础概念例题配图（<code>figures/v2_01–v2_16</code>）与 <code>v2_A16_stn_affine.png</code>（“剪切”子图对应 REMI 的 MH-STN）</td>
+</tr>
+<tr>
+<td><code>code/make_diagrams.py</code></td>
+<td>生成 7 篇论文的自绘简化框图、分类体系图与阅读路线图（<code>figures/B1–B7</code>、<code>C1</code>、<code>C2</code>）</td>
+</tr>
+<tr>
+<td><code>code/make_videos.py</code></td>
+<td>生成 4 段动画（<code>videos/V1–V4</code>）</td>
+</tr>
+<tr>
+<td><code>code/extract_paper_figs.py</code>、<code>code/fix_paper_figs.py</code></td>
+<td>从论文 PDF 中按图题自动裁剪原文图（<code>paper_figs/</code>），后者对少数裁剪不准的图做手工修正</td>
+</tr>
+<tr>
+<td><code>code/project1_rd_dataset.py</code></td>
+<td>入门项目 1：生成仿真 RD 数据集</td>
+</tr>
+<tr>
+<td><code>code/project1_train_resnet18.py</code></td>
+<td>入门项目 1：ResNet18 训练与测试（随机划分 / 按方位划分）</td>
+</tr>
+<tr>
+<td><code>code/project2_protonet.py</code></td>
+<td>入门项目 2：原型网络少样本识别（基类 / 新类不相交，episode 训练）</td>
+</tr>
+<tr>
+<td><code>code/dbssit_lite.py</code></td>
+<td>DB-SSIT 思想的教学简化版网络与 6 维极化特征（<strong>非官方代码</strong>）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>视频</strong></p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>时长</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>videos/V1_turntable_to_isar.mp4</code></td>
+<td>38 s</td>
+<td>转台转动 → HRRP 历程 → RD 像随积累角逐渐清晰</td>
+</tr>
+<tr>
+<td><code>videos/V2_pulse_compression.mp4</code></td>
+<td>35 s</td>
+<td>匹配滤波滑动相关；带宽扫描与分辨率</td>
+</tr>
+<tr>
+<td><code>videos/V3_fewshot_episode.mp4</code></td>
+<td>36 s</td>
+<td>3-way 1-shot 任务与原型网络推理（两个任务）</td>
+</tr>
+<tr>
+<td><code>videos/V4_defocus.mp4</code></td>
+<td>24 s</td>
+<td>角加速度增大导致散焦，图像熵变化</td>
+</tr>
+</tbody>
+</table>
+<p><strong>表 A-1 入门项目在本机（CPU）上的实测结果</strong>（仿真数据，仅用于说明现象，不代表任何论文结果）</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>设置</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>项目 1</td>
+<td>6 类 × 100 幅，64×64，B = 1 GHz，Δθ = 5°，SNR 15 dB；随机 7:3 划分，ResNet18，8 epoch，随机横向翻转</td>
+<td>测试精度 100.00%</td>
+</tr>
+<tr>
+<td>项目 1</td>
+<td>同上，按方位划分：0–250° 训练，250–360° 测试，随机横向翻转</td>
+<td>测试精度 100.00%</td>
+</tr>
+<tr>
+<td>项目 1</td>
+<td>同上，按方位划分：0–90° 训练，180–360° 测试，无翻转</td>
+<td>测试精度 15.21%（随机猜测为 16.7%）</td>
+</tr>
+<tr>
+<td>项目 2</td>
+<td>基类 20 / 新类 10，每类 40 幅 48×48，Conv4 原型网络，1000 个 episode；5-way 1-shot</td>
+<td>训练前 42.08 ± 1.82%，训练后 91.69 ± 0.97%（300 个测试任务）</td>
+</tr>
+<tr>
+<td>项目 2</td>
+<td>同上，5-way 5-shot</td>
+<td>训练前 60.76 ± 2.01%，训练后 96.43 ± 0.65%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>怎么理解这些数字？</strong> 二维点散射体模型中，方位角变化基本等价于图像的平面旋转，而且仿真目标结构差异明显、没有遮挡和闪烁，所以只要训练姿态覆盖较广，CNN 就能达到 100%。一旦测试姿态远离训练范围（0–90° → 180–360°），精度就跌到随机猜测水平，直观说明了“姿态敏感”。仿真少样本精度（&gt; 90%）远高于 REMI、MLFR 中的 60–90%，原因同样是仿真过于理想。想得到更接近论文的难度，可以：降低带宽和积累角；加入散焦（<code>alpha_ratio</code>）；训练、测试使用不同的成像参数；给散射点加入随角度变化的幅度与遮挡；使用真实数据。</p>
+<h1 id="b">附录 B 存疑与未能核实之处汇总<a class="headerlink" href="#b" title="Permanent link">&para;</a></h1>
+<p>以下内容在对照原文时发现表述不清、前后不一致或无法核实，正文中已用【存疑】标注：</p>
+<table>
+<thead>
+<tr>
+<th>论文</th>
+<th>位置</th>
+<th>问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>题目</td>
+<td>正式题目为 “Dual-Branch <strong>Spatial-Scatter</strong> Interaction Transformer”，并非 “spatial-spectral”</td>
+</tr>
+<tr>
+<td>1</td>
+<td>式 (7)</td>
+<td>特征 D 印刷为 $</td>
+</tr>
+<tr>
+<td>1</td>
+<td>式 (12)</td>
+<td>正文称 FFN 使用 GELU，式 (12) 为 ReLU 形式</td>
+</tr>
+<tr>
+<td>1</td>
+<td>数据划分</td>
+<td>未说明扩增（至 3024 幅）与 7:2:1 划分的先后顺序，可能存在数据泄漏</td>
+</tr>
+<tr>
+<td>1</td>
+<td>数据来源</td>
+<td>称回波为“采集”所得，未说明是否为缩比模型实测；“平均加权策略”细节不明；类别名称未给出</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Table II</td>
+<td>称“随机选 5 类、每类 20 个样本训练”，但给出 8 类 + 实测共 9 列精度；数据集部分又称“每类 30 幅训练”；评测协议不清</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Table I</td>
+<td>转动加速度 5000 rad/s² 为原文印刷值，数值偏大，未能核实</td>
+</tr>
+<tr>
+<td>2</td>
+<td>代码</td>
+<td>原文称代码将公开于 github.com/yhx-hit/cv_gnn，未核实可用性</td>
+</tr>
+<tr>
+<td>3</td>
+<td>式 (6)</td>
+<td>能量归一化公式的抽取形式不清</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Table III</td>
+<td>正文称该表显示 RAM 对 ResNet50 的提升，但表中无 ResNet50 相关行</td>
+</tr>
+<tr>
+<td>3</td>
+<td>XGBoost 参数</td>
+<td>“ESR 0.8” 含义未说明</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Fig. 14</td>
+<td>特征得分方差（132.8 vs 36.8）与正文“更集中”的解读方向不完全一致</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Fig. 9 结论</td>
+<td>“最小步长至少为 32° 和 12°” 措辞有歧义（逻辑上应为步长上限）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Table XII 结论</td>
+<td>称 5-shot 提升 5.58–12.49%，但相对 GNN（62.35%）的提升应为 13.92%</td>
+</tr>
+<tr>
+<td>5</td>
+<td>式 (15)</td>
+<td>印刷为 <span class="arithmatex">\(\mathrm{MLP}(v_i - v_j)\)</span>，按上下文应为绝对值</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Table VIII</td>
+<td>列标题有一处重复印刷（两列都写为 MH-STN+Conv4）</td>
+</tr>
+<tr>
+<td>6</td>
+<td>式 (34)</td>
+<td>损失权重 <span class="arithmatex">\(\lambda_1\)</span>–<span class="arithmatex">\(\lambda_4\)</span> 的取值未在正文中找到</td>
+</tr>
+<tr>
+<td>6</td>
+<td>数据集</td>
+<td>“每个站获得 90 幅图像”未说明是否按卫星 / 参数组合计</td>
+</tr>
+</tbody>
+</table>
+<p>此外：</p>
+<ul>
+<li>本文所有“自绘”框图是对原文的简化理解，模块细节以原文为准；</li>
+<li><code>dbssit_lite.py</code> 不是原文代码，结构上做了大幅简化；</li>
+<li>仿真图使用理想点散射模型，未包含真实电磁散射、遮挡与噪声特性。</li>
+</ul>
+<h1 id="c">附录 C 参考文献<a class="headerlink" href="#c" title="Permanent link">&para;</a></h1>
+<ol>
+<li>W. Chen, Y. Li, J. Fu, H. Wang, M. Xing, Y. Zhu, G. Fang, “Terahertz polarimetric ISAR target recognition based on a dual-branch spatial-scatter interaction transformer,” <em>Electromagnetic Science</em>, 2025, doi: 10.23919/emsci.2025.0060.</li>
+<li>Y. Zhang, H. Yuan, H. Li, C. Wei, C. Yao, “Complex-valued graph neural network on space target classification for defocused ISAR images,” <em>IEEE Geosci. Remote Sens. Lett.</em>, vol. 19, Art. no. 4512905, 2022, doi: 10.1109/LGRS.2022.3185709.</li>
+<li>Y. Zhang, H. Yuan, H. Li, J. Chen, M. Niu, “Meta-learner-based stacking network on space target recognition for ISAR images,” <em>IEEE J. Sel. Topics Appl. Earth Observ. Remote Sens.</em>, vol. 14, pp. 12132–12148, 2021, doi: 10.1109/JSTARS.2021.3128938.</li>
+<li>H. Yuan, H. Li, Y. Zhang, M. Li, C. Wei, “Few-shot classification for ISAR images of space targets by complex-valued patch graph transformer,” <em>IEEE Trans. Aerosp. Electron. Syst.</em>, vol. 60, no. 4, Aug. 2024, doi: 10.1109/TAES.2024.3382222.</li>
+<li>X. Bai, M. Yang, B. Chen, F. Zhou, “REMI: Few-shot ISAR target classification via robust embedding and manifold inference,” <em>IEEE Trans. Neural Netw. Learn. Syst.</em>, vol. 36, no. 4, pp. 6000–6013, Apr. 2025, doi: 10.1109/TNNLS.2024.3391330.</li>
+<li>M. Yang, B. Chen, Y. Wang, X. Bai, F. Zhou, “Few-shot multistatic ISAR target classification based on multilevel feature reconstruction,” <em>IEEE Trans. Geosci. Remote Sens.</em>, vol. 63, Art. no. 5106516, 2025, doi: 10.1109/TGRS.2025.3592206.</li>
+<li>M.-D. Li, S.-P. Xiao, S.-W. Chen, “Compact polarimetric ISAR space target components recognition with dual-branch correlation aggregation graph attention network,” <em>IEEE Trans. Geosci. Remote Sens.</em>, vol. 63, Art. no. 5107917, 2025, doi: 10.1109/TGRS.2025.3607102.</li>
+</ol>
+<p><strong>延伸阅读（经典教材与方法，非本文七篇）</strong>：保铮等《雷达成像技术》；V. C. Chen &amp; M. Martorella, <em>Inverse Synthetic Aperture Radar Imaging: Principles, Algorithms and Applications</em>；J.-S. Lee &amp; E. Pottier, <em>Polarimetric Radar Imaging: From Basics to Applications</em>；J. Snell et al., “Prototypical Networks for Few-shot Learning” (NeurIPS 2017)；T. Chen et al., “A Simple Framework for Contrastive Learning of Visual Representations” (ICML 2020)；M. Jaderberg et al., “Spatial Transformer Networks” (NeurIPS 2015)。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 light · 教学用途 · 期刊原图因版权未转载
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="javascripts/katex.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>

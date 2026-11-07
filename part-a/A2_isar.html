@@ -1,0 +1,1650 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="从雷达回波到深度学习——面向初学者的 ISAR 目标识别系统教学与七篇前沿文献带读">
+      
+      
+        <meta name="author" content="light">
+      
+      
+        <link rel="canonical" href="https://cockroach-f.github.io/isar-tutorial/part-a/A2_isar.html">
+      
+      
+        <link rel="prev" href="A1_radar.html">
+      
+      
+        <link rel="next" href="A3_pol.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>第 2 章 ISAR 成像 - ISAR 目标识别入门与文献带读</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#2-isar-" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="ISAR 目标识别入门与文献带读" class="md-header__button md-logo" aria-label="ISAR 目标识别入门与文献带读" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ISAR 目标识别入门与文献带读
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 2 章 ISAR 成像
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cockroach-f/isar-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cockroach-f/isar-tutorial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="ISAR 目标识别入门与文献带读" class="md-nav__button md-logo" aria-label="ISAR 目标识别入门与文献带读" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ISAR 目标识别入门与文献带读
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cockroach-f/isar-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cockroach-f/isar-tutorial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    前言
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../videos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    动画视频
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A 基础
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part A 基础
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A0_math.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 数学与信号准备
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A1_radar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 雷达基础
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 ISAR 成像
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="A2_isar.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 ISAR 成像
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#21-sar-isar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 SAR 与 ISAR：谁在动？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 多普勒效应与转台模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 多普勒效应与转台模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#221" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2.1 多普勒效应：相位转得越快，频率越高
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#222" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2.2 转台模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#23-rd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 距离-多普勒（RD）成像算法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 分辨率公式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#25-mtrc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 散焦与 MTRC
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#26" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 运动补偿：成像前必须做的“预处理”
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#27" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 散射中心模型
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A3_pol.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 雷达极化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A4_hard.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 识别难点
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A5_dl.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 深度学习入门（上）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A6_dl2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 深度学习入门（下）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B 逐篇带读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part B 逐篇带读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B1_dbssit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 DB-SSIT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B2_cvgnn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 CV-GNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B3_msn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 MSN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B4_cvpgt.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 CvPGT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B5_remi.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 REMI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B6_mlfr.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 MLFR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B7_dcanet.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 DCA-Net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C 综合
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part C 综合
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C1_synthesis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 横向对比
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C2_projects.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 阅读路线与入门项目
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C3_glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 术语表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendix.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#21-sar-isar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 SAR 与 ISAR：谁在动？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 多普勒效应与转台模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 多普勒效应与转台模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#221" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2.1 多普勒效应：相位转得越快，频率越高
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#222" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2.2 转台模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#23-rd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 距离-多普勒（RD）成像算法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 分辨率公式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#25-mtrc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 散焦与 MTRC
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#26" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 运动补偿：成像前必须做的“预处理”
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#27" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 散射中心模型
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="2-isar-">第 2 章 ISAR 成像：转台模型、距离-多普勒算法与分辨率<a class="headerlink" href="#2-isar-" title="Permanent link">&para;</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">本章目标</p>
+<ol>
+<li>理解“雷达不动、目标转动”为什么能等效成一个长天线（合成孔径），即 ISAR 的基本原理；</li>
+<li>从多普勒效应出发，一步步推出“多普勒 ∝ 横向坐标”，掌握转台模型与距离-多普勒（RD）成像的完整流程，能用 Python 从点目标仿真出 ISAR 像；</li>
+<li>推导并记住横向分辨率 <span class="arithmatex">\(\rho_a = \lambda/(2\Delta\theta)\)</span>，理解带宽与转角各管哪个方向，会做数值估算；</li>
+<li>直观理解散焦（非匀速转动）、越分辨单元走动（MTRC）和运动补偿，并能用数字估计“糊了几个格子”；了解散射中心模型。</li>
+</ol>
+</div>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p><strong>本章用到的基础：</strong> 相位与距离 <span class="arithmatex">\(\Delta\varphi = 4\pi\Delta R/\lambda\)</span>（→ 第 0.1 节）、傅里叶变换与频率分辨率 <span class="arithmatex">\(1/T\)</span>（→ 第 0.3、0.5 节）、采样与混叠（→ 第 0.4 节）、距离压缩与 <span class="arithmatex">\(\rho_r = c/2B\)</span>（→ 第 1.4 节）。</p>
+</div>
+<h2 id="21-sar-isar">2.1 SAR 与 ISAR：谁在动？<a class="headerlink" href="#21-sar-isar" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>SAR（合成孔径雷达）</strong>：雷达装在飞机/卫星上运动，对静止地面成像；</li>
+<li><strong>ISAR（逆合成孔径雷达）</strong>：雷达通常固定（地基雷达，或 CV-GNN 中的天基雷达），<strong>目标运动</strong>（卫星、飞机、舰船）。真正提供横向分辨率的是目标相对雷达视线的<strong>转动</strong>。</li>
+</ul>
+<p>本文 7 篇论文的对象几乎都是<strong>空间目标</strong>（卫星、空间站），REMI 还用到了飞机数据。</p>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p><strong>类比：用手机拍全景照。</strong> 一根天线“看一眼”只能看到很粗的横向细节；如果让天线沿一条长长的路径移动、在许多位置分别拍照再“拼起来”，就相当于有了一根很长的天线（合成孔径）。SAR 是雷达自己走，ISAR 是让目标转——相对运动是一样的，就像你站着不动、让转盘上的物体转一圈，也能从各个角度看它。</p>
+</div>
+<h2 id="22">2.2 多普勒效应与转台模型<a class="headerlink" href="#22" title="Permanent link">&para;</a></h2>
+<h3 id="221">2.2.1 多普勒效应：相位转得越快，频率越高<a class="headerlink" href="#221" title="Permanent link">&para;</a></h3>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p><strong>类比：救护车的鸣笛。</strong> 救护车朝你开来时音调变高，远离时音调变低。雷达里也一样：目标靠近，回波频率略高于发射频率；远离则略低。这个频率差就叫<strong>多普勒频率</strong> <span class="arithmatex">\(f_d\)</span>。</p>
+</div>
+<p><strong>机理（用相位来理解，不需要相对论）。</strong> 由式 (1.4)，回波相位为 <span class="arithmatex">\(\varphi(t) = -4\pi R(t)/\lambda\)</span>。若目标以径向速度 <span class="arithmatex">\(v\)</span> 运动，<span class="arithmatex">\(R(t) = R_0 + vt\)</span>，则相位随时间线性变化。第 0.1 节说过，“相位线性变化”就是“箭头匀速旋转”，旋转速度就是频率：</p>
+<div class="arithmatex">\[f_d = \frac{1}{2\pi}\frac{\mathrm{d}\varphi}{\mathrm{d}t} = \frac{1}{2\pi}\cdot\left(-\frac{4\pi}{\lambda}\right)\frac{\mathrm{d}R}{\mathrm{d}t} = -\frac{2v}{\lambda}. \tag{2.1}\]</div>
+<p>符号说明：<span class="arithmatex">\(v = \mathrm{d}R/\mathrm{d}t\)</span> 为径向速度（远离为正）；<span class="arithmatex">\(\lambda\)</span> 为波长；负号表示远离时 <span class="arithmatex">\(f_d&lt;0\)</span>、靠近时 <span class="arithmatex">\(f_d&gt;0\)</span>。</p>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 2.1（多普勒有多大）。</strong> <span class="arithmatex">\(f_c = 10\)</span> GHz（<span class="arithmatex">\(\lambda = 3\)</span> cm），飞机以 <span class="arithmatex">\(v = 300\)</span> m/s 朝雷达飞来：<span class="arithmatex">\(|f_d| = 2\times300/0.03 = 20\,000\)</span> Hz <span class="arithmatex">\(= 20\)</span> kHz。相比 10 GHz 的载频只是“零头”，但经过 I/Q 解调去掉载频后（→ 第 0.2 节），就能清楚地测出来。</p>
+</div>
+<h3 id="222">2.2.2 转台模型<a class="headerlink" href="#222" title="Permanent link">&para;</a></h3>
+<p>目标的运动可以分解为<strong>平动</strong>（整体靠近/远离雷达）和<strong>转动</strong>（绕自身某点旋转）。平动只让所有散射点的距离同时变化，对成像无用且有害，需要先补偿掉（2.6 节）。补偿后，目标就像放在一个<strong>转台</strong>上绕中心旋转。</p>
+<p>建立坐标系：雷达在远场，视线（LOS）沿 <span class="arithmatex">\(y\)</span> 轴；目标上第 <span class="arithmatex">\(k\)</span> 个散射点坐标 <span class="arithmatex">\((x_k, y_k)\)</span>，目标转过角度 <span class="arithmatex">\(\theta(t_m)\)</span>（<span class="arithmatex">\(t_m\)</span> 为<strong>慢时间</strong>，即第 <span class="arithmatex">\(m\)</span> 个脉冲的发射时刻）。远场近似下该点到转台中心参考面的距离为</p>
+<div class="arithmatex">\[R_k(t_m) = y_k\cos\theta(t_m) + x_k\sin\theta(t_m). \tag{2.2}\]</div>
+<p>式 (2.2) 是二维旋转的投影公式：把点 <span class="arithmatex">\((x_k, y_k)\)</span> 转过 <span class="arithmatex">\(\theta\)</span> 后，它在视线方向（<span class="arithmatex">\(y\)</span> 轴）上的坐标就是 <span class="arithmatex">\(y_k\cos\theta + x_k\sin\theta\)</span>。</p>
+<p><strong>小角度近似。</strong> 匀速转动时 <span class="arithmatex">\(\theta = \omega t_m\)</span>（<span class="arithmatex">\(\omega\)</span> 为转速，rad/s）。ISAR 的积累角一般只有几度，<span class="arithmatex">\(\theta \ll 1\)</span>，于是 <span class="arithmatex">\(\cos\theta\approx 1\)</span>、<span class="arithmatex">\(\sin\theta\approx\theta\)</span>（<span class="arithmatex">\(\theta = 5^\circ = 0.087\)</span> rad 时，<span class="arithmatex">\(\cos\theta = 0.996\)</span>、<span class="arithmatex">\(\sin\theta = 0.0872\)</span>，误差都在 0.4% 以内）：</p>
+<div class="arithmatex">\[R_k(t_m) \approx y_k + x_k\,\omega t_m . \tag{2.3}\]</div>
+<p>这个式子很好读：<span class="arithmatex">\(y_k\)</span> 是固定不变的部分，决定散射点落在哪个距离单元；<span class="arithmatex">\(x_k\omega t_m\)</span> 随时间线性增长，等价于一个径向速度 <span class="arithmatex">\(v_k = x_k\omega\)</span>。也就是说，<strong>横向坐标 <span class="arithmatex">\(x_k\)</span> 越大，这个点“看起来”朝雷达跑得越快</strong>，就像转盘边缘比中心转得快。</p>
+<p>代入式 (2.1)，把 <span class="arithmatex">\(v\)</span> 换成 <span class="arithmatex">\(x_k\omega\)</span>，得到第 <span class="arithmatex">\(k\)</span> 个点的多普勒频率：</p>
+<div class="admonition success">
+<p class="admonition-title">关键公式</p>
+<div class="arithmatex">\[\boxed{f_{d,k} = -\frac{2}{\lambda}\frac{\mathrm{d}R_k}{\mathrm{d}t_m} \approx -\frac{2\omega}{\lambda}x_k} \tag{2.4}\]</div>
+</div>
+<p><strong>关键结论：多普勒频率正比于散射点的横向坐标 <span class="arithmatex">\(x_k\)</span></strong>（符号取决于约定）。于是：</p>
+<ul>
+<li>沿 <span class="arithmatex">\(y\)</span>（距离）方向：用带宽 <span class="arithmatex">\(B\)</span> 分辨（第 1 章）；</li>
+<li>沿 <span class="arithmatex">\(x\)</span>（横向/方位）方向：用多普勒分辨 —— 对慢时间做 FFT，频率轴就是横向坐标轴。</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 2.2（转台多普勒）。</strong> <span class="arithmatex">\(\lambda = 3\)</span> cm，卫星以 <span class="arithmatex">\(\omega = 0.05\)</span> rad/s 转动。横向坐标 <span class="arithmatex">\(x=2\)</span> m 的点：<span class="arithmatex">\(f_d = -2\times0.05\times2/0.03 = -6.67\)</span> Hz；<span class="arithmatex">\(x=-1\)</span> m 的点：<span class="arithmatex">\(f_d = +3.33\)</span> Hz。两个点的多普勒相差 10 Hz，FFT 后会在频率轴上落到不同位置（图 2-1b）。和例题 2.1 的 20 kHz 相比，转动产生的多普勒只有几赫兹，非常“细”，所以需要较长的观测时间才能分辨（见 2.4 节）。</p>
+</div>
+<p><img alt="图 2-1 左：转台模型几何示意；右：式 (2.4) 的直观图 —— 横向位置不同的散射点产生不同的多普勒频率。" src="../figures/A03_turntable.png" /></p>
+<p><img alt="图 2-1b 例题 2.2 的数值仿真。(a) 两个散射点的回波相位随慢时间线性变化，斜率正比于横向坐标；(b) 对慢时间做 FFT 后，斜率变成频谱峰的位置（−6.67 Hz 与 +3.33 Hz）。代码：code/make_figures_v2.py::f06_doppler_phase" src="../figures/v2_06_doppler_phase.png" /></p>
+<h2 id="23-rd">2.3 距离-多普勒（RD）成像算法<a class="headerlink" href="#23-rd" title="Permanent link">&para;</a></h2>
+<p>把频域（或去斜后）回波写成二维矩阵：快时间对应的频率 <span class="arithmatex">\(f\)</span> × 慢时间 <span class="arithmatex">\(t_m\)</span>：</p>
+<div class="arithmatex">\[s(f, t_m) = \sum_k \sigma_k \exp\!\left(-j\frac{4\pi f}{c}R_k(t_m)\right). \tag{2.5}\]</div>
+<p>符号说明：<span class="arithmatex">\(f\)</span> 为快时间频率（在 <span class="arithmatex">\([f_c - B/2, f_c + B/2]\)</span> 内取 <span class="arithmatex">\(N_f\)</span> 个值），<span class="arithmatex">\(t_m\)</span> 为第 <span class="arithmatex">\(m\)</span> 个脉冲的时刻（共 <span class="arithmatex">\(N_p\)</span> 个），<span class="arithmatex">\(\sigma_k\)</span> 为第 <span class="arithmatex">\(k\)</span> 个散射点的复散射系数。数据是一个 <span class="arithmatex">\(N_p\times N_f\)</span> 的复数矩阵。</p>
+<p><strong>为什么两次 FFT 就能成像：一步步推导。</strong> 把式 (2.3) 代入式 (2.5) 的相位：</p>
+<div class="arithmatex">\[\begin{aligned}
+-\frac{4\pi f}{c}R_k(t_m) &amp;\approx -\frac{4\pi f}{c}\big(y_k + x_k\omega t_m\big) \\
+&amp;= \underbrace{-\frac{4\pi f}{c}\,y_k}_{\text{只和 } f \text{ 有关}} \;\underbrace{-\;\frac{4\pi f}{c}\,x_k\omega\, t_m}_{\text{和 } f,\ t_m \text{ 都有关}} \\
+&amp;\approx -\frac{4\pi f}{c}\,y_k \;-\; 2\pi\left(\frac{2x_k\omega}{\lambda}\right) t_m .
+\end{aligned} \tag{2.6}\]</div>
+<p>最后一步把第二项里的 <span class="arithmatex">\(f\)</span> 近似为 <span class="arithmatex">\(f_c\)</span>（因为 <span class="arithmatex">\(B \ll f_c\)</span>，例如 1 GHz <span class="arithmatex">\(\ll\)</span> 10 GHz），并用 <span class="arithmatex">\(f_c/c = 1/\lambda\)</span>。于是每个散射点的回波<strong>分解成两个因子的乘积</strong>：</p>
+<div class="arithmatex">\[s(f, t_m) \approx \sum_k \sigma_k\;\underbrace{e^{-j\frac{4\pi f}{c}y_k}}_{\text{因子 ①}}\;\cdot\;\underbrace{e^{\,j2\pi f_{d,k}\,t_m}}_{\text{因子 ②}},\qquad f_{d,k} = -\frac{2\omega x_k}{\lambda}. \tag{2.7}\]</div>
+<ul>
+<li>因子 ① 只含 <span class="arithmatex">\(f\)</span>：对 <span class="arithmatex">\(f\)</span> 做 IFFT，峰出现在距离 <span class="arithmatex">\(y_k\)</span> 处；</li>
+<li>因子 ② 只含 <span class="arithmatex">\(t_m\)</span>：它是频率为 <span class="arithmatex">\(f_{d,k}\)</span> 的旋转箭头，对 <span class="arithmatex">\(t_m\)</span> 做 FFT，峰出现在多普勒 <span class="arithmatex">\(f_{d,k}\)</span> 处。</li>
+</ul>
+<p>因子 ① 就是第 1 章的式 (1.14)；因子 ② 的“频率 → 峰位置”见第 0.3 节。两个峰的位置合起来就是 <span class="arithmatex">\((x_k, y_k)\)</span>，所以这个点被“画”到了图像的正确位置上。</p>
+<p>RD 算法因此只有两步：</p>
+<ol>
+<li><strong>距离压缩</strong>：沿 <span class="arithmatex">\(f\)</span> 做 IFFT → 每个脉冲得到一条 HRRP，排起来就是“HRRP 历程”；</li>
+<li><strong>方位压缩</strong>：沿 <span class="arithmatex">\(t_m\)</span> 对每个距离单元做 FFT → 多普勒（即横向坐标）。</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">易错点</p>
+<p><strong>易错点。</strong>（1）推导中用了两个近似：小转角（<span class="arithmatex">\(\cos\theta\approx1\)</span>）和窄带（第二项中 <span class="arithmatex">\(f\approx f_c\)</span>）。它们不成立时，就会出现 2.5 节的 MTRC。（2）代码中方位向用的是 <code>ifft</code> 而非 <code>fft</code>，只是为了让图像横轴方向与 <span class="arithmatex">\(x\)</span> 同号，它和“FFT 后再左右翻转”等价，不影响成像原理。</p>
+</div>
+<p>得到的二维复数矩阵 <span class="arithmatex">\(I(x, y)\)</span> 就是 <strong>ISAR 像</strong>，它的幅度 <span class="arithmatex">\(|I|\)</span> 是我们通常看到的图，相位 <span class="arithmatex">\(\angle I\)</span> 往往被丢弃（CV-GNN、CvPGT 认为不该丢）。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">## code/isar_core.py 中的核心代码（节选）</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">R</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="kc">None</span><span class="p">,:]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">th</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="kc">None</span><span class="p">,:]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">th</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">]</span>      <span class="c1"># 式 (2.2)</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">'pkf,k-&gt;pf'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">f</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,:]</span><span class="o">*</span><span class="n">R</span><span class="p">[:,:,</span><span class="kc">None</span><span class="p">]</span><span class="o">/</span><span class="n">C</span><span class="p">),</span> <span class="n">sig</span><span class="p">)</span>  <span class="c1"># 式 (2.5)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">hrrp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">S</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">hanning</span><span class="p">(</span><span class="n">Nf</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">axes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># 距离压缩</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">img</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">hrrp</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">hanning</span><span class="p">(</span><span class="n">Np</span><span class="p">)[:,</span><span class="kc">None</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">axes</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># 方位压缩</span>
+</code></pre></div>
+<p><img alt="图 2-2 从目标到 ISAR 像的完整链路（仿真：\(f_c\)=10 GHz，B=1 GHz，Δθ=5°，256 个脉冲）。(a) 点散射体“卫星”模型（本体+两块太阳翼+天线杆）；(b) 原始频域回波，看不出任何结构；(c) 沿频率 IFFT 后的 HRRP 历程；(d) 再沿慢时间 FFT 后的 RD 像，目标形状清晰可见。" src="../figures/A04_target_hrrp_rd.png" /></p>
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/V1_turntable_to_isar_2.png"><source src="../videos/V1_turntable_to_isar.mp4" type="video/mp4"></video>
+<p><img class="print-only" src="../figures/video_frames/V1_turntable_to_isar_2.png" alt="视频关键帧"/></p>
+<p>▶ <strong>动画 1 转台 → 多普勒 → ISAR 像（38 s）</strong>：左为目标转动（转角放大显示），中为逐脉冲累积的 HRRP 历程，右为用已有脉冲做方位 FFT 得到的 RD 像——随着积累转角增大，横向逐渐变清晰。文件：<code>videos/V1_turntable_to_isar.mp4</code></p>
+<h2 id="24">2.4 分辨率公式<a class="headerlink" href="#24" title="Permanent link">&para;</a></h2>
+<p><strong>距离分辨率</strong>已在第 1 章给出：<span class="arithmatex">\(\rho_r = c/(2B)\)</span>。</p>
+<p><strong>横向分辨率：三步推导。</strong></p>
+<ol>
+<li>观测总时长为 <span class="arithmatex">\(T\)</span>，对慢时间做 FFT 的频率分辨率是 <span class="arithmatex">\(\Delta f_d = 1/T\)</span>（→ 第 0.3 节式 (0.9)、第 0.5 节）。</li>
+<li>由式 (2.4)，横向坐标差 <span class="arithmatex">\(\Delta x\)</span> 对应的多普勒差为 <span class="arithmatex">\(\Delta f_d = 2\omega\Delta x/\lambda\)</span>，所以 <span class="arithmatex">\(\Delta x = \lambda\Delta f_d/(2\omega)\)</span>。</li>
+<li>令 <span class="arithmatex">\(\Delta f_d = 1/T\)</span>，并记积累角 <span class="arithmatex">\(\Delta\theta = \omega T\)</span>（成像期间目标总共转过的角度）：</li>
+</ol>
+<div class="admonition success">
+<p class="admonition-title">关键公式</p>
+<div class="arithmatex">\[\rho_a = \frac{\lambda}{2\omega}\,\Delta f_d = \frac{\lambda}{2\omega T} = \boxed{\frac{\lambda}{2\Delta\theta}} \tag{2.8}\]</div>
+<p><span class="arithmatex">\(\rho_a\)</span>：横向（方位）分辨率；<span class="arithmatex">\(\lambda\)</span>：波长；<span class="arithmatex">\(\Delta\theta\)</span>：积累转角，<strong>必须用弧度</strong>。</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 2.3（转多少度才能看清 15 cm）。</strong> 接例题 2.2（<span class="arithmatex">\(\lambda=3\)</span> cm，<span class="arithmatex">\(\omega = 0.05\)</span> rad/s）。两个点横向相距 0.15 m（<span class="arithmatex">\(x=2\)</span> m 与 <span class="arithmatex">\(x=2.15\)</span> m）：</p>
+<ul>
+<li>多普勒差：<span class="arithmatex">\(\Delta f_d = 2\times0.05\times0.15/0.03 = 0.5\)</span> Hz；</li>
+<li>要分开 0.5 Hz，需要观测 <span class="arithmatex">\(T = 1/0.5 = 2\)</span> s；</li>
+<li>这段时间内转过 <span class="arithmatex">\(\Delta\theta = 0.05\times 2 = 0.1\)</span> rad <span class="arithmatex">\(= 5.73^\circ\)</span>；</li>
+<li>验算式 (2.8)：<span class="arithmatex">\(\rho_a = 0.03/(2\times0.1) = 0.15\)</span> m。✓</li>
+</ul>
+<p>结论：在 X 波段，目标转大约 6° 就能得到 15 cm 的横向分辨率，与 <span class="arithmatex">\(B=1\)</span> GHz 时的距离分辨率 15 cm 相当，图像“横竖一样清楚”。</p>
+</div>
+<p>横向分辨率由<strong>波长与积累转角</strong>决定，与目标距离无关——这正是“合成孔径”的妙处。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>管哪个方向</th>
+<th>本文仿真</th>
+<th>论文中的例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>带宽 <span class="arithmatex">\(B\)</span></td>
+<td>距离向 <span class="arithmatex">\(\rho_r=c/2B\)</span></td>
+<td>1 GHz → 15 cm</td>
+<td>DB-SSIT：10 GHz → 1.5 cm</td>
+</tr>
+<tr>
+<td>转角 <span class="arithmatex">\(\Delta\theta\)</span>、波长 <span class="arithmatex">\(\lambda\)</span></td>
+<td>横向 <span class="arithmatex">\(\rho_a=\lambda/2\Delta\theta\)</span></td>
+<td>3 cm, 5° → 17 cm</td>
+<td>REMI：17 GHz，Δθ = 4°/5°/6°</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p><strong>为什么这和识别有关？</strong> REMI、MLFR 明确把“不同带宽和积累角组合”作为训练集与测试集的差异来源：带宽和转角变了，图像在距离向/横向被<strong>拉伸或压缩</strong>，同一目标看起来“胖瘦不同”。这就是 REMI 要设计多头 STN 去“校正形变”的原因（第 11 章）。CvPGT 也在对比学习中随机化积累角来模拟分辨率变化。</p>
+</div>
+<p><img alt="图 2-3 分辨率实验（同一目标）：横向看带宽 B 不变、转角增大，横向变清晰；纵向看转角不变、带宽增大，距离向变清晰。图中标注了按公式计算的 \(\rho_r\)、\(\rho_a\)。" src="../figures/A06_resolution_grid.png" /></p>
+<p><strong>像素坐标 ≠ 物理尺寸。</strong> RD 像的横轴是多普勒，换算成米需要知道转速 <span class="arithmatex">\(\omega\)</span>。实际中 <span class="arithmatex">\(\omega\)</span> 往往未知，因此 ISAR 像的横向尺度经常是“未定标”的——同一目标在不同观测中横向尺度不同，这是识别中“尺度形变”的又一来源。</p>
+<div class="admonition warning">
+<p class="admonition-title">易错点</p>
+<p><strong>易错点。</strong>（1）<span class="arithmatex">\(\Delta\theta\)</span> 代入角度值（例如 5）而不是弧度（0.087），结果会错 57 倍。（2）PRF（脉冲重复频率）决定的是能看到的<strong>多普勒范围</strong> <span class="arithmatex">\([-\mathrm{PRF}/2, \mathrm{PRF}/2)\)</span>（→ 第 0.4 节，混叠），而不是分辨率；分辨率只看总时长 <span class="arithmatex">\(T\)</span>。</p>
+</div>
+<h2 id="25-mtrc">2.5 散焦与 MTRC<a class="headerlink" href="#25-mtrc" title="Permanent link">&para;</a></h2>
+<p>RD 算法的前提是：(a) 匀速转动，(b) 小转角，使每个散射点在整个观测期间都待在同一个距离单元、多普勒为常数。两条前提被破坏，图像就会“糊”：</p>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p><strong>类比：拍照时手抖。</strong> 快门打开期间（相当于积累时间 <span class="arithmatex">\(T\)</span>），如果被拍物体“速度”在变化，它在照片上就不再是一个点，而是一条拖影。对 ISAR 来说，“速度”就是多普勒；多普勒在积累期间一变，横向就拖影。</p>
+</div>
+<p><strong>(1) 非匀速转动 → 方位散焦。</strong> 若目标在机动或调整姿态，转角不再是 <span class="arithmatex">\(\omega t\)</span>，而是带加速度 <span class="arithmatex">\(\alpha\)</span>（rad/s²）：<span class="arithmatex">\(\theta(t) = \omega t + \tfrac12\alpha t^2\)</span>。仍用小角度近似 <span class="arithmatex">\(R_k \approx y_k + x_k\theta(t)\)</span>，对时间求导：</p>
+<div class="arithmatex">\[f_{d,k}(t) = -\frac{2}{\lambda}\frac{\mathrm{d}R_k}{\mathrm{d}t} = -\frac{2x_k}{\lambda}\frac{\mathrm{d}\theta}{\mathrm{d}t} = -\frac{2x_k}{\lambda}\big(\omega + \alpha t\big). \tag{2.9}\]</div>
+<p>单个散射点的多普勒随时间<strong>线性变化</strong>（变成一个“chirp”，与第 1 章的 LFM 同一种结构），FFT 后不再是一个点，而是沿横向拉开的模糊条带。</p>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 2.4（糊了几个格子）。</strong> <span class="arithmatex">\(x = 3\)</span> m，<span class="arithmatex">\(\lambda = 3\)</span> cm，<span class="arithmatex">\(\omega = 0.05\)</span> rad/s，<span class="arithmatex">\(\alpha = 0.01\)</span> rad/s²，积累时间 <span class="arithmatex">\(T=2\)</span> s。</p>
+<ul>
+<li>中心多普勒：<span class="arithmatex">\(-2\times3\times0.05/0.03 = -10\)</span> Hz；</li>
+<li>积累期间多普勒的变化量：<span class="arithmatex">\(\Delta f_d = \dfrac{2x}{\lambda}\,\alpha T = 200\times0.01\times2 = 4\)</span> Hz（其中 <span class="arithmatex">\(2x/\lambda = 2\times3/0.03 = 200\)</span>）；</li>
+<li>多普勒分辨率：<span class="arithmatex">\(1/T = 0.5\)</span> Hz；</li>
+<li>拖影长度：<span class="arithmatex">\(4/0.5 = 8\)</span> 个横向分辨单元，即约 <span class="arithmatex">\(8\times0.15 = 1.2\)</span> m。</li>
+</ul>
+<p>注意：<span class="arithmatex">\(x\)</span> 越大拖影越长，所以离转动中心远的部件（如太阳翼末端）散焦最严重（图 2-4a）。</p>
+</div>
+<p><img alt="图 2-4a 例题 2.4 的仿真。(a) 匀速时瞬时多普勒是常数，加速时随时间线性变化；(b) 方位谱由一根尖峰展宽成约 4 Hz 宽的“平台”。代码：f07_defocus_if" src="../figures/v2_07_defocus_if.png" /></p>
+<p>CV-GNN 用更一般的多项式相位描述它：<span class="arithmatex">\(\varphi_k(t_m) = \varphi_0 + 2\pi\sum_q C_{k,q}t_m^q\)</span>（原文式 (2)）。CV-GNN 的仿真中给出的转动加速度参数为 5000 rad/s²（原文 Table I 印刷值）。</p>
+<p><strong>(2) 大转角 / 大目标 → 越分辨单元走动（MTRC）。</strong> 由式 (2.3)，散射点在积累期间的距离变化量约为 <span class="arithmatex">\(|x_k|\Delta\theta\)</span>。若它超过距离分辨率 <span class="arithmatex">\(\rho_r\)</span>，散射点就在观测中跨越多个距离单元，RD 推导中“峰在固定的 <span class="arithmatex">\(y_k\)</span>”这一前提失效，图像出现弧形拖尾。</p>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 2.5（MTRC 判断）。</strong> 例题 2.3 的参数下 <span class="arithmatex">\(\Delta\theta = 0.1\)</span> rad，<span class="arithmatex">\(\rho_r = 0.15\)</span> m。对 <span class="arithmatex">\(x=3\)</span> m 的点：<span class="arithmatex">\(|x|\Delta\theta = 0.3\)</span> m <span class="arithmatex">\(&gt; 0.15\)</span> m，会走过约 2 个距离单元，出现轻微 MTRC。经验判据：<span class="arithmatex">\(|x|_{\max}\,\Delta\theta &lt; \rho_r\)</span>，即目标横向半尺寸 <span class="arithmatex">\(&lt; \rho_r/\Delta\theta\)</span>（这里为 1.5 m）时，RD 算法可以放心使用。</p>
+</div>
+<p><img alt="图 2-4 散焦仿真。前三幅：转动由匀速逐渐变为加速（二次项比例 0 → 0.3 → 1.0），横向拖尾越来越严重，图像熵随之增大（熵越大越“散”）；第四幅：20° 大转角 + 3 倍尺寸目标，出现 MTRC 弧形拖尾。" src="../figures/A07_defocus.png" /></p>
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/V4_defocus_2.png"><source src="../videos/V4_defocus.mp4" type="video/mp4"></video>
+<p><img class="print-only" src="../figures/video_frames/V4_defocus_2.png" alt="视频关键帧"/></p>
+<p>▶ <strong>动画 4 非匀速转动导致散焦（24 s）</strong>：左为转角–时间曲线由直线弯成抛物线，右为 RD 像逐渐模糊、图像熵增大，再恢复。文件：<code>videos/V4_defocus.mp4</code></p>
+<h2 id="26">2.6 运动补偿：成像前必须做的“预处理”<a class="headerlink" href="#26" title="Permanent link">&para;</a></h2>
+<p>真实目标存在平动，通常分两步补偿：</p>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p><strong>类比：给跑步的人拍证件照。</strong> 人一边跑（平动）一边转身（转动）。我们只关心转身带来的不同视角，所以要先“跟拍”：让相机跟着人一起跑，抵消掉整体位移，画面里只剩下转身。运动补偿就是雷达里的“跟拍”。</p>
+</div>
+<ol>
+<li><strong>包络对齐（距离对齐）</strong>：让各脉冲 HRRP 中同一散射点对齐到同一距离单元（如相关法、最小熵法）；</li>
+<li><strong>初相校正 / 自聚焦</strong>：消除平动引起的、各脉冲共有的相位误差（如相位梯度自聚焦 PGA、最小熵自聚焦）。</li>
+</ol>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 2.6（为什么两步都需要）。</strong> 设目标以 10 m/s 径向平动，PRF <span class="arithmatex">\(=100\)</span> Hz，即相邻脉冲间平移 0.1 m。</p>
+<ul>
+<li><strong>对包络</strong>：256 个脉冲共平移 25.6 m，约 <span class="arithmatex">\(25.6/0.15\approx171\)</span> 个距离单元，HRRP 历程变成一条斜线，必须先对齐；</li>
+<li><strong>对相位</strong>：每个脉冲间相位变化 <span class="arithmatex">\(4\pi\times0.1/0.03 = 41.9\)</span> rad，远大于 <span class="arithmatex">\(2\pi\)</span>（→ 例题 0.2），即使包络对齐到 1 cm 以内，残余相位误差仍有 <span class="arithmatex">\(4\pi\times0.01/0.03\approx 4.2\)</span> rad。所以还需要第二步，在“毫米级”上把相位校正干净。</li>
+</ul>
+</div>
+<p>对于转动引起的高阶相位（散焦），可进一步做<strong>重聚焦</strong>，例如估计多项式系数后补偿（CV-GNN 原文式 (3)）。但重聚焦计算量大：CV-GNN 的 Table II 中“Refocusing”方法单张 13.290 s，远慢于直接识别散焦像的方法（CV-GNN 1.190 s）。<strong>“补偿不完美 → 残余散焦/平移/形变”</strong> 是所有识别论文都要面对的现实，也解释了 REMI 中 MH-STN 的“平移”参数（作者把平移归因于平动补偿误差）。</p>
+<h2 id="27">2.7 散射中心模型<a class="headerlink" href="#27" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p><strong>类比：夜里看城市。</strong> 远远地看一座城市的夜景，你看不到楼的轮廓，只看到一个个亮点（窗户、路灯）。雷达在高频下“看”目标也是这样：整体回波主要来自少数几个强反射点（棱角、二面角、天线口面），这些点就叫<strong>散射中心</strong>。</p>
+</div>
+<p>在高频区（目标尺寸远大于波长），复杂目标的电磁散射可以近似为若干<strong>散射中心</strong>的叠加。本文仿真用的就是最简单的理想点散射模型：</p>
+<div class="arithmatex">\[s(f,\theta) = \sum_{k=1}^{K} A_k \exp\!\left(-j\frac{4\pi f}{c}(x_k\sin\theta + y_k\cos\theta)\right). \tag{2.10}\]</div>
+<p>符号说明：<span class="arithmatex">\(K\)</span> 为散射中心个数；<span class="arithmatex">\(A_k\)</span> 为第 <span class="arithmatex">\(k\)</span> 个散射中心的复幅度；括号里正是式 (2.2) 的距离 <span class="arithmatex">\(R_k\)</span>。可以看出，式 (2.10) 就是式 (2.5) 换了一种写法：把慢时间 <span class="arithmatex">\(t_m\)</span> 换成了转角 <span class="arithmatex">\(\theta\)</span>。</p>
+<p>更精细的<strong>属性散射中心模型</strong>（如基于几何绕射理论 GTD 的模型）还会给每个散射中心加上频率依赖因子 <span class="arithmatex">\((jf/f_c)^{\alpha_k}\)</span>、角度依赖与长度参数，用来区分角反射器、边缘、平板等不同结构（此为领域通用知识，非 7 篇论文的内容）。</p>
+<p>与 7 篇论文的联系：</p>
+<ul>
+<li>MSN、CvPGT 用 SolidWorks 建模 + FEKO 电磁计算得到<strong>散射点</strong>再成像（MSN 取网格角点作为散射点，共 500 个）；</li>
+<li>REMI、MLFR 用<strong>物理光学（PO）</strong>方法计算回波；DCA-Net 用 FEKO 计算极化回波，并用极坐标格式算法（PFA）成像；</li>
+<li>CV-GNN、MSN、CvPGT、REMI 的“图网络”思想与散射中心天然契合：<strong>强散射点（或图像块）当节点，空间/特征关系当边</strong>（见第 6.2 节图 6-4）。</li>
+</ul>
+<div class="admonition abstract">
+<p class="admonition-title">小结</p>
+<ul>
+<li>多普勒 = 相位旋转的速度：<span class="arithmatex">\(f_d = -2v/\lambda\)</span>。转台上横向坐标为 <span class="arithmatex">\(x\)</span> 的点等效速度为 <span class="arithmatex">\(x\omega\)</span>，所以<strong>多普勒 ∝ 横向坐标</strong>（式 (2.4)）。</li>
+<li>RD 成像 = 频率维 IFFT（距离压缩）+ 慢时间 FFT（方位压缩）。之所以可行，是因为回波可以分解为“只含 <span class="arithmatex">\(y\)</span> 的因子 × 只含 <span class="arithmatex">\(x\)</span> 的因子”（式 (2.7)）。</li>
+<li><strong><span class="arithmatex">\(\rho_r = c/2B\)</span>，<span class="arithmatex">\(\rho_a = \lambda/2\Delta\theta\)</span></strong>。X 波段转 5.73°（0.1 rad）横向可达 15 cm；带宽或转角变化 → 图像拉伸压缩（形变）。</li>
+<li>非匀速转动 → 散焦（例题 2.4：拖影 8 个单元）；大转角 → MTRC（判据 <span class="arithmatex">\(|x|\Delta\theta&lt;\rho_r\)</span>）；平动补偿残差 → 平移。这些“成像不完美”直接决定了后续识别算法的设计。</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 light · 教学用途 · 期刊原图因版权未转载
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="../javascripts/katex.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>

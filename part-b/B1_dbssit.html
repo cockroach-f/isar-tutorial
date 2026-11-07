@@ -1,0 +1,1815 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="从雷达回波到深度学习——面向初学者的 ISAR 目标识别系统教学与七篇前沿文献带读">
+      
+      
+        <meta name="author" content="light">
+      
+      
+        <link rel="canonical" href="https://cockroach-f.github.io/isar-tutorial/part-b/B1_dbssit.html">
+      
+      
+        <link rel="prev" href="../part-a/A6_dl2.html">
+      
+      
+        <link rel="next" href="B2_cvgnn.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>第 7 章 DB-SSIT - ISAR 目标识别入门与文献带读</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#7-db-ssit-isar" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="ISAR 目标识别入门与文献带读" class="md-header__button md-logo" aria-label="ISAR 目标识别入门与文献带读" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ISAR 目标识别入门与文献带读
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 7 章 DB-SSIT
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cockroach-f/isar-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cockroach-f/isar-tutorial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="ISAR 目标识别入门与文献带读" class="md-nav__button md-logo" aria-label="ISAR 目标识别入门与文献带读" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ISAR 目标识别入门与文献带读
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cockroach-f/isar-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cockroach-f/isar-tutorial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    前言
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../videos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    动画视频
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A 基础
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part A 基础
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A0_math.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 数学与信号准备
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A1_radar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 雷达基础
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A2_isar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 ISAR 成像
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A3_pol.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 雷达极化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A4_hard.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 识别难点
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A5_dl.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 深度学习入门（上）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-a/A6_dl2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 深度学习入门（下）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B 逐篇带读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part B 逐篇带读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 DB-SSIT
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="B1_dbssit.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 DB-SSIT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#71" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 基本信息
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#72" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 背景与动机
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#73" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 方法分步讲解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.3 方法分步讲解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤 0：从极化数据到 6 维特征
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-fig-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤 1：预处理模块（原文 Fig. 2）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-stage-fig-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤 2：4 个层级 Stage（原文 Fig. 1）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-lgfb-fig-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤 3：局部–全局融合块 LGFB（原文 Fig. 5）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#74" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 数据集
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#75" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 实验设置与结果
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#76" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 优点与局限
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#77" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.7 本科生可以复现什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#78" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.8 自测题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B2_cvgnn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 CV-GNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B3_msn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 MSN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B4_cvpgt.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 CvPGT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B5_remi.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 REMI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B6_mlfr.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 MLFR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="B7_dcanet.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 DCA-Net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C 综合
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part C 综合
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C1_synthesis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 横向对比
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C2_projects.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 阅读路线与入门项目
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C3_glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 术语表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendix.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#71" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 基本信息
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#72" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 背景与动机
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#73" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 方法分步讲解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.3 方法分步讲解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤 0：从极化数据到 6 维特征
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-fig-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤 1：预处理模块（原文 Fig. 2）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-stage-fig-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤 2：4 个层级 Stage（原文 Fig. 1）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-lgfb-fig-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤 3：局部–全局融合块 LGFB（原文 Fig. 5）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#74" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 数据集
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#75" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 实验设置与结果
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#76" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 优点与局限
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#77" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.7 本科生可以复现什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#78" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.8 自测题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<blockquote>
+<p><strong>Part B 的阅读方法。</strong> 每篇论文按统一结构展开：基本信息 → 一句话概括 → 背景与动机 → 要解决的问题 → 方法分步讲解（自绘简化框图 + 原文关键图）→ 数据集 → 实验与结果（数值均已对照原文表格核对）→ 优点与局限 → 本科生可复现的部分 → 自测题。阅读顺序按第 15 章的推荐路线：DB-SSIT → DCA-Net → MSN → REMI → MLFR → CV-GNN → CvPGT；各章以方法简称标识，按目录顺序阅读即可。</p>
+</blockquote>
+<h1 id="7-db-ssit-isar">第 7 章 DB-SSIT —— 太赫兹全极化 ISAR 的双分支识别<a class="headerlink" href="#7-db-ssit-isar" title="Permanent link">&para;</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">本章目标</p>
+<ol>
+<li>理解 DB-SSIT 如何把极化物理特征（6 维 Pauli/T 特征）与空间结构特征结合起来；</li>
+<li>掌握 PSFEB、SFEB、LGFB 三个模块各自的作用；</li>
+<li>能正确解读 Table 2 与消融实验 Table 3，并认识数据集规模带来的局限。</li>
+</ol>
+</div>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p><strong>读这一章前，建议先看：</strong> 极化、散射矩阵与 Pauli 分解（→ 第 3.2、3.3 节，例题 3.1）；相干矩阵 <span class="arithmatex">\(\mathbf T\)</span> 与 6 维特征 A–F（→ 第 3.4 节，例题 3.2、3.3）；卷积、分组卷积与参数量（→ 第 5.3、5.4 节，例题 5.5、5.6）；通道/空间注意力与自注意力（→ 第 6.1 节，例题 6.1）；OA / AA / Kappa（→ 第 6.7 节，例题 6.7）。</p>
+</div>
+<h2 id="71">7.1 基本信息<a class="headerlink" href="#71" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>题目</strong>：Terahertz Polarimetric ISAR Target Recognition Based on a Dual-Branch Spatial-Scatter Interaction Transformer</li>
+<li><strong>作者</strong>：Wanting Chen, Yinwei Li（通讯）, Jixiang Fu, Hongqiang Wang, Mengdao Xing, Yiming Zhu（通讯）, Guangyou Fang；上海理工大学太赫兹技术创新研究院等</li>
+<li><strong>出处</strong>：Electromagnetic Science, 2025, doi: 10.23919/emsci.2025.0060（原文为录用版，卷期号为 “vol. x, no. x”）</li>
+<li><strong>注意</strong>：题目中是 “<strong>Spatial-Scatter</strong>”（空间–散射），不是 “spatial-spectral”（空间–光谱）。</li>
+</ul>
+<p><strong>一句话概括</strong>：把全极化 ISAR 数据先转换成 6 维物理特征，再用“极化散射分支 + 空间分支”双路提取特征，最后用轻量 Transformer 融合局部与全局，在自建的 6 类太赫兹极化 ISAR 数据集上 OA 达到 99.38%，参数仅 1.91 M。</p>
+<h2 id="72">7.2 背景与动机<a class="headerlink" href="#72" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>太赫兹 ISAR 的优势</strong>：太赫兹频段（0.1–10 THz）可以用很大的带宽获得厘米到亚毫米级的距离分辨率，能看清微波 ISAR 难以分辨的细节（原文 Sec. I）。本文系统带宽为 10 GHz，按 <span class="arithmatex">\(c/2B\)</span> 计算距离分辨率为 1.5 cm。</li>
+<li><strong>极化在 ISAR 中用得少</strong>：极化分解（Pauli、Krogager）在 SAR 地物分类中很常见，但 ISAR 场景更复杂（目标有微动，极化状态与运动状态耦合），现有 ISAR 研究多用单极化通道。</li>
+<li><strong>现有方法的三个不足</strong>（原文原话的概括）：多极化信息利用不充分；缺乏对物理散射特征的挖掘；局部细节与全局语义的协同建模不足。</li>
+</ol>
+<p>作者的核心理念：<strong>不再把极化当作普通的输入通道，而是专门建一条“挖掘电磁散射语义”的支路</strong>，显式地解耦并联合建模“空间语义特征”与“物理散射特征”。</p>
+<h2 id="73">7.3 方法分步讲解<a class="headerlink" href="#73" title="Permanent link">&para;</a></h2>
+<p><img alt="图 7-1 DB-SSIT 简化框图（自绘，对应原文 Fig. 1–5）" src="../figures/B1_dbssit_simple.png" /></p>
+<h3 id="0-6">步骤 0：从极化数据到 6 维特征<a class="headerlink" href="#0-6" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p>一句话：把每个像素的 2×2 散射矩阵换算成 6 个“物理含义明确的实数”。手算过程见例题 3.1–3.3（→ 第 3.3、3.4 节）。</p>
+</div>
+<p>对每个像素做 Pauli 分解得到 <span class="arithmatex">\(\mathbf k_{3P}\)</span>（第 3 章式 (3.3)），构造相干矩阵 <span class="arithmatex">\(\mathbf T\)</span>，再计算 A–F 六个特征（第 3.4 节表格；原文式 (4)–(9)）。作者认为这样<strong>既保留了极化散射的幅度差异，又避免直接处理复数数据的复杂性</strong>（原文 Sec. III）。</p>
+<h3 id="1-fig-2">步骤 1：预处理模块（原文 Fig. 2）<a class="headerlink" href="#1-fig-2" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p>一句话：用大小不同的卷积核同时看“细节”和“轮廓”，再用 1×1 卷积压缩通道。卷积、池化、BN 见第 5.3、5.4 节；1×1 卷积就是 <span class="arithmatex">\(k=1\)</span> 的式 (5.5)。</p>
+</div>
+<ul>
+<li>6 维特征平均分成 3 组（每组 2 通道），分别用 3×3、5×5、7×7 卷积核做 <strong>MixConv</strong>，聚合为 32 通道——不同尺寸卷积核捕捉不同尺度的极化–空间特征；</li>
+<li>BN + 2×2 最大池化（步长 2）降维；</li>
+<li>两个 1×1 卷积：32 → 6（保留关键极化信息）→ 3（匹配后续模块输入）。</li>
+</ul>
+<p><img alt="图 7-2 原文 Fig. 2：极化多尺度预处理模块。" loading="lazy" src="../paper_figs/p1_DBSSIT_fig2.png" width="55%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 从上往下看：6 维极化特征先做多尺度卷积、BatchNorm 和池化，再经两个 1×1 卷积压缩通道，正好对应上面步骤 1 的文字。</p>
+</blockquote>
+<h3 id="24-stage-fig-1">步骤 2：4 个层级 Stage（原文 Fig. 1）<a class="headerlink" href="#24-stage-fig-1" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p>一句话：两条分支并行——一条按极化模式分组提取“散射机理”特征，一条提取“空间形状”特征，然后拼接。分组卷积见例题 5.6，空间注意力的 sigmoid 权重见第 6.1.1 节。</p>
+</div>
+<p>网络由 4 个 stage 堆叠，特征图尺寸依次为 <span class="arithmatex">\(H/4, H/8, H/16, H/32\)</span>。每个 stage 内：</p>
+<ul>
+<li><strong>PSFEB（极化散射特征提取块，原文 Fig. 3）</strong>：patch embedding 后，</li>
+<li><strong>分组卷积</strong>（3×3，组数 <span class="arithmatex">\(G = C/C_p\)</span>，每组对应一种极化模式）——先在“同一种极化”内部提特征；</li>
+<li><strong>交互卷积</strong>——再让不同极化通道之间交换信息（捕捉交叉极化关系）；</li>
+<li><strong>极坐标注意力 PCA</strong>：沿水平、竖直方向分别计算<strong>均值</strong>（XMean、YMean）与<strong>方差</strong>（XVar、YVar）（原文式 (16)–(19)）。均值刻画极化散射的全局能量分布，方差刻画与几何结构和散射机理相关的局部起伏；拼接后经分组卷积与 ECA 通道注意力，生成两个方向的权重，对特征重新加权。</li>
+<li><strong>SFEB（空间特征提取块，原文 Fig. 4）</strong>：3×3 卷积 → 3×3 深度卷积 → 3×3 卷积；然后是空间注意力：沿通道做平均和最大池化（原文式 (20)–(22)），用 3/5/7 多尺度深度可分离卷积、1×1 卷积、BN、LeakyReLU(0.01)、sigmoid 得到空间权重并相乘。</li>
+<li>两分支输出<strong>拼接（C）</strong>后进入下一个 stage。</li>
+</ul>
+<p><img alt="图 7-3 原文 Fig. 4：空间特征提取块 SFEB 的结构。" loading="lazy" src="../paper_figs/p1_DBSSIT_fig4.png" width="80%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 上排是主干：3×3 卷积 → 3×3 深度卷积 → 3×3 卷积 → 空间注意力 SA；下方虚线框展开了 SA（MaxPool 与 AvgPool 拼接后卷积）。SFEB 与 PSFEB 并列，构成“双分支”中的空间分支。</p>
+</blockquote>
+<h3 id="3-lgfb-fig-5">步骤 3：局部–全局融合块 LGFB（原文 Fig. 5）<a class="headerlink" href="#3-lgfb-fig-5" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p>一句话：用自注意力把相距很远的部件联系起来，同时通过对 K 池化减少计算量。自注意力三步（打分 → softmax → 加权）见例题 6.1；计算量随 token 数平方增长见第 6.1.2 节。</p>
+</div>
+<ul>
+<li><strong>E-MHSA（高效多头自注意力）</strong>：<span class="arithmatex">\(Q,K,V\)</span> 由 1×1 卷积得到，再对 <span class="arithmatex">\(K\)</span> 做空间平均池化得到 <span class="arithmatex">\(K_{avg}\)</span>，注意力为 <span class="arithmatex">\(\mathrm{softmax}(QK_{avg}^T/\sqrt d)V\)</span>（原文式 (23)–(26)）。池化后 key 的数量变少，计算量大幅降低；</li>
+<li><strong>MHCA（多头卷积注意力）</strong>：弥补 E-MHSA 对通道细节捕捉不足；</li>
+<li><strong>LFFN（局部前馈网络）</strong>：3×3 深度卷积（步长 1、填充 1）+ ReLU + 1×1 逐点卷积。</li>
+</ul>
+<p>最后 BatchNorm + Softmax 输出 6 类概率。</p>
+<p><img alt="图 7-4 原文 Fig. 1：DB-SSIT 总体框架（4 个层级 stage 堆叠）。" src="../paper_figs/p1_DBSSIT_fig1.png" /></p>
+<p><img alt="图 7-5 原文 Fig. 3：极化散射特征提取块 PSFEB 的结构。" src="../paper_figs/p1_DBSSIT_fig3.png" /></p>
+<p><img alt="图 7-6 原文 Fig. 5：局部–全局融合模块的结构。" loading="lazy" src="../paper_figs/p1_DBSSIT_fig5.png" width="70%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 左列是主干，右侧两个灰框分别放大了带池化的多头自注意力（E-MHSA）和 LFFN（1×1 卷积 → 3×3 深度卷积 → 1×1 卷积）。看图时重点找“全局注意力”和“局部卷积”是怎样交替出现的。</p>
+</blockquote>
+<h2 id="74">7.4 数据集<a class="headerlink" href="#74" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容（原文 Sec. IV-1 与 Table 1）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>类别</td>
+<td>6 类空间目标（正文未给出具体类别名称）</td>
+</tr>
+<tr>
+<td>原始样本</td>
+<td>每类 28 幅，每幅含 HH、HV、VV 三个极化通道</td>
+</tr>
+<tr>
+<td>雷达参数</td>
+<td>中心频率 220 GHz，带宽 10 GHz，俯仰角 75°，方位角 80°–83°</td>
+</tr>
+<tr>
+<td>图像尺寸</td>
+<td>裁剪并缩放到 128×128（原文 Fig. 7）</td>
+</tr>
+<tr>
+<td>扩增</td>
+<td>随机旋转（–180° 到 180°）、水平/竖直翻转、高斯噪声（μ=0，σ=0.05）、椒盐噪声（密度 0.1），共扩增到 3024 幅</td>
+</tr>
+<tr>
+<td>划分</td>
+<td>训练 : 验证 : 测试 = 7 : 2 : 1</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="图 7-7 原文 Fig. 6：6 类目标的 HH、HV、VV 三种极化 ISAR 像。" src="../paper_figs/p1_DBSSIT_fig6.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p>原文还提到“采用平均加权策略由三路回波生成极化 ISAR 图像”，但没有给出更多细节【存疑：具体加权方式不明】。</p>
+</div>
+<p><img alt="图 7-8 原文 Fig. 7：不同类型的合成图像。" loading="lazy" src="../paper_figs/p1_DBSSIT_fig7.png" width="80%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 这是送入网络前的合成图像示例，可与上面 Fig. 6 的单极化图对照。具体合成方式以原文正文为准。</p>
+</blockquote>
+<h2 id="75">7.5 实验设置与结果<a class="headerlink" href="#75" title="Permanent link">&para;</a></h2>
+<p><strong>训练设置</strong>：RTX 3090；AdamW，初始学习率 1e-4，权重衰减 1e-3；StepLR 每 10 个 epoch 乘 0.1；batch size 32；100 个 epoch；交叉熵损失；随机种子 42；保存验证集精度最高的模型。所有对比方法采用相同超参数。</p>
+<p><strong>表 7-1 对比实验（原文 Table 2，各类精度 %）</strong></p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>C1</th>
+<th>C2</th>
+<th>C3</th>
+<th>C4</th>
+<th>C5</th>
+<th>C6</th>
+<th>OA (%)</th>
+<th>AA (%)</th>
+<th>Kappa</th>
+<th>FLOPs</th>
+<th>Params</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ResNet50</td>
+<td>94.34</td>
+<td>33.96</td>
+<td>70.37</td>
+<td>94.34</td>
+<td>81.13</td>
+<td>18.52</td>
+<td>65.31</td>
+<td>65.44</td>
+<td>0.5838</td>
+<td>1.35G</td>
+<td>23.52M</td>
+</tr>
+<tr>
+<td>ST-MC-DCNN</td>
+<td>100</td>
+<td>88.68</td>
+<td>94.44</td>
+<td>100</td>
+<td>100</td>
+<td>90.74</td>
+<td>95.62</td>
+<td>95.64</td>
+<td>0.9475</td>
+<td>2.70G</td>
+<td>14.78M</td>
+</tr>
+<tr>
+<td>Lw-PSCNN</td>
+<td>98.11</td>
+<td>98.11</td>
+<td>92.59</td>
+<td>98.11</td>
+<td>100</td>
+<td>88.89</td>
+<td>95.94</td>
+<td>95.97</td>
+<td>0.9513</td>
+<td>0.61G</td>
+<td>12.72M</td>
+</tr>
+<tr>
+<td>Swin Transformer</td>
+<td>83.02</td>
+<td>81.13</td>
+<td>92.59</td>
+<td>83.02</td>
+<td>100</td>
+<td>94.44</td>
+<td>89.06</td>
+<td>89.03</td>
+<td>0.8687</td>
+<td>2.12G</td>
+<td>27.52M</td>
+</tr>
+<tr>
+<td>ViT</td>
+<td>100</td>
+<td>92.45</td>
+<td>98.15</td>
+<td>98.11</td>
+<td>100</td>
+<td>88.89</td>
+<td>96.25</td>
+<td>96.27</td>
+<td>0.9550</td>
+<td>5.56G</td>
+<td>85.70M</td>
+</tr>
+<tr>
+<td><strong>DB-SSIT</strong></td>
+<td>98.11</td>
+<td>100</td>
+<td>100</td>
+<td>98.11</td>
+<td>100</td>
+<td>100</td>
+<td><strong>99.38</strong></td>
+<td><strong>99.37</strong></td>
+<td><strong>0.9925</strong></td>
+<td>3.99G</td>
+<td><strong>1.91M</strong></td>
+</tr>
+</tbody>
+</table>
+<p>解读：</p>
+<ul>
+<li>相比第二名 ViT，OA、AA、Kappa 分别提升 3.13%、3.10%、0.0375（可由表中数据直接验算：99.38 − 96.25 = 3.13）；</li>
+<li>参数量仅 1.91 M，是 ViT 的约 1/45；但 FLOPs（3.99 G）并不低，作者也承认“多次交互融合导致 FLOPs 较高”；</li>
+<li>ResNet50 在 Class 6 只有 18.52%，作者解释为 Class 6 边缘信息丰富，局部卷积难以建模。</li>
+</ul>
+<p><strong>表 7-2 消融实验（原文 Table 3）</strong></p>
+<table>
+<thead>
+<tr>
+<th>PSFEB</th>
+<th>SFEB</th>
+<th>LGFB</th>
+<th>OA (%)</th>
+<th>Kappa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>71.25</td>
+<td>0.6550</td>
+</tr>
+<tr>
+<td></td>
+<td>✓</td>
+<td></td>
+<td>95.00</td>
+<td>0.9400</td>
+</tr>
+<tr>
+<td>✓</td>
+<td>✓</td>
+<td>（在分类器处拼接）</td>
+<td>98.44</td>
+<td>0.9813</td>
+</tr>
+<tr>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>99.38</td>
+<td>0.9925</td>
+</tr>
+</tbody>
+</table>
+<p>解读：单独的极化分支只有 71.25%，单独的空间分支 95.00%，二者结合 98.44%——<strong>极化分支单独不强，但与空间分支互补</strong>；LGFB 再带来 0.94% 的提升。</p>
+<p><strong>可视化</strong>：原文 Fig. 8 用 Grad-CAM 对比 Class 1、5、6 的热力图；Fig. 9 为 t-SNE；Fig. 10 为混淆矩阵。</p>
+<p><img alt="图 7-9 原文 Fig. 9：不同模型在同一测试集上的特征降维（t-SNE）可视化。" loading="lazy" src="../paper_figs/p1_DBSSIT_fig9.png" width="100%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 每个点是一个测试样本，颜色代表类别。簇越紧凑、不同颜色分得越开，说明特征越容易区分。t-SNE 只能定性比较，布局本身没有物理意义。</p>
+</blockquote>
+<p><img alt="图 7-10 原文 Fig. 10：不同模型在同一测试集上的混淆矩阵。" loading="lazy" src="../paper_figs/p1_DBSSIT_fig10.png" width="100%" /></p>
+<blockquote>
+<p><strong>读图：</strong> 行是真实类别、列是预测类别：对角线越深越好，非对角格子说明哪两类容易混淆。可以比较最后一幅 DB-SSIT 与其他模型的非对角元素。</p>
+</blockquote>
+<p><img alt="图 7-11 原文 Fig. 8：不同模型的 Grad-CAM 热力图（(a) Class 1，(b) Class 5，(c) Class 6）。DB-SSIT 既覆盖主散射区域，又能捕捉边缘细节。" src="../paper_figs/p1_DBSSIT_fig8.png" /></p>
+<h2 id="76">7.6 优点与局限<a class="headerlink" href="#76" title="Permanent link">&para;</a></h2>
+<p><strong>优点</strong></p>
+<ul>
+<li>物理先验与网络结构结合得自然：分组卷积 ↔ 极化模式，交互卷积 ↔ 交叉极化，均值/方差 ↔ 散射能量与结构起伏；</li>
+<li>模型很轻（1.91 M 参数），适合小数据集；</li>
+<li>消融清楚地展示了两个分支的互补性。</li>
+</ul>
+<p><strong>局限（部分为本文作者的分析）</strong></p>
+<ol>
+<li><strong>数据规模很小</strong>：原始只有 6 × 28 = 168 幅，俯仰角单一（75°），方位只有 80°–83°（3°）；</li>
+<li><strong>数据泄漏风险</strong>：原文先把数据扩增到 3024 幅、再按 7:2:1 划分，但未说明是“先划分后扩增”还是“先扩增后划分”。若是后者，测试集中可能有训练图的旋转/翻转/加噪版本，精度会偏高【存疑】；</li>
+<li>没有跨姿态、跨俯仰角、实测噪声等泛化实验；类别名称未给出；</li>
+<li>文中一些细节不一致：FFN 部分正文说 GELU，原文式 (12) 写的是 ReLU 形式【存疑】；特征 D 的分母印刷为 <span class="arithmatex">\(\sqrt{T_{11}T_{33}}\)</span>【存疑】。</li>
+</ol>
+<h2 id="77">7.7 本科生可以复现什么<a class="headerlink" href="#77" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>6 维特征计算</strong>：本文 <code>code/isar_core.py::coherency_6d</code> 与 <code>code/dbssit_lite.py::pol_features_torch</code> 已按原文公式实现（D 同时给出原文印刷版与常见版）；</li>
+<li><strong>简化版网络</strong>：<code>code/dbssit_lite.py</code> 实现了“MixConv 预处理 + 4 个 stage 的双分支 + 简化 LGFB”的骨架（<strong>教学简化版，非官方代码</strong>，参数约 1.23 M），可直接用课题组的太赫兹数据训练；</li>
+<li><strong>建议的严谨实验</strong>：先按原始 168 幅划分训练/测试，再只对训练集扩增，对比与原文的精度差异——这本身就是一个很好的本科研究小课题。</li>
+</ul>
+<h2 id="78">7.8 自测题<a class="headerlink" href="#78" title="Permanent link">&para;</a></h2>
+<ol>
+<li>为什么 DB-SSIT 不直接把 HH/HV/VV 的幅度作为 3 通道输入，而是先转成 6 维特征？这样做丢掉了什么信息？</li>
+<li>PSFEB 中“分组卷积”和“交互卷积”分别对应什么物理含义？</li>
+<li>根据表 7-2，为什么单独的 PSFEB 只有 71.25%，而与 SFEB 结合后达到 98.44%？</li>
+<li>本文系统带宽 10 GHz，距离分辨率是多少？若方位积累角为 3°、载频 220 GHz，横向分辨率约为多少？（提示：<span class="arithmatex">\(\lambda \approx 1.36\)</span> mm）</li>
+<li>如何设计实验来检验本文结果是否存在“扩增后划分”导致的数据泄漏？</li>
+</ol>
+<div class="admonition abstract">
+<p class="admonition-title">小结</p>
+<p>DB-SSIT 是“物理先验 + 轻量混合架构”的典型例子：6 维极化特征作为输入，极化分支与空间分支并行提取，Transformer 融合局部与全局。它在小规模太赫兹全极化数据集上取得了 99.38% 的 OA，但由于数据规模、姿态范围和划分方式的限制，结论的泛化性还需要更大、更严格的实验来验证。</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 light · 教学用途 · 期刊原图因版权未转载
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="../javascripts/katex.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>

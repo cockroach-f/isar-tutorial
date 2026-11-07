@@ -1,0 +1,1563 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="从雷达回波到深度学习——面向初学者的 ISAR 目标识别系统教学与七篇前沿文献带读">
+      
+      
+        <meta name="author" content="light">
+      
+      
+        <link rel="canonical" href="https://cockroach-f.github.io/isar-tutorial/part-a/A5_dl.html">
+      
+      
+        <link rel="prev" href="A4_hard.html">
+      
+      
+        <link rel="next" href="A6_dl2.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>第 5 章 深度学习入门（上） - ISAR 目标识别入门与文献带读</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#5-cnn" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="ISAR 目标识别入门与文献带读" class="md-header__button md-logo" aria-label="ISAR 目标识别入门与文献带读" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ISAR 目标识别入门与文献带读
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 5 章 深度学习入门（上）
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cockroach-f/isar-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cockroach-f/isar-tutorial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="ISAR 目标识别入门与文献带读" class="md-nav__button md-logo" aria-label="ISAR 目标识别入门与文献带读" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ISAR 目标识别入门与文献带读
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cockroach-f/isar-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cockroach-f/isar-tutorial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    前言
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../videos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    动画视频
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part A 基础
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part A 基础
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A0_math.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 数学与信号准备
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A1_radar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 雷达基础
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A2_isar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 ISAR 成像
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A3_pol.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 雷达极化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A4_hard.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 识别难点
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 深度学习入门（上）
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="A5_dl.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 深度学习入门（上）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 神经元与多层感知机：可学习的非线性函数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 训练：损失、梯度与反向传播
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 训练：损失、梯度与反向传播">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#521" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.1 损失函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#522" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.2 梯度下降
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#523" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.3 反向传播 = 链式法则
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#524" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.4 训练中的常用术语
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 卷积：在图像上滑动的“小模板”
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#54-cnn-resnet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 卷积神经网络（CNN）与 ResNet
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="A6_dl2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 深度学习入门（下）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part B 逐篇带读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part B 逐篇带读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B1_dbssit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 DB-SSIT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B2_cvgnn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 CV-GNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B3_msn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 MSN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B4_cvpgt.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 CvPGT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B5_remi.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 REMI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B6_mlfr.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 MLFR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-b/B7_dcanet.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 DCA-Net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part C 综合
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part C 综合
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C1_synthesis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 横向对比
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C2_projects.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 阅读路线与入门项目
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part-c/C3_glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 术语表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendix.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 神经元与多层感知机：可学习的非线性函数
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 训练：损失、梯度与反向传播
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 训练：损失、梯度与反向传播">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#521" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.1 损失函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#522" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.2 梯度下降
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#523" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.3 反向传播 = 链式法则
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#524" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.4 训练中的常用术语
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 卷积：在图像上滑动的“小模板”
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#54-cnn-resnet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 卷积神经网络（CNN）与 ResNet
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="5-cnn">第 5 章 深度学习入门（上）：神经元、训练、卷积与 CNN<a class="headerlink" href="#5-cnn" title="Permanent link">&para;</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">本章目标</p>
+<ol>
+<li>把神经网络理解为“可学习的函数”，能手算一个神经元、一次 softmax 和交叉熵；</li>
+<li>理解“训练”到底在做什么：损失 → 梯度 → 反向传播 → 梯度下降，能手算一步参数更新；</li>
+<li>把 CNN 的卷积层和信号与系统里的卷积/相关对应起来，能手算一个 4×4 图像的卷积，会算参数量；</li>
+<li>理解池化、批归一化、残差连接与分组卷积，知道 ResNet 为什么是论文里最常见的基线。</li>
+</ol>
+</div>
+<div class="admonition note">
+<p class="admonition-title">基础回链</p>
+<p><strong>本章用到的基础：</strong> 向量与矩阵乘法；函数求导与链式法则；相关与卷积（→ 第 0.6 节）。如果你从没接触过深度学习，按顺序读完本章和第 6 章就足以看懂 Part B 的每个网络框图。</p>
+</div>
+<p>本章和第 6 章只讲“够用”的部分，力求每个概念都能在 Part B 中找到用处。为了不让概念悬空，每节都先给一个可以用笔算的小例子。</p>
+<h2 id="51">5.1 神经元与多层感知机：可学习的非线性函数<a class="headerlink" href="#51" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p><strong>类比：评委打分。</strong> 一个神经元像一位评委：先给每项指标一个权重（“清晰度占 0.5，构图占 0.2……”），把加权分数加起来，再加一个“基础分”，最后过一道“门槛”，分数不够就记 0。成千上万个这样的评委分层组织，前一层的打分作为后一层的输入，就是神经网络。</p>
+</div>
+<p><strong>机理。</strong> 一个神经元接收输入向量 <span class="arithmatex">\(\mathbf x = [x_1,\dots,x_n]^T\)</span>，做两步运算：</p>
+<div class="arithmatex">\[z = \mathbf w^T\mathbf x + b = \sum_{i=1}^n w_i x_i + b,\qquad h = \sigma(z). \tag{5.1}\]</div>
+<p>符号说明：<span class="arithmatex">\(\mathbf w\)</span> 为权重向量（每个输入的重要性，<strong>要学习的参数</strong>）；<span class="arithmatex">\(b\)</span> 为偏置（“基础分”，也要学习）；<span class="arithmatex">\(z\)</span> 为加权和（“预激活”）；<span class="arithmatex">\(\sigma(\cdot)\)</span> 为激活函数，提供非线性；<span class="arithmatex">\(h\)</span> 为神经元输出。</p>
+<p>常见激活函数：<strong>ReLU</strong> <span class="arithmatex">\(\sigma(z)=\max(0,z)\)</span>，最常用；<strong>sigmoid</strong> <span class="arithmatex">\(\sigma(z)=1/(1+e^{-z})\)</span>，把任意数压到 <span class="arithmatex">\((0,1)\)</span>，常用来输出“权重/概率”；<strong>tanh</strong> 输出在 <span class="arithmatex">\((-1,1)\)</span>；<strong>LeakyReLU / GELU / Mish / SiLU</strong> 是 ReLU 的平滑或改进版，论文中都会出现。</p>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 5.1（一个神经元）。</strong> <span class="arithmatex">\(\mathbf x = [1, 2]^T\)</span>，<span class="arithmatex">\(\mathbf w = [0.5, 0.2]^T\)</span>，<span class="arithmatex">\(b=0.1\)</span>：</p>
+<div class="arithmatex">\[z = 0.5\times1 + 0.2\times2 + 0.1 = 1.0,\qquad \mathrm{ReLU}(1.0) = 1.0,\qquad \mathrm{sigmoid}(1.0) = \frac{1}{1+e^{-1}} = 0.731 .\]</div>
+</div>
+<p><img alt="图 5-1 (a) 例题 5.1 的神经元；(b) 常见激活函数。代码：code/make_figures_v2.py::f08_neuron" src="../figures/v2_08_neuron.png" /></p>
+<p><strong>一层 = 许多神经元并排。</strong> 把 <span class="arithmatex">\(m\)</span> 个神经元的权重排成矩阵 <span class="arithmatex">\(\mathbf W\in\mathbb R^{m\times n}\)</span>（第 <span class="arithmatex">\(i\)</span> 行是第 <span class="arithmatex">\(i\)</span> 个神经元的 <span class="arithmatex">\(\mathbf w^T\)</span>），一层的计算就是</p>
+<div class="arithmatex">\[\mathbf h = \sigma(\mathbf W\mathbf x + \mathbf b). \tag{5.2}\]</div>
+<p>把几层串起来就是<strong>多层感知机（MLP）</strong>（全连接网络）：<span class="arithmatex">\(\mathbf h_1 = \sigma(\mathbf W_1\mathbf x+\mathbf b_1)\)</span>，<span class="arithmatex">\(\mathbf h_2 = \sigma(\mathbf W_2\mathbf h_1+\mathbf b_2)\)</span>，……</p>
+<div class="admonition warning">
+<p class="admonition-title">易错点</p>
+<p><strong>易错点：为什么一定要有非线性？</strong> 去掉 <span class="arithmatex">\(\sigma\)</span> 后，两层线性层 <span class="arithmatex">\(\mathbf W_2(\mathbf W_1\mathbf x) = (\mathbf W_2\mathbf W_1)\mathbf x\)</span> 仍然只是一个线性变换，叠 100 层也一样。正是 ReLU 这样的“折一下”，让网络能拟合弯弯曲曲的分类边界。</p>
+</div>
+<p><strong>输出层：softmax 把分数变成概率。</strong> 分类网络最后一层为每类输出一个分数 <span class="arithmatex">\(z_c\)</span>（logits），再用 softmax 变成和为 1 的概率：</p>
+<div class="arithmatex">\[p_c = \frac{e^{z_c}}{\sum_{j=1}^{C} e^{z_j}},\qquad c = 1,\dots,C. \tag{5.3}\]</div>
+<p>指数保证每个值为正，分母保证总和为 1；分数越高概率越大，差距还被“放大”了。</p>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 5.2（softmax）。</strong> 3 类分数 <span class="arithmatex">\(\mathbf z = [2, 1, 0]\)</span>：<span class="arithmatex">\(e^2 = 7.389\)</span>，<span class="arithmatex">\(e^1 = 2.718\)</span>，<span class="arithmatex">\(e^0 = 1\)</span>，总和 <span class="arithmatex">\(11.107\)</span>，所以</p>
+<div class="arithmatex">\[\mathbf p = [7.389,\ 2.718,\ 1]/11.107 = [0.665,\ 0.245,\ 0.090].\]</div>
+</div>
+<p>于是一个分类网络就是函数 <span class="arithmatex">\(\hat{\mathbf y} = f_{\mathbf w}(\mathbf x)\)</span>：输入图像 <span class="arithmatex">\(\mathbf x\)</span>，输出每类的概率；网络里所有 <span class="arithmatex">\(\mathbf W\)</span>、<span class="arithmatex">\(\mathbf b\)</span> 合起来记作参数 <span class="arithmatex">\(\mathbf w\)</span>。下一个问题是：怎么找到好的 <span class="arithmatex">\(\mathbf w\)</span>？</p>
+<h2 id="52">5.2 训练：损失、梯度与反向传播<a class="headerlink" href="#52" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p><strong>类比：蒙着眼下山。</strong> 损失函数 <span class="arithmatex">\(L(\mathbf w)\)</span> 是一片山地，高度表示“网络错得多离谱”。你蒙着眼站在某处，只能用脚感受哪边是下坡（梯度），然后朝下坡迈一小步（学习率）。反复迈步，就会走到谷底附近。<strong>反向传播</strong>只是一种高效计算“每个参数各自的下坡方向”的方法。</p>
+</div>
+<h3 id="521">5.2.1 损失函数<a class="headerlink" href="#521" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>均方误差</strong>（回归）：<span class="arithmatex">\(L = (\hat y - y)^2\)</span>；</li>
+<li><strong>交叉熵</strong>（分类）：<span class="arithmatex">\(L = -\log p_{y}\)</span>，<span class="arithmatex">\(y\)</span> 为真实类别，<span class="arithmatex">\(p_y\)</span> 为网络给真实类别的概率。<span class="arithmatex">\(p_y\to1\)</span> 时 <span class="arithmatex">\(L\to0\)</span>；<span class="arithmatex">\(p_y\to0\)</span> 时 <span class="arithmatex">\(L\to\infty\)</span>——“猜错还很自信”会被重罚。</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 5.3（交叉熵及其梯度）。</strong> 接例题 5.2，若真实类别是第 1 类（one-hot <span class="arithmatex">\(\mathbf y=[1,0,0]\)</span>）：<span class="arithmatex">\(L = -\ln 0.665 = 0.408\)</span>。softmax + 交叉熵的梯度非常简洁：</p>
+<div class="arithmatex">\[\frac{\partial L}{\partial \mathbf z} = \mathbf p - \mathbf y = [0.665-1,\ 0.245,\ 0.090] = [-0.335,\ 0.245,\ 0.090].\]</div>
+<p>含义：正确类的分数应<strong>升高</strong>（梯度为负，沿负梯度走就是增大），错误类的分数应<strong>降低</strong>。</p>
+</div>
+<p><strong>推导 <span class="arithmatex">\(\mathbf p - \mathbf y\)</span>。</strong> 由 <span class="arithmatex">\(L = -\log p_y = -z_y + \log\sum_j e^{z_j}\)</span>，对 <span class="arithmatex">\(z_c\)</span> 求导：</p>
+<div class="arithmatex">\[\frac{\partial L}{\partial z_c} = -\mathbb 1[c=y] + \frac{e^{z_c}}{\sum_j e^{z_j}} = p_c - y_c ,\]</div>
+<p>其中 <span class="arithmatex">\(\mathbb 1[c=y]\)</span> 在 <span class="arithmatex">\(c=y\)</span> 时为 1、否则为 0，正好是 one-hot 的 <span class="arithmatex">\(y_c\)</span>。</p>
+<h3 id="522">5.2.2 梯度下降<a class="headerlink" href="#522" title="Permanent link">&para;</a></h3>
+<div class="admonition success">
+<p class="admonition-title">关键公式</p>
+<div class="arithmatex">\[\boxed{\mathbf w \leftarrow \mathbf w - \eta\,\frac{\partial L}{\partial \mathbf w}} \tag{5.4}\]</div>
+<p><span class="arithmatex">\(\eta\)</span>：学习率（步长），论文中的“学习率 1e-4”就是它；<span class="arithmatex">\(\partial L/\partial\mathbf w\)</span>：损失对参数的梯度，指向“上坡最陡”的方向，所以要减去它。</p>
+</div>
+<h3 id="523">5.2.3 反向传播 = 链式法则<a class="headerlink" href="#523" title="Permanent link">&para;</a></h3>
+<p>网络是函数的嵌套，求梯度靠<strong>链式法则</strong>：若 <span class="arithmatex">\(L\)</span> 通过 <span class="arithmatex">\(\hat y\)</span> 依赖 <span class="arithmatex">\(w\)</span>，则 <span class="arithmatex">\(\dfrac{\partial L}{\partial w} = \dfrac{\partial L}{\partial\hat y}\cdot\dfrac{\partial \hat y}{\partial w}\)</span>。反向传播就是从输出层开始，把“上游梯度 × 本层局部导数”一层层往回乘。</p>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 5.4（手算一步训练）。</strong> 最简单的“网络” <span class="arithmatex">\(\hat y = wx\)</span>；样本 <span class="arithmatex">\(x = 2\)</span>、<span class="arithmatex">\(y=1\)</span>；初值 <span class="arithmatex">\(w=0.8\)</span>；学习率 <span class="arithmatex">\(\eta=0.1\)</span>；损失 <span class="arithmatex">\(L=(\hat y-y)^2\)</span>。</p>
+<ol>
+<li><strong>前向</strong>：<span class="arithmatex">\(\hat y = 0.8\times2 = 1.6\)</span>，<span class="arithmatex">\(L = (1.6-1)^2 = 0.36\)</span>。</li>
+<li><strong>反向</strong>：<span class="arithmatex">\(\dfrac{\partial L}{\partial\hat y} = 2(\hat y-y) = 1.2\)</span>，<span class="arithmatex">\(\dfrac{\partial\hat y}{\partial w} = x = 2\)</span>，所以 <span class="arithmatex">\(\dfrac{\partial L}{\partial w} = 1.2\times2 = 2.4\)</span>。</li>
+<li><strong>更新</strong>：<span class="arithmatex">\(w \leftarrow 0.8 - 0.1\times2.4 = 0.56\)</span>。</li>
+<li><strong>验证</strong>：<span class="arithmatex">\(\hat y = 0.56\times2 = 1.12\)</span>，<span class="arithmatex">\(L = 0.12^2 = 0.0144\)</span>——损失从 0.36 降到 0.0144。</li>
+</ol>
+<p>继续迭代，<span class="arithmatex">\(w\)</span> 会逼近最优值 <span class="arithmatex">\(0.5\)</span>（图 5-2）。真实网络有上百万个参数，但每个参数的更新方式与此完全相同。</p>
+</div>
+<p><img alt="图 5-2 例题 5.4 的梯度下降轨迹：每一步都沿损失曲线的下坡方向移动，逐渐逼近最小值 \(w=0.5\)。代码：f09_gd" src="../figures/v2_09_gd.png" /></p>
+<h3 id="524">5.2.4 训练中的常用术语<a class="headerlink" href="#524" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>mini-batch / epoch</strong>：每次用一小批样本（如 32 张）估计梯度并更新一次；所有训练样本用过一遍叫一个 epoch。</li>
+<li><strong>优化器</strong>：SGD 就是式 (5.4)；Adam、AdamW 为每个参数自适应调节步长，是论文中最常用的选择。</li>
+<li><strong>超参数</strong>：论文里的“学习率 1e-4”“权重衰减 1e-3”“每 10 个 epoch 衰减 0.1”都是人设定的训练超参数，不是学出来的。</li>
+<li><strong>过拟合</strong>：参数多、数据少时网络会“背答案”：训练集精度很高、测试集很差。ISAR 数据少，所以几乎每篇论文都在和过拟合作斗争（数据增强、预训练、少样本范式、轻量化网络）。</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">易错点</p>
+<p><strong>易错点：学习率。</strong> 太大会在谷底两侧来回跳，甚至发散；太小则下降极慢。例题 5.4 中若取 <span class="arithmatex">\(\eta = 0.3\)</span>，第一步就变成 <span class="arithmatex">\(w = 0.8-0.72 = 0.08\)</span>，直接跳过了最优点 0.5。</p>
+</div>
+<h2 id="53">5.3 卷积：在图像上滑动的“小模板”<a class="headerlink" href="#53" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p><strong>类比：拿印章逐格比对。</strong> 拿一个 3×3 的小“印章”（卷积核）在图像上从左到右、从上到下逐格盖过去，每到一个位置就算一次“印章和这块图像有多像”（对应相乘再相加）。所有位置的得分排成一张新图，叫<strong>特征图</strong>。不同的印章检测不同的花样：竖直边缘、水平边缘、亮斑……</p>
+</div>
+<p><strong>卷积层</strong>就是信号与系统里的二维卷积（严格说是互相关，→ 第 0.6 节）：一个 <span class="arithmatex">\(k\times k\)</span> 的小模板在图像上滑动做加权求和。区别在于模板系数是<strong>学出来的</strong>，而且每层有很多个模板（通道）。对单通道输入 <span class="arithmatex">\(X\)</span> 和卷积核 <span class="arithmatex">\(K\)</span>：</p>
+<div class="arithmatex">\[Y[i,j] = \sum_{u=0}^{k-1}\sum_{v=0}^{k-1} X[i+u,\ j+v]\;K[u,v] + b. \tag{5.5}\]</div>
+<p>符号说明：<span class="arithmatex">\((i,j)\)</span> 为输出位置；<span class="arithmatex">\((u,v)\)</span> 为核内位置；<span class="arithmatex">\(b\)</span> 为偏置。</p>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 5.5（手算 4×4 图像的卷积）。</strong> 输入与一个竖直边缘检测核（左列 <span class="arithmatex">\(+1\)</span>，右列 <span class="arithmatex">\(-1\)</span>）：</p>
+<div class="arithmatex">\[X = \begin{bmatrix} 1&amp;2&amp;0&amp;1\\ 0&amp;1&amp;3&amp;1\\ 2&amp;1&amp;0&amp;0\\ 1&amp;0&amp;1&amp;2\end{bmatrix},\qquad
+K = \begin{bmatrix} 1&amp;0&amp;-1\\ 1&amp;0&amp;-1\\ 1&amp;0&amp;-1\end{bmatrix},\qquad b = 0 .\]</div>
+<p>3×3 窗口在 4×4 图上只能放 <span class="arithmatex">\(2\times2\)</span> 个位置。由于核的中间列为 0，每个结果都等于“窗口左列之和 − 窗口右列之和”：</p>
+<div class="arithmatex">\[\begin{aligned}
+Y[0,0] &amp;= (1+0+2) - (0+3+0) = 0, &amp; Y[0,1] &amp;= (2+1+1)-(1+1+0) = 2,\\
+Y[1,0] &amp;= (0+2+1)-(3+0+1) = -1, &amp; Y[1,1] &amp;= (1+1+0)-(1+0+2) = -1.
+\end{aligned}\]</div>
+<p>所以 <span class="arithmatex">\(Y = \begin{bmatrix} 0 &amp; 2\\ -1 &amp; -1\end{bmatrix}\)</span>。<span class="arithmatex">\(Y[0,1]=2\)</span> 最大，说明该窗口里“左亮右暗”的竖直边缘最明显。</p>
+</div>
+<p><img alt="图 5-3 例题 5.5：(a) 输入及第一个窗口；(b) 竖直边缘检测核；(c) 输出特征图。代码：f10_conv" src="../figures/v2_10_conv.png" /></p>
+<p><strong>输出尺寸。</strong> 输入边长 <span class="arithmatex">\(H\)</span>，核大小 <span class="arithmatex">\(k\)</span>，四周补零 <span class="arithmatex">\(p\)</span> 圈，步长 <span class="arithmatex">\(s\)</span>：</p>
+<div class="arithmatex">\[H_{\text{out}} = \left\lfloor\frac{H - k + 2p}{s}\right\rfloor + 1 . \tag{5.6}\]</div>
+<p>例题 5.5 中 <span class="arithmatex">\(H=4,\ k=3,\ p=0,\ s=1\)</span>，得 <span class="arithmatex">\(H_{\text{out}} = 2\)</span>；若 <span class="arithmatex">\(p=1\)</span>，输出仍为 4×4（“same”卷积）；若 <span class="arithmatex">\(s=2\)</span>，尺寸约减半。</p>
+<p><strong>多通道与参数量。</strong> 输入有 <span class="arithmatex">\(C_{\text{in}}\)</span> 个通道（如复数图像的实部/虚部是 2 个通道），每个卷积核也有 <span class="arithmatex">\(C_{\text{in}}\)</span> 层，各层分别卷积后求和；有 <span class="arithmatex">\(C_{\text{out}}\)</span> 个核就输出 <span class="arithmatex">\(C_{\text{out}}\)</span> 个通道：</p>
+<div class="arithmatex">\[\#\text{参数} = k\times k\times C_{\text{in}}\times C_{\text{out}} + \underbrace{C_{\text{out}}}_{\text{偏置}}. \tag{5.7}\]</div>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 5.6（参数量）。</strong> 3×3 卷积，64 通道进、64 通道出：<span class="arithmatex">\(3\times3\times64\times64 + 64 = 36\,928\)</span>。若改用 <span class="arithmatex">\(G=4\)</span> 组的<strong>分组卷积</strong>（每组 16 进 16 出，各组独立），权重为 <span class="arithmatex">\(4\times(3\times3\times16\times16) = 9216\)</span>，恰好是原来 36 864 的 <span class="arithmatex">\(1/4\)</span>。</p>
+</div>
+<p><img alt="图 5-4 卷积的直观效果：同一幅 ISAR 像分别与水平边缘、竖直边缘、平滑模板卷积。CNN 的第一层往往学到类似的边缘/斑点检测器。" src="../figures/A17_conv.png" /></p>
+<div class="admonition warning">
+<p class="admonition-title">易错点</p>
+<p><strong>易错点。</strong>（1）深度学习框架里的“卷积”不翻转卷积核，数学上是相关；由于核是学出来的，翻不翻转没有区别。（2）卷积的两个关键性质是<strong>局部连接</strong>（每个输出只看一小块）和<strong>权值共享</strong>（同一个核用于所有位置），所以参数比全连接少得多：64×64 图像全连接到 64×64 输出需要 <span class="arithmatex">\(4096^2\approx1678\)</span> 万个权重，一个 3×3 卷积核只要 9 个。</p>
+</div>
+<h2 id="54-cnn-resnet">5.4 卷积神经网络（CNN）与 ResNet<a class="headerlink" href="#54-cnn-resnet" title="Permanent link">&para;</a></h2>
+<p>把“卷积 → 归一化 → 激活 → 池化”重复多次，最后接全连接层与 softmax，就是 CNN。浅层检测边缘、亮点，深层把它们组合成“太阳翼”“本体”这样更抽象的模式。</p>
+<p>CNN 的基本组件：</p>
+<ul>
+<li><strong>池化</strong>（max/avg pooling）：下采样、扩大感受野。例如 2×2 最大池化把 <span class="arithmatex">\(\left[\begin{smallmatrix}1&amp;3\\2&amp;0\end{smallmatrix}\right]\)</span> 变成 <span class="arithmatex">\(3\)</span>，图像边长减半；</li>
+<li><strong>批归一化 BN</strong>：把每个通道的激活归一化到零均值、单位方差，稳定训练（见例题 5.7）；</li>
+<li><strong>残差连接</strong>（ResNet）：<span class="arithmatex">\(\mathbf y = \mathbf x + F(\mathbf x)\)</span>，让很深的网络也能训练。ResNet18/50 是论文中最常见的基线（DB-SSIT 的 ResNet50、MSN 的 ResNet50+RAM、CvPGT 的 CV-ResNet18）；</li>
+<li><strong>分组卷积 / 深度卷积（DW Conv）</strong>：把通道分组、各组独立卷积，参数更少（例题 5.6）。DB-SSIT 用分组卷积让“每组对应一种极化模式”，MLFR 让“每组对应一个雷达站”——这是一个很巧妙的“结构即先验”设计；</li>
+<li><strong>空洞（膨胀）卷积、可变形卷积</strong>：扩大或自适应调整采样位置（MSN RAM、REMI GEN）。</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">例题</p>
+<p><strong>例题 5.7（批归一化）。</strong> 某通道在一个 batch 里的 4 个激活值为 <span class="arithmatex">\([1, 2, 3, 6]\)</span>：</p>
+<ul>
+<li>均值 <span class="arithmatex">\(\mu = (1+2+3+6)/4 = 3\)</span>；</li>
+<li>方差 <span class="arithmatex">\(\sigma^2 = [(1-3)^2+(2-3)^2+(3-3)^2+(6-3)^2]/4 = 14/4 = 3.5\)</span>，标准差 <span class="arithmatex">\(\sigma = 1.871\)</span>；</li>
+<li>归一化 <span class="arithmatex">\(\hat x = (x-\mu)/\sigma = [-1.069,\ -0.535,\ 0,\ 1.604]\)</span>；</li>
+<li>再乘可学习的缩放 <span class="arithmatex">\(\gamma\)</span>、加偏移 <span class="arithmatex">\(\beta\)</span>：<span class="arithmatex">\(y = \gamma\hat x+\beta\)</span>（网络可自己决定要不要“恢复”原尺度）。</li>
+</ul>
+</div>
+<div class="admonition info">
+<p class="admonition-title">直觉</p>
+<p><strong>残差连接：只学“改动量”。</strong> 修改一篇文章，与其从头重写（学 <span class="arithmatex">\(\mathbf y\)</span> 本身），不如在原文上做批注（学改动量 <span class="arithmatex">\(F(\mathbf x) = \mathbf y-\mathbf x\)</span>）。若某一层没什么可改的，只要 <span class="arithmatex">\(F=0\)</span>，输出就等于输入，不会“越改越差”。从梯度看：</p>
+<div class="arithmatex">\[\frac{\partial\mathbf y}{\partial\mathbf x} = \mathbf I + \frac{\partial F}{\partial\mathbf x}, \tag{5.8}\]</div>
+<p>即使 <span class="arithmatex">\(\partial F/\partial\mathbf x\)</span> 很小，梯度也能沿单位矩阵 <span class="arithmatex">\(\mathbf I\)</span> 这条“高速公路”传回浅层——这就是上百层的 ResNet 也能训练的原因。</p>
+</div>
+<div class="admonition abstract">
+<p class="admonition-title">小结</p>
+<ul>
+<li>神经元 = 加权和 + 偏置 + 非线性（例题 5.1：<span class="arithmatex">\(z=1.0\)</span>）；多层堆叠成 MLP；softmax 把分数变成概率（例题 5.2）。</li>
+<li>训练 = 最小化损失：交叉熵的梯度为 <span class="arithmatex">\(\mathbf p-\mathbf y\)</span>；反向传播 = 链式法则；梯度下降 <span class="arithmatex">\(\mathbf w\leftarrow\mathbf w-\eta\nabla L\)</span>（例题 5.4：一步把损失从 0.36 降到 0.0144）。</li>
+<li>卷积 = 滑动模板的相关运算，局部连接 + 权值共享；会用式 (5.6)(5.7) 算尺寸和参数量。</li>
+<li>CNN = 卷积 + BN + 激活 + 池化；ResNet 用 <span class="arithmatex">\(\mathbf y = \mathbf x+F(\mathbf x)\)</span> 让深网络可训练；分组卷积能把“一组 = 一种极化 / 一个雷达站”的先验写进结构。</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 light · 教学用途 · 期刊原图因版权未转载
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="../javascripts/katex.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>
