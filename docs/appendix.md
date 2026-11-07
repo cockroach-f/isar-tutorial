@@ -6,7 +6,7 @@
 |---|---|
 | `code/isar_core.py` | 核心仿真库：点散射体目标、转台回波、HRRP、RD 成像、LFM 与匹配滤波、极化（典型散射矩阵、Pauli、6 维特征、简缩极化）、散射中心提取与 kNN 构图、参数化随机目标 |
 | `code/make_figures.py` | 生成 Part A 的仿真图（`figures/A01–A20`） |
-| `code/make_figures_v2.py` | 第 2 版新增的基础概念例题配图（`figures/v2_01–v2_16`），以及修正了子图标题的 `v2_A16_stn_affine.png`（v1 图 A16 中“剪切”子图误标为 CvPGT，应为论文 5 的 MH-STN） |
+| `code/make_figures_v2.py` | 基础概念例题配图（`figures/v2_01–v2_16`）与 `v2_A16_stn_affine.png`（“剪切”子图对应论文 5 的 MH-STN） |
 | `code/make_diagrams.py` | 生成 7 篇论文的自绘简化框图、分类体系图与阅读路线图（`figures/B1–B7`、`C1`、`C2`） |
 | `code/make_videos.py` | 生成 4 段动画（`videos/V1–V4`） |
 | `code/extract_paper_figs.py`、`code/fix_paper_figs.py` | 从论文 PDF 中按图题自动裁剪原文图（`paper_figs/`），后者对少数裁剪不准的图做手工修正 |
