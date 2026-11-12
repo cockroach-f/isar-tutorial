@@ -4,6 +4,8 @@
 
 **在线阅读：** <https://cockroach-f.github.io/isar-tutorial/>
 
+姊妹站点：[复变函数从零到精通](https://cockroach-f.github.io/complex-functions/)（复变函数讲义，配 manim 动画）
+
 ## 本地预览
 
 ```bash
