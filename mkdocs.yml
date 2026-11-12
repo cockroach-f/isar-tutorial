@@ -73,6 +73,9 @@ extra:
     - icon: material/sine-wave
       link: https://cockroach-f.github.io/em-fields-waves/
       name: 姊妹站点：电磁场与电磁波从零到精通
+    - icon: material/atom
+      link: https://cockroach-f.github.io/quantum-mechanics/
+      name: 姊妹站点：量子力学从零到精通
 
 extra_javascript:
   - javascripts/katex.js
@@ -109,3 +112,4 @@ nav:
   - 附录: appendix.md
   - 姊妹站点 · 复变函数从零到精通: https://cockroach-f.github.io/complex-functions/
   - 姊妹站点 · 电磁场与电磁波从零到精通: https://cockroach-f.github.io/em-fields-waves/
+  - 姊妹站点 · 量子力学从零到精通: https://cockroach-f.github.io/quantum-mechanics/
