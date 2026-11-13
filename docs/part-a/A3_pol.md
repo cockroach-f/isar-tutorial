@@ -88,6 +88,10 @@ $$\mathbf S = \begin{bmatrix} S_{HH} & S_{HV}\\ S_{HV} & S_{VV}\end{bmatrix}
 
 ![图 3-1b 例题 3.1 的可视化：(a) 三个线极化通道的幅度；(b) Pauli 分量功率，偶次散射占主导。代码：`code/make_figures_v2.py::f16_pol_example`](../figures/v2_16_pol_example.png)
 
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/M10_Pauli.jpg"><source src="../videos/M10_Pauli.mp4" type="video/mp4"></video>
+
+▶ **动画 10 Pauli 分解与伪彩色（33 s）**：先把 $\mathbf S$ 写成三种标准散射体矩阵的加权和（式 (3.2)），解出 Pauli 矢量（式 (3.3)）。随后依次代入例题 3.1、平板、45° 二面角和水平细线，柱状图给出 $\lvert a\rvert^2,\lvert b\rvert^2,\lvert c\rvert^2$ 的占比，右侧方块是对应的 Pauli 伪彩色（R = $\lvert b\rvert$，G = $\lvert c\rvert$，B = $\lvert a\rvert$）。文件：`videos/M10_Pauli.mp4`，代码：`code/manim/a3_scenes.py`
+
 ## 3.4 相干矩阵 T 与 DB-SSIT 的 6 维特征
 
 !!! info "直觉"
@@ -122,6 +126,10 @@ $$\mathbf T = \langle \mathbf k_{3P}\,\mathbf k_{3P}^H\rangle = \begin{bmatrix} 
 !!! warning "易错点"
 
     **易错点：秩 1 与“平均”的意义。** 单个像素的 $\mathbf T_1 = \mathbf k\mathbf k^H$ 永远是**秩 1** 矩阵，特征值为 $[1.02, 0, 0]$，它不比 $\mathbf k$ 多任何信息。平均之后，例题中 $\mathbf T$ 的特征值变为约 $[0.519, 0.241, 0]$，第二个特征值不再为 0，表示“有两种不同的机理混在一起”。所以 $\mathbf T$ 的价值来自**统计平均**；只有一个像素时，各相关系数会退化得没有意义。
+
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/M11_Coherency.jpg"><source src="../videos/M11_Coherency.mp4" type="video/mp4"></video>
+
+▶ **动画 11 相干矩阵是窗口内的平均（27 s）**：左为仿真的 Pauli 伪彩色像素（左半为二面角本体，右半为平板太阳翼），黄框是平均窗口；右为 $\lvert T_{ij}\rvert/\mathrm{Span}$ 热图和 $\mathbf T$ 的特征值。单个像素时 $\mathbf T$ 是秩 1，只有一个非零特征值；3×3 窗口滑过本体与太阳翼的交界时，两种机理混在一起，第二个特征值明显变大；进入太阳翼区后又回到 $T_{11}$ 主导。文件：`videos/M11_Coherency.mp4`，代码：`code/manim/a3_scenes.py`
 
 对角元是三种散射机理的功率，非对角元描述它们之间的相关性。DB-SSIT由 $\mathbf T$ 构造了 6 维特征作为网络输入（原文式 (4)–(9)）：
 

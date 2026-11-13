@@ -8,7 +8,8 @@
 | `code/make_figures.py` | 生成 Part A 的仿真图（`figures/A01–A20`） |
 | `code/make_figures_v2.py` | 基础概念例题配图（`figures/v2_01–v2_16`）与 `v2_A16_stn_affine.png`（“剪切”子图对应 REMI 的 MH-STN） |
 | `code/make_diagrams.py` | 生成 7 篇论文的自绘简化框图、分类体系图与阅读路线图（`figures/B1–B7`、`C1`、`C2`） |
-| `code/make_videos.py` | 生成 4 段动画（`videos/V1–V4`） |
+| `code/make_videos.py` | 生成动画 1–4（matplotlib，`videos/V1–V4`） |
+| `code/manim/*_scenes.py` | 生成动画 5–14（Manim Community，`videos/M5–M14`）；渲染脚本 `tools/render_manim.sh`（仓库根目录） |
 | `code/extract_paper_figs.py`、`code/fix_paper_figs.py` | 从论文 PDF 中按图题自动裁剪原文图（`paper_figs/`），后者对少数裁剪不准的图做手工修正 |
 | `code/project1_rd_dataset.py` | 入门项目 1：生成仿真 RD 数据集 |
 | `code/project1_train_resnet18.py` | 入门项目 1：ResNet18 训练与测试（随机划分 / 按方位划分） |
@@ -23,6 +24,16 @@
 | `videos/V2_pulse_compression.mp4` | 35 s | 匹配滤波滑动相关；带宽扫描与分辨率 |
 | `videos/V3_fewshot_episode.mp4` | 36 s | 3-way 1-shot 任务与原型网络推理（两个任务） |
 | `videos/V4_defocus.mp4` | 24 s | 角加速度增大导致散焦，图像熵变化 |
+| `videos/M5_ChirpPhasors.mp4` | 41 s | 第 1.4.3 节：匹配滤波把 LFM 各频率分量的相位拉齐，形成 sinc 峰 |
+| `videos/M6_DopplerPhasor.mp4` | 29 s | 第 2.2.2 节：转台上各点的径向速度与相位旋转，多普勒 ∝ 横向坐标 |
+| `videos/M7_CrossRangeRes.mp4` | 24 s | 第 2.4 节：积累转角增大，两点的多普勒谱峰由合到分 |
+| `videos/M8_MTRC.mp4` | 25 s | 第 2.5 节：外侧散射点跨距离单元走动（MTRC）与判据 |
+| `videos/M9_MotionComp.mp4` | 26 s | 第 2.6 节：包络对齐 + 初相校正 |
+| `videos/M10_Pauli.mp4` | 33 s | 第 3.3 节：Pauli 分解、功率占比与伪彩色 |
+| `videos/M11_Coherency.mp4` | 27 s | 第 3.4 节：相干矩阵的窗口平均与特征值 |
+| `videos/M12_SelfAttention.mp4` | 36 s | 第 6.1.2 节：例题 6.1 的自注意力三步 |
+| `videos/M13_MixConv.mp4` | 27 s | 第 7.3 节：DB-SSIT 的 MixConv 多尺度预处理 |
+| `videos/M14_Multistatic.mp4` | 29 s | 第 12.3 节：多站观测的姿态与尺度差异，先对齐后融合 |
 
 **表 A-1 入门项目在本机（CPU）上的实测结果**（仿真数据，仅用于说明现象，不代表任何论文结果）
 

@@ -23,7 +23,8 @@ docs/
   part-a/ … part-c/     # 正文章节
   appendix.md            # 附录
   figures/              # 自绘与仿真图
-  videos/               # 4 段教学动画
+  videos/               # 14 段教学动画（V1–V4 matplotlib，M5–M14 manim），嵌在各章正文中
+  code/manim/           # manim 动画场景源码（渲染：tools/render_manim.sh）
   code/                 # 可运行仿真与入门项目代码
 ```
 

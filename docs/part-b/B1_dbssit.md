@@ -51,6 +51,10 @@
 - BN + 2×2 最大池化（步长 2）降维；
 - 两个 1×1 卷积：32 → 6（保留关键极化信息）→ 3（匹配后续模块输入）。
 
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/M13_MixConv.jpg"><source src="../videos/M13_MixConv.mp4" type="video/mp4"></video>
+
+▶ **动画 13 MixConv 多尺度预处理（27 s）**：6 维极化特征 A–F 平均分成 3 组，分别用 3×3、5×5、7×7 卷积核在特征图上滑动：小核看单个散射点的细节，大核一次覆盖整块太阳翼。三组输出拼接成 32 通道，经 BN 与 2×2 最大池化后，再由两个 1×1 卷积压到 6 通道、3 通道。示意图，通道与尺寸按比例简化。文件：`videos/M13_MixConv.mp4`，代码：`code/manim/dl_scenes.py`
+
 ![图 7-2 原文 Fig. 2：极化多尺度预处理模块。](../paper_figs/p1_DBSSIT_fig2.png){ width="55%" loading=lazy }
 
 > **读图：** 从上往下看：6 维极化特征先做多尺度卷积、BatchNorm 和池化，再经两个 1×1 卷积压缩通道，正好对应上面步骤 1 的文字。

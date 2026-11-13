@@ -62,6 +62,10 @@
 
 > **读图：** 左半是特征对齐：把各站的中间特征图做空间变换，对齐到统一姿态；右半是站间重建：用多头注意力等结构融合各站信息。注意先对齐、后重建的顺序（消融里 ISFR‡ 正说明了顺序的重要性）。
 
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/M14_Multistatic.jpg"><source src="../videos/M14_Multistatic.mp4" type="video/mp4"></video>
+
+▶ **动画 14 多站观测：先对齐，后融合（29 s）**：三个雷达站从不同方向同时观测同一颗卫星，每个站的像是目标在自己视线坐标系里的投影，方向不同；各站带宽和积累角不同，尺度也不同。AMFA 为每个站学 5 个仿射参数（缩放 2、旋转 1、平移 2），把各站特征摆到统一的姿态和尺度，之后再做站间重建。示意动画，不是论文数据。文件：`videos/M14_Multistatic.mp4`，代码：`code/manim/b6_scenes.py`
+
 ### 步骤 3：ICFR 类间特征重建（仅作用于支持集）
 
 !!! note "基础回链"

@@ -65,6 +65,10 @@ $$Q = XW_Q,\qquad K = XW_K,\qquad V = XW_V . \tag{6.1}$$
 
 ![图 6-1 例题 6.1：(a) 缩放点积打分；(b) 按行 softmax 后的注意力权重。代码：`code/make_figures_v2.py::f11_attention`](../figures/v2_11_attention.png)
 
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/M12_SelfAttention.jpg"><source src="../videos/M12_SelfAttention.mp4" type="video/mp4"></video>
+
+▶ **动画 12 自注意力三步（36 s）**：按例题 6.1 的数字逐格演示：先算点积打分并除以 $\sqrt2$，再按行 softmax（每行和为 1），最后在左侧平面上把 $\mathbf x_1,\mathbf x_2,\mathbf x_3$ 按权重首尾相接，得到三个输出 $[0.80,0.60]$、$[0.60,0.80]$、$[0.75,0.75]$。文件：`videos/M12_SelfAttention.mp4`，代码：`code/manim/dl_scenes.py`
+
 **多头注意力与 Transformer。** 用 $h$ 组不同的 $(W_Q, W_K, W_V)$ 并行做 $h$ 次注意力（“多头”，每个头关注不同类型的关系），把结果拼接后再线性映射。**Transformer** = 多头自注意力 + 前馈网络（FFN，即每个 token 各自过一个两层 MLP）+ 残差连接 + 层归一化（LayerNorm）；**ViT** 把它用于图像。由于自注意力本身不区分 token 的顺序，还要给每个 token 加上**位置编码**，告诉网络“这一块在图像的哪里”。
 
 **计算量。** 打分矩阵是 $N\times N$ 的，所以代价与 token 数的平方成正比：8×8 = 64 个 patch 就要算 $64^2 = 4096$ 个分数。DB-SSIT 因此用“对 K 做平均池化、减少键的个数”的高效多头自注意力（E-MHSA）降计算量。
@@ -175,7 +179,6 @@ $$\mathbf c_n = \frac{1}{K}\sum_{k=1}^{K} f_\phi(\mathbf x_{n,k}),\qquad n = 1,\
 ![图 6-7 原型网络示意：★ 为原型，× 为查询，查询归到最近的原型；5-shot 时原型由更多样本平均，更稳定。](../figures/A15_prototype.png)
 
 <video controls preload="metadata" width="100%" poster="../figures/video_frames/V3_fewshot_episode_2.png"><source src="../videos/V3_fewshot_episode.mp4" type="video/mp4"></video>
-<img class="print-only" src="../figures/video_frames/V3_fewshot_episode_2.png" alt="视频关键帧"/>
 
 
 ▶ **动画 3 少样本任务与原型网络推理（36 s）**：抽类 → 支持图嵌入 → 原型 → 查询嵌入 → 距离与概率 → 判别，连续演示两个任务。文件：`videos/V3_fewshot_episode.mp4`

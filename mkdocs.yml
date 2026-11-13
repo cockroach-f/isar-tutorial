@@ -78,7 +78,6 @@ extra_css:
 
 nav:
   - 前言: index.md
-  - 动画视频: videos.md
   - Part A 基础:
       - 第 0 章 数学与信号准备: part-a/A0_math.md
       - 第 1 章 雷达基础: part-a/A1_radar.md

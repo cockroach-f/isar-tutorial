@@ -75,6 +75,10 @@ $$R_k(t_m) \approx y_k + x_k\,\omega t_m . \tag{2.3}$$
 
 ![图 2-1b 例题 2.2 的数值仿真。(a) 两个散射点的回波相位随慢时间线性变化，斜率正比于横向坐标；(b) 对慢时间做 FFT 后，斜率变成频谱峰的位置（−6.67 Hz 与 +3.33 Hz）。代码：`code/make_figures_v2.py::f06_doppler_phase`](../figures/v2_06_doppler_phase.png)
 
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/M6_DopplerPhasor.jpg"><source src="../videos/M6_DopplerPhasor.mp4" type="video/mp4"></video>
+
+▶ **动画 6 转台上的多普勒（29 s）**：左为转台（雷达在上方，$y$ 指向远离雷达的方向）：目标转动时，$x_k>0$ 的点远离雷达，$x_k<0$ 的点靠近雷达，径向速度 $x_k\omega$ 随 $\lvert x_k\rvert$ 增大。右为三个点的回波相位箭头：远离的点顺时针转（$f_d<0$），靠近的点逆时针转（$f_d>0$），中心点不转；最后对慢时间做 FFT，三根谱峰按 $f_{d,k}=-2\omega x_k/\lambda$ 排开，频率轴就是横向坐标轴。文件：`videos/M6_DopplerPhasor.mp4`，代码：`code/manim/a2_scenes.py`
+
 ## 2.3 距离-多普勒（RD）成像算法
 
 把频域（或去斜后）回波写成二维矩阵：快时间对应的频率 $f$ × 慢时间 $t_m$：
@@ -122,7 +126,6 @@ img  = np.fft.fftshift(np.fft.ifft(hrrp*np.hanning(Np)[:,None], axis=0), axes=0)
 ![图 2-2 从目标到 ISAR 像的完整链路（仿真：$f_c$=10 GHz，B=1 GHz，Δθ=5°，256 个脉冲）。(a) 点散射体“卫星”模型（本体+两块太阳翼+天线杆）；(b) 原始频域回波，看不出任何结构；(c) 沿频率 IFFT 后的 HRRP 历程；(d) 再沿慢时间 FFT 后的 RD 像，目标形状清晰可见。](../figures/A04_target_hrrp_rd.png)
 
 <video controls preload="metadata" width="100%" poster="../figures/video_frames/V1_turntable_to_isar_2.png"><source src="../videos/V1_turntable_to_isar.mp4" type="video/mp4"></video>
-<img class="print-only" src="../figures/video_frames/V1_turntable_to_isar_2.png" alt="视频关键帧"/>
 
 
 ▶ **动画 1 转台 → 多普勒 → ISAR 像（38 s）**：左为目标转动（转角放大显示），中为逐脉冲累积的 HRRP 历程，右为用已有脉冲做方位 FFT 得到的 RD 像——随着积累转角增大，横向逐渐变清晰。文件：`videos/V1_turntable_to_isar.mp4`
@@ -155,6 +158,10 @@ img  = np.fft.fftshift(np.fft.ifft(hrrp*np.hanning(Np)[:,None], axis=0), axes=0)
     结论：在 X 波段，目标转大约 6° 就能得到 15 cm 的横向分辨率，与 $B=1$ GHz 时的距离分辨率 15 cm 相当，图像“横竖一样清楚”。
 
 横向分辨率由**波长与积累转角**决定，与目标距离无关——这正是“合成孔径”的妙处。
+
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/M7_CrossRangeRes.jpg"><source src="../videos/M7_CrossRangeRes.mp4" type="video/mp4"></video>
+
+▶ **动画 7 横向分辨率随积累转角变化（24 s）**：例题 2.3 的两个点（$x=2$ m 与 $2.15$ m，多普勒差 0.5 Hz）。观测时间 $T$ 从 0.6 s 增加到 4 s，积累转角 $\Delta\theta=\omega T$ 随之增大，谱峰宽度 $1/T$ 变窄；$T=2$ s（$\Delta\theta=5.73^\circ$）时 $\rho_a=15$ cm，两峰刚好分开。文件：`videos/M7_CrossRangeRes.mp4`，代码：`code/manim/a2_scenes.py`
 
 | 参数 | 管哪个方向 | 本文仿真 | 论文中的例子 |
 |---|---|---|---|
@@ -208,10 +215,13 @@ CV-GNN 用更一般的多项式相位描述它：$\varphi_k(t_m) = \varphi_0 + 2
 
     **例题 2.5（MTRC 判断）。** 例题 2.3 的参数下 $\Delta\theta = 0.1$ rad，$\rho_r = 0.15$ m。对 $x=3$ m 的点：$|x|\Delta\theta = 0.3$ m $> 0.15$ m，会走过约 2 个距离单元，出现轻微 MTRC。经验判据：$|x|_{\max}\,\Delta\theta < \rho_r$，即目标横向半尺寸 $< \rho_r/\Delta\theta$（这里为 1.5 m）时，RD 算法可以放心使用。
 
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/M8_MTRC.jpg"><source src="../videos/M8_MTRC.mp4" type="video/mp4"></video>
+
+▶ **动画 8 越分辨单元走动（MTRC）（25 s）**：例题 2.5 的参数：$x=0.5$、$1.5$、$3$ m 三个点随转角增大，距离变化 $\Delta R=x\sin\theta$。$\Delta\theta=0.1$ rad 时，0.5 m 的点留在原距离单元，1.5 m 的点刚好走满一个单元，3 m 的点走过约 2 个单元，最后给出判据 $\lvert x\rvert_{\max}\Delta\theta<\rho_r$。文件：`videos/M8_MTRC.mp4`，代码：`code/manim/a2_scenes.py`
+
 ![图 2-4 散焦仿真。前三幅：转动由匀速逐渐变为加速（二次项比例 0 → 0.3 → 1.0），横向拖尾越来越严重，图像熵随之增大（熵越大越“散”）；第四幅：20° 大转角 + 3 倍尺寸目标，出现 MTRC 弧形拖尾。](../figures/A07_defocus.png)
 
 <video controls preload="metadata" width="100%" poster="../figures/video_frames/V4_defocus_2.png"><source src="../videos/V4_defocus.mp4" type="video/mp4"></video>
-<img class="print-only" src="../figures/video_frames/V4_defocus_2.png" alt="视频关键帧"/>
 
 
 ▶ **动画 4 非匀速转动导致散焦（24 s）**：左为转角–时间曲线由直线弯成抛物线，右为 RD 像逐渐模糊、图像熵增大，再恢复。文件：`videos/V4_defocus.mp4`
@@ -233,6 +243,10 @@ CV-GNN 用更一般的多项式相位描述它：$\varphi_k(t_m) = \varphi_0 + 2
 
     - **对包络**：256 个脉冲共平移 25.6 m，约 $25.6/0.15\approx171$ 个距离单元，HRRP 历程变成一条斜线，必须先对齐；
     - **对相位**：每个脉冲间相位变化 $4\pi\times0.1/0.03 = 41.9$ rad，远大于 $2\pi$（→ 例题 0.2），即使包络对齐到 1 cm 以内，残余相位误差仍有 $4\pi\times0.01/0.03\approx 4.2$ rad。所以还需要第二步，在“毫米级”上把相位校正干净。
+
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/M9_MotionComp.jpg"><source src="../videos/M9_MotionComp.mp4" type="video/mp4"></video>
+
+▶ **动画 9 运动补偿两步走（26 s）**：左为 HRRP 历程：平动使散射点轨迹变成斜线，包络对齐把每条 HRRP 平移回去，轨迹变成竖直线。右为橙框距离单元在 16 个脉冲上的回波相位：对齐后残余相位仍然杂乱，方位谱散开；初相校正消去各脉冲共有的平动相位，只留下转动带来的线性相位，方位谱聚成一根尖峰。文件：`videos/M9_MotionComp.mp4`，代码：`code/manim/a2_scenes.py`
 
 对于转动引起的高阶相位（散焦），可进一步做**重聚焦**，例如估计多项式系数后补偿（CV-GNN 原文式 (3)）。但重聚焦计算量大：CV-GNN 的 Table II 中“Refocusing”方法单张 13.290 s，远慢于直接识别散焦像的方法（CV-GNN 1.190 s）。**“补偿不完美 → 残余散焦/平移/形变”** 是所有识别论文都要面对的现实，也解释了 REMI 中 MH-STN 的“平移”参数（作者把平移归因于平动补偿误差）。
 

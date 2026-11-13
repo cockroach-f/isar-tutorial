@@ -192,6 +192,10 @@ $$\frac{2\Delta R}{c}\ \ge\ \frac{1}{B}\quad\Longrightarrow\quad \Delta R\ \ge\ 
 
 距离分辨率**只由带宽决定**，与脉宽无关。压缩前后的脉冲宽度之比 $T_p/(1/B) = T_pB$ 称为**时宽带宽积**（压缩比）。式 (1.12) 中峰值为 $\sigma T_p$，说明长脉冲带来的能量全部集中到了峰上。
 
+<video controls preload="metadata" width="100%" poster="../figures/video_frames/M5_ChirpPhasors.jpg"><source src="../videos/M5_ChirpPhasors.mp4" type="video/mp4"></video>
+
+▶ **动画 5 匹配滤波把各频率分量“拉齐”（41 s）**：左为时频图：回波 LFM 的频率随时间线性上升，匹配滤波给每个频率补上相反的时延，所有频率分量于是在 $t=\tau$ 同时到达。右为式 (1.10) 的相量图：10 个频率分量各是一个旋转箭头，$t$ 远离 $\tau$ 时首尾相接绕成圈，和很小；$t=\tau$ 时相位全部对齐、同相叠加成峰；$B(t-\tau)=\pm1$ 时恰好绕满一圈、和为零，即 sinc 的第一个零点，由此得到 $\rho_r=c/2B$。文件：`videos/M5_ChirpPhasors.mp4`，代码：`code/manim/a1_scenes.py`
+
 !!! example "例题"
 
     **例题 1.4（带宽 → 分辨率）。** $\rho_r = 3\times10^8/(2B)$：
@@ -218,7 +222,6 @@ $$\frac{2\Delta R}{c}\ \ge\ \frac{1}{B}\quad\Longrightarrow\quad \Delta R\ \ge\ 
     **易错点。**（1）分辨率不是“能测到的最小距离”，而是“两个目标能被分开的最小距离差”。（2）分辨率由带宽 $B$ 决定，而不是由载频 $f_c$ 决定：220 GHz 太赫兹雷达分辨率高，是因为它的带宽能做到 10 GHz，不是因为载频高。（3）“采样间隔”和“分辨率”是两回事：把频域数据补零后再做 IFFT，曲线会更平滑，但两个点能否分开仍由 $c/2B$ 决定。
 
 <video controls preload="metadata" width="100%" poster="../figures/video_frames/V2_pulse_compression_2.png"><source src="../videos/V2_pulse_compression.mp4" type="video/mp4"></video>
-<img class="print-only" src="../figures/video_frames/V2_pulse_compression_2.png" alt="视频关键帧"/>
 
 
 ▶ **动画 2 脉冲压缩（35 s）**：参考信号在回波上滑动做相关，对齐时形成尖峰；随后带宽从 15 MHz 扫到 300 MHz，主瓣不断变窄。文件：`videos/V2_pulse_compression.mp4`
