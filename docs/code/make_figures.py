@@ -7,6 +7,7 @@ from matplotlib.patches import FancyArrowPatch, Circle, Rectangle, Polygon
 import isar_core as ic
 
 ic.setup_cjk_font()
+matplotlib.rcParams['mathtext.fontset'] = 'cm'   # $…$ 内的公式按 LaTeX (Computer Modern) 排版
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'figures'); os.makedirs(OUT, exist_ok=True)
 def save(fig, name):
     fig.savefig(os.path.join(OUT, name), dpi=150, bbox_inches='tight'); plt.close(fig); print('saved', name)
@@ -54,14 +55,14 @@ def fig_turntable():
     a.add_patch(Polygon([[-0.4, 7.6], [0.4, 7.6], [0, 7.0]], color='k'))
     a.text(0.6, 7.3, '雷达 (远场)', fontsize=12)
     a.annotate('', xy=(0, 1.2), xytext=(0, 6.8), arrowprops=dict(arrowstyle='->', lw=1.5, color='gray'))
-    a.text(0.15, 4.5, '雷达视线 LOS\n(距离向 y)', color='gray')
+    a.text(0.15, 4.5, '雷达视线 LOS\n(距离向 $y$)', color='gray')
     pts, _ = ic.satellite_points('sat_a'); p = ic.rotate_pts(pts, np.deg2rad(20)) * 0.35
     a.scatter(p[:, 0], p[:, 1], s=10, c='C0')
     a.add_patch(Circle((0, 0), 2.1, fill=False, ls='--', color='C1'))
     a.annotate('', xy=(1.6, 1.5), xytext=(2.1, 0.3), arrowprops=dict(arrowstyle='->', color='C1', lw=2, connectionstyle='arc3,rad=0.3'))
-    a.text(2.2, 1.2, 'ω 转动', color='C1', fontsize=12)
-    a.plot([0, 2.6], [0, 0], 'k:', lw=1); a.text(2.7, -0.1, 'x (横向)')
-    q = p[5]; a.plot(*q, 'ro'); a.annotate('散射点 (x_k, y_k)', xy=q, xytext=(-3.3, -1.9), color='r', arrowprops=dict(arrowstyle='->', color='r'))
+    a.text(2.2, 1.2, '$\\omega$ 转动', color='C1', fontsize=12)
+    a.plot([0, 2.6], [0, 0], 'k:', lw=1); a.text(2.7, -0.1, '$x$ (横向)')
+    q = p[5]; a.plot(*q, 'ro'); a.annotate('散射点 $(x_k, y_k)$', xy=q, xytext=(-3.3, -1.9), color='r', arrowprops=dict(arrowstyle='->', color='r'))
     a.set_xlim(-3.5, 4); a.set_ylim(-2.6, 8)
     a.set_title('ISAR 转台模型: 平动补偿后, 目标相当于绕中心旋转')
     # 右: 多普勒与 x 的关系
@@ -69,10 +70,10 @@ def fig_turntable():
     om = np.deg2rad(5)/1.0; lam = 0.03
     xs = np.array([-4, -2, 0, 2, 4])
     for x in xs:
-        b.plot([x, x], [0, 2*om*x/lam], lw=3)
+        b.plot([x, x], [0, -2*om*x/lam], lw=3)   # 式 (2.4): 远离为正的 v 对应 f_d = -2ωx/λ
     b.axhline(0, color='k', lw=.8)
-    b.set_xlabel('散射点横向坐标 x / m'); b.set_ylabel('多普勒频率 f_d / Hz')
-    b.set_title('f_d = 2ωx/λ : 多普勒 ∝ 横向位置\n(λ=3 cm, ω=5°/s)')
+    b.set_xlabel('散射点横向坐标 $x$ / m'); b.set_ylabel('多普勒频率 $f_d$ / Hz')
+    b.set_title('$f_d = -2\\omega x/\\lambda$ : 多普勒 ∝ 横向位置\n($\\lambda=3$ cm, $\\omega=5^\\circ$/s)')
     b.grid(alpha=.3)
     save(fig, 'A03_turntable.png')
 
@@ -336,9 +337,9 @@ def fig_attention():
     for i in range(1, n): ax[0].axhline(i*P-.5, color='y', lw=.6); ax[0].axvline(i*P-.5, color='y', lw=.6)
     ax[0].add_patch(Rectangle((n//2*P-.5, n//2*P-.5), P, P, fill=False, ec='r', lw=2))
     ax[0].set_title(f'切成 {n}×{n} 个 patch (token); 红框为查询 token')
-    ax[1].imshow(att.reshape(n, n), origin='lower', cmap='hot'); ax[1].set_title('查询 token 对所有 token 的注意力权重\nsoftmax(q·k/√d)')
+    ax[1].imshow(att.reshape(n, n), origin='lower', cmap='hot'); ax[1].set_title('查询 token 对所有 token 的注意力权重\n$\\mathrm{softmax}(\\mathbf{q}\\cdot\\mathbf{k}/\\sqrt{d})$')
     ax[2].axis('off')
-    ax[2].text(0, .5, '自注意力:\n  Q = XW_Q,  K = XW_K,  V = XW_V\n  Attn(Q,K,V) = softmax(QK^T/√d)·V\n\n'
+    ax[2].text(0, .5, '自注意力:\n  $Q = XW_Q,\\ K = XW_K,\\ V = XW_V$\n  $\\mathrm{Attn}(Q,K,V) = \\mathrm{softmax}(QK^{\\mathsf{T}}/\\sqrt{d})\\,V$\n\n'
                '每个 token 根据与其它 token 的相似度\n“加权汇总”全局信息 → 捕捉远距离\n散射结构关系(如两块太阳翼之间)',
                fontsize=12, va='center')
     for x in ax[:2]: x.set_xticks([]); x.set_yticks([])

@@ -6,12 +6,18 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 import isar_core as ic
 ic.setup_cjk_font()
+matplotlib.rcParams['mathtext.fontset'] = 'cm'   # $…$ 内的公式按 LaTeX (Computer Modern) 排版
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'figures')
 COL = dict(in_='#dbeafe', pre='#fef3c7', net='#dcfce7', key='#fecaca', out='#e9d5ff', gray='#f1f5f9')
 
-def diagram(name, nodes, edges, size=(14, 4.5), title=None, notes=None):
+def diagram(name, nodes, edges, size=(14, 4.5), title=None, notes=None, groups=(), loops=()):
+    """groups: [(x0, y0, x1, y1, 标签)] 虚线分组框; loops: [(折线点列, 标签, 标签位置)] 回环箭头。"""
     fig, ax = plt.subplots(figsize=size); ax.set_xlim(0, 100); ax.set_ylim(0, 100); ax.axis('off')
     pos = {}
+    for (gx0, gy0, gx1, gy1, glab) in groups:
+        ax.add_patch(FancyBboxPatch((gx0, gy0), gx1 - gx0, gy1 - gy0, boxstyle='round,pad=0.3,rounding_size=2',
+                                    fc='#f8fafc', ec='#64748b', lw=1.2, ls='--', zorder=0))
+        ax.text(gx0 + 1, gy1 - 1.5, glab, ha='left', va='top', fontsize=9.5, color='#334155')
     for k, (x, y, w, h, txt, c) in nodes.items():
         ax.add_patch(FancyBboxPatch((x - w/2, y - h/2), w, h, boxstyle='round,pad=0.4,rounding_size=1.5',
                                     fc=COL.get(c, c), ec='#334155', lw=1.2))
@@ -29,7 +35,13 @@ def diagram(name, nodes, edges, size=(14, 4.5), title=None, notes=None):
         ax.add_patch(FancyArrowPatch(p1, p2, arrowstyle='-|>', mutation_scale=14, color='#334155', lw=1.3, ls=sty,
                                      connectionstyle='arc3,rad=0'))
         if lab: ax.text((p1[0]+p2[0])/2, (p1[1]+p2[1])/2 + 2.5, lab, fontsize=8, ha='center', color='#b91c1c')
+    for (pts, lab, lxy) in loops:                       # 折线回环: 前几段画线, 最后一段带箭头
+        xs, ys_ = zip(*pts)
+        ax.plot(xs[:-1], ys_[:-1], ls='--', color='#64748b', lw=1.3)
+        ax.add_patch(FancyArrowPatch(pts[-2], pts[-1], arrowstyle='-|>', mutation_scale=14, color='#64748b', lw=1.3, ls='--'))
+        if lab: ax.text(lxy[0], lxy[1], lab, fontsize=8.5, ha='center', va='center', color='#475569')
     ys = [v[1] - v[3]/2 for v in nodes.values()] + [v[1] + v[3]/2 for v in nodes.values()]
+    ys += [g[1] for g in groups] + [g[3] for g in groups]
     lo, hi = min(ys) - (9 if notes else 4), max(ys) + 4
     ax.set_ylim(lo, hi); fig.set_size_inches(size[0], size[1] * (hi - lo) / 100 + 0.4)
     if title: ax.set_title(title, fontsize=13)
@@ -37,24 +49,28 @@ def diagram(name, nodes, edges, size=(14, 4.5), title=None, notes=None):
     fig.savefig(os.path.join(OUT, name), dpi=150, bbox_inches='tight'); plt.close(fig); print('saved', name)
 
 def p1():
-    n = {'in': (7, 55, 11, 22, 'HH/HV/VV\n三通道\nISAR 像\n128×128', 'in_'),
-         'pauli': (22, 55, 12, 22, 'Pauli 分解\n→ 相干矩阵 T\n→ 6维特征\nA~F', 'pre'),
-         'mix': (37, 55, 12, 22, 'MixConv\n(3×3/5×5/7×7)\nBN+池化\n1×1卷积→3通道', 'pre'),
-         'psfeb': (55, 78, 16, 18, 'PSFEB 极化散射分支\n分组卷积+交互卷积\n+极坐标注意力', 'key'),
-         'sfeb': (55, 32, 16, 18, 'SFEB 空间分支\n卷积+深度卷积\n+空间注意力', 'net'),
-         'stage': (55, 55, 12, 8, '×4 层级 stage', 'gray'),
-         'lgfb': (74, 55, 12, 22, 'LGFB\n局部-全局融合\n(高效MHSA\n+多头卷积注意力)', 'key'),
-         'out': (91, 55, 11, 18, 'BatchNorm\nSoftmax\n→ 6类', 'out')}
-    e = [('in', 'pauli'), ('pauli', 'mix'), ('mix', 'psfeb'), ('mix', 'sfeb'), ('psfeb', 'lgfb'), ('sfeb', 'lgfb'), ('lgfb', 'out')]
-    diagram('B1_dbssit_simple.png', n, e, title='论文1 DB-SSIT 简化框图 (自绘, 对应原文 Fig.1–5)',
-            notes='思想: 一条支路看“极化散射机理”(通道间关系), 一条支路看“空间结构”(像素邻域), 最后用 Transformer 融合局部与全局')
+    # 原文 Fig. 1: 预处理 → 4 个层级 stage(每个 stage 内 PSFEB ∥ SFEB 并行, 拼接 C) → LGFB → BN + Softmax
+    n = {'in': (6, 55, 10, 22, 'HH/HV/VV\n三通道\nISAR 像\n128×128', 'in_'),
+         'pauli': (19, 55, 11, 22, 'Pauli 分解\n→ 相干矩阵 $\\mathbf{T}$\n→ 6 维特征\nA–F', 'pre'),
+         'mix': (32, 55, 11, 22, 'MixConv\n(3×3/5×5/7×7)\nBN+池化\n1×1卷积→3通道', 'pre'),
+         'psfeb': (52, 72, 15, 14, 'PSFEB 极化散射分支\n分组卷积+交互卷积\n+极坐标注意力', 'key'),
+         'sfeb': (52, 40, 15, 14, 'SFEB 空间分支\n卷积+深度卷积\n+空间注意力', 'net'),
+         'cat': (65, 56, 5, 8, 'C\n拼接', 'gray'),
+         'lgfb': (80, 56, 11, 22, 'LGFB\n局部-全局融合\n(高效MHSA\n+多头卷积注意力)', 'key'),
+         'out': (93, 56, 9, 18, 'BatchNorm\nSoftmax\n→ 6类', 'out')}
+    e = [('in', 'pauli'), ('pauli', 'mix'), ('mix', 'psfeb'), ('mix', 'sfeb'), ('psfeb', 'cat'), ('sfeb', 'cat'),
+         ('cat', 'lgfb'), ('lgfb', 'out')]
+    groups = [(41, 18, 70, 93, '层级 stage ×4　尺寸 $H/4 \\to H/8 \\to H/16 \\to H/32$')]
+    loops = [([(65, 51.8), (65, 26), (43, 26), (43, 54)], '前 3 个 stage 的输出送入下一 stage', (55, 22.5))]
+    diagram('B1_dbssit_simple.png', n, e, title='论文1 DB-SSIT 简化框图 (自绘, 对应原文 Fig.1–5)', groups=groups, loops=loops,
+            notes='思想: 一条支路看“极化散射机理”(通道间关系), 一条支路看“空间结构”(像素邻域), 4 个 stage 逐级下采样后, 用 Transformer 融合局部与全局')
 
 def p2():
     n = {'in': (8, 55, 12, 22, '散焦的复值\nISAR 像\n(实部+虚部)', 'in_'),
          'cnn': (26, 55, 14, 22, '复值卷积\nCV-Conv + CV-BN\n→ 复特征向量', 'net'),
-         'node': (45, 55, 14, 22, '节点 = 特征\n⊕ 标签\n已知:1+j0\n查询:1/N+j/N', 'pre'),
-         'graph': (64, 55, 14, 22, '复值图网络\n邻接 |x_i−x_j|\n(实、虚分别)\nCV-Softmax', 'key'),
-         'out': (84, 55, 14, 22, '查询节点输出\nN 维复概率\n→ 类别', 'out')}
+         'node': (45, 55, 14, 22, '节点 = 特征\n⊕ 标签\n已知: $1+j0$\n查询: $1/N+j/N$', 'pre'),
+         'graph': (64, 55, 14, 22, '复值图网络\n邻接 $|x_i-x_j|$\n(实、虚分别)\nCV-Softmax', 'key'),
+         'out': (84, 55, 14, 22, '查询节点输出\n$N$ 维复概率\n→ 类别', 'out')}
     e = [('in', 'cnn'), ('cnn', 'node'), ('node', 'graph'), ('graph', 'out')]
     diagram('B2_cvgnn_simple.png', n, e, title='论文2 CV-GNN 简化框图 (自绘, 对应原文 Fig.2, Fig.6)',
             notes='思想: 不做重聚焦, 直接把“散焦复图像”的实部/虚部关系交给复值网络; 图网络在少样本间传递标签信息')
@@ -75,12 +91,12 @@ def p4():
     n = {'pre': (12, 82, 20, 14, '① 对比学习预训练\n随机成像参数生成 patch 对\nNT-Xent 损失', 'pre'),
          'enc': (12, 45, 18, 14, 'CV-ResNet18\n复值编码器\n(预训练后保留)', 'net'),
          'in': (12, 15, 16, 12, '复值 ISAR 像\n(支持/查询)', 'in_'),
-         'patch': (36, 70, 16, 16, '分割→外接矩形\n→ N×N 重叠 patch\n→ 每 patch 编码', 'pre'),
+         'patch': (36, 70, 16, 16, '分割→外接矩形\n→ $N\\times N$ 重叠 patch\n→ 每 patch 编码', 'pre'),
          'gra': (55, 70, 15, 16, '② GRA 图推理\n8邻域强 patch 相连\n(局部结构)', 'key'),
          'tr': (74, 70, 15, 16, '复值 Transformer\n(全局关系)', 'key'),
-         'glob': (55, 30, 15, 14, '整图嵌入网络\n(全局特征 E_w)', 'net'),
-         'fuse': (74, 30, 15, 14, '特征融合\nE_f=[E_w,E_p]W', 'net'),
-         'cls': (92, 50, 13, 22, '③ 图分类模块\n(GNN少样本)\n→ C-way\n类别', 'out')}
+         'glob': (55, 30, 15, 14, '整图嵌入网络\n(全局特征 $E_w$)', 'net'),
+         'fuse': (74, 30, 15, 14, '特征融合\n$E_f=[E_w,E_p]\\,W$', 'net'),
+         'cls': (92, 50, 13, 22, '③ 图分类模块\n(GNN少样本)\n→ $C$-way\n类别', 'out')}
     e = [('pre', 'enc'), ('in', 'enc'), ('enc', 'patch'), ('patch', 'gra'), ('gra', 'tr'), ('enc', 'glob'), ('tr', 'fuse'), ('glob', 'fuse'), ('fuse', 'cls')]
     diagram('B4_cvpgt_simple.png', n, e, size=(14, 7), title='论文4 CvPGT 简化框图 (自绘, 对应原文 Fig.2–7)',
             notes='思想: 复值网络保留相位; 对比学习让特征对分辨率/散焦/旋转不敏感; patch 图 + Transformer 同时抓局部与全局')
@@ -89,15 +105,15 @@ def p5():
     n = {'in': (7, 55, 11, 20, 'ISAR 像\n(可能被拉伸/\n旋转/平移)', 'in_'),
          'stn': (24, 55, 15, 24, '多头 STN (MH-STN)\n3 个头各输出 5 参数\n平移2+缩放2+旋转1\n(无剪切, tanh 限幅)', 'key'),
          'cat': (40, 55, 11, 18, '3 张校正图\n+ 原图\n拼成 4 通道', 'pre'),
-         'gen': (56, 55, 14, 24, 'GEN 组嵌入网络\n分组卷积 + 可变形\n卷积空间注意力\n+ 通道注意力\n→ (均值 z, 方差 s)', 'net'),
-         'gat': (75, 55, 15, 24, 'MG-GAT\n高斯节点\n掩码注意力\n(只保留 top-k 邻居)', 'key'),
-         'out': (92, 55, 10, 18, '查询类别\n(N-way)', 'out')}
+         'gen': (56, 55, 14, 24, 'GEN 组嵌入网络\n分组卷积 + 可变形\n卷积空间注意力\n+ 通道注意力\n→ (均值 $z$, 方差 $s$)', 'net'),
+         'gat': (75, 55, 15, 24, 'MG-GAT\n高斯节点\n掩码注意力\n(只保留 top-$k$ 邻居)', 'key'),
+         'out': (92, 55, 10, 18, '查询类别\n($N$-way)', 'out')}
     e = [('in', 'stn'), ('stn', 'cat'), ('cat', 'gen'), ('gen', 'gat'), ('gat', 'out')]
     diagram('B5_remi_simple.png', n, e, title='论文5 REMI 简化框图 (自绘, 对应原文 Fig.2–5)',
             notes='思想: 先“摆正”图像(鲁棒嵌入), 再在少样本图上用“带不确定度”的节点做稀疏推理(流形推理)')
 
 def p6():
-    n = {'in': (7, 55, 11, 22, 'S=3 个站\n同时刻的\nISAR 像', 'in_'),
+    n = {'in': (7, 55, 11, 22, '$S=3$ 个站\n同时刻的\nISAR 像', 'in_'),
          'g': (22, 55, 12, 18, '通道拼接\n分组卷积\n(每站一组)', 'net'),
          'isfr': (40, 55, 16, 26, 'ISFR 站间融合\n① AMFA: 各站仿射对齐\n(缩放/旋转/平移)\n② 轻量 Transformer\n跨站重建', 'key'),
          'conv': (57, 55, 10, 14, '后续\n卷积块', 'net'),
@@ -105,14 +121,14 @@ def p6():
          'inf': (90, 55, 13, 22, '原型+查询拼接\n关系模块打分\n→ 类别', 'out')}
     e = [('in', 'g'), ('g', 'isfr'), ('isfr', 'conv'), ('conv', 'icfr'), ('icfr', 'inf')]
     diagram('B6_mlfr_simple.png', n, e, title='论文6 MLFR 简化框图 (自绘, 对应原文 Fig.2–3)',
-            notes='损失 = λ1 结构对齐(SSIM) + λ2 站重建(MSE) + λ3 类间对比(InfoNCE) + λ4 交叉熵; 思想: 先把多站“对齐成一个视角”, 再拉开类间差异')
+            notes='损失 = $\\lambda_1$ 结构对齐(SSIM) + $\\lambda_2$ 站重建(MSE) + $\\lambda_3$ 类间对比(InfoNCE) + $\\lambda_4$ 交叉熵; 思想: 先把多站“对齐成一个视角”, 再拉开类间差异')
 
 def p7():
-    n = {'in': (7, 55, 11, 22, '简缩极化\nS_LL, S_RL\n实+虚 → 4通道\n256×256', 'in_'),
-         'det': (24, 55, 14, 22, '阶段1: RTMdet\nCSP 骨干 + PAFPN\n头1 → 旋转框\n(x,y,w,h,θ)+9类', 'net'),
+    n = {'in': (7, 55, 11, 22, '简缩极化\n$S_{\\mathrm{LL}}$, $S_{\\mathrm{RL}}$\n实+虚 → 4通道\n256×256', 'in_'),
+         'det': (24, 55, 14, 22, '阶段1: RTMdet\nCSP 骨干 + PAFPN\n头1 → 旋转框\n$(x,y,w,h,\\theta)$+9类', 'net'),
          'mg': (42, 55, 14, 22, 'MGNF\n多高斯阈值→掩膜\n剔除目标外锚点\n(节点减少 71.74%)', 'pre'),
-         'loc': (60, 78, 15, 16, '局部图: NMS 后\n最优框↔被抑制框\n(同类且 IoU≥0.1)', 'key'),
-         'glo': (60, 32, 15, 16, '全局图: 最优框间\n类别分数余弦相似\nkNN (k=5)', 'key'),
+         'loc': (60, 78, 15, 16, '局部图: NMS 后\n最优框↔被抑制框\n(同类且 IoU$\\geq 0.1$)', 'key'),
+         'glo': (60, 32, 15, 16, '全局图: 最优框间\n类别分数余弦相似\n$k$NN ($k=5$)', 'key'),
          'fuse': (77, 55, 13, 18, 'GAT 聚合\n残差融合\n头2 精修', 'net'),
          'out': (93, 55, 10, 18, '部件旋转框\n+ 9 类部件', 'out')}
     e = [('in', 'det'), ('det', 'mg'), ('mg', 'loc'), ('mg', 'glo'), ('loc', 'fuse'), ('glo', 'fuse'), ('fuse', 'out')]

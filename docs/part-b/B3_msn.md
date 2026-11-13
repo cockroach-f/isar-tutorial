@@ -204,7 +204,7 @@ RAM 插在每个 bottleneck 最后一个 ReLU 之后；ResNet50 使用 ImageNet 
 - 类别只有 5 个，均为仿真；“小样本”是每类 33–109 张，并非 1/5-shot；
 - 训练集与测试集来自同一批仿真（不同转动周期），类别不是“新类”，与后来的少样本论文（4、5、6）不可直接比较。
 
-## 9.7 本科生可以复现什么
+## 9.7 可以动手复现什么
 
 - 用 `project1_rd_dataset.py` 生成数据，分别训练 ResNet18（`project1_train_resnet18.py`）、原型网络（`project2_protonet.py`）与一个简单 SVM；
 - 用 `sklearn` 的 `StackingClassifier` 或 `xgboost` 实现第二层集成，比较“单模型 vs 简单平均 vs Stacking”。

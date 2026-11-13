@@ -158,7 +158,7 @@ $$L = -\tfrac12\Big(\overline{\ln\sigma(\mathrm{Re})\odot l}\Big)^2 - \tfrac12\B
 - 仿真目标转角仅 ±1.92°，类别 8 个，规模较小；
 - 推理较慢；且需要复数数据，很多公开数据只提供幅度图。
 
-## 8.7 本科生可以复现什么
+## 8.7 可以动手复现什么
 
 - 用 `code/isar_core.py` 的 `echo_turntable(..., alpha_ratio>0)` 生成**散焦**复数像数据集；
 - 用 PyTorch 原生复数张量（`torch.cfloat`）实现复卷积：`conv_r(x.real) - conv_i(x.imag)` 与 `conv_r(x.imag) + conv_i(x.real)`；
