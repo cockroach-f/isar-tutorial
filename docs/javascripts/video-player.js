@@ -195,9 +195,13 @@
           hideTimer = null;
         }
         wrap.classList.add('show-controls');
-      } else {
+      } else if (wrap.classList.contains('show-controls')) {
+        // 只有控制条还可见时才重算计时：控制条藏起后，浏览器会把焦点从
+        // 藏起来的按钮上移开、补发一次 focusout；此时若也 showControls，
+        // 控制条刚藏起又会被唤回、800 毫秒后才再藏起（暂停按钮上的闪烁）。
         showControls();
       }
+      // 控制条已藏起时的 focusout 只是藏起的副作用：只清 hasFocus，不唤回。
     });
 
     /* ---------- 状态同步 ---------- */
