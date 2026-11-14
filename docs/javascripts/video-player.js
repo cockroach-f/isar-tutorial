@@ -138,6 +138,13 @@
     var hideTimer = null;
     var hasFocus = false;
     var scrubbing = false;
+    // 隐藏锁存：计时器触发自动隐藏后 500ms 内，忽略 mousemove / focusout
+    // 的唤回——控制条藏起的瞬间，某些浏览器会补发位置或焦点事件，若不
+    // 锁存，控制条刚藏起又会被唤回、再藏起（闪烁）。显式操作（点击、按
+    // 键、点触、移入、焦点进入、调倍速、拖进度）传 force 不受锁存限制；
+    // 鼠标移开触发的 hideNow 不设锁存，移回可立即唤回。
+    var LATCH_MS = 500;
+    var latchedUntil = 0;
 
     function hideNow() {
       if (hideTimer) {
@@ -147,14 +154,20 @@
       wrap.classList.remove('show-controls');
     }
 
-    function showControls() {
+    function autoHide() {
+      latchedUntil = Date.now() + LATCH_MS;
+      hideNow();
+    }
+
+    function showControls(force) {
+      if (!force && Date.now() < latchedUntil) return;
       wrap.classList.add('show-controls');
       if (hideTimer) clearTimeout(hideTimer);
       // 焦点在播放器内或正在拖进度时不自动隐藏；
       // 暂停时鼠标一停就藏（短延迟），播放时留正常延迟
       if (!hasFocus && !scrubbing) {
         var delay = (video.paused || video.ended) ? HIDE_DELAY_PAUSED : HIDE_DELAY_PLAYING;
-        hideTimer = setTimeout(hideNow, delay);
+        hideTimer = setTimeout(autoHide, delay);
       }
     }
 
@@ -167,7 +180,7 @@
     wrap.addEventListener('mouseenter', function (e) {
       lastMouseX = e.clientX;
       lastMouseY = e.clientY;
-      showControls();
+      showControls(true); // 移入是显式动作，不受锁存限制
     });
     wrap.addEventListener('mousemove', function (e) {
       if (e.clientX === lastMouseX && e.clientY === lastMouseY) return;
@@ -176,7 +189,7 @@
       showControls();
     });
     wrap.addEventListener('mouseleave', hideNow); // 移开鼠标：立刻消失
-    wrap.addEventListener('touchstart', showControls, { passive: true });
+    wrap.addEventListener('touchstart', function () { showControls(true); }, { passive: true });
     // 只有焦点落在需要持续操作的控件（进度条、倍速下拉框）上时才钉住控制条；
     // 焦点在容器或播放/全屏按钮上时不钉住——否则点一下画面获得焦点后，
     // 控制条就再也不自动藏了，暂停时仍会挡住字幕。
@@ -185,7 +198,7 @@
     }
     wrap.addEventListener('focusin', function (e) {
       hasFocus = pinsBar(e.target);
-      showControls();
+      showControls(true); // 焦点进入是显式动作；藏起只会引起 focusout，不会引起 focusin
     });
     wrap.addEventListener('focusout', function (e) {
       hasFocus = pinsBar(e.relatedTarget);
@@ -294,16 +307,16 @@
     video.addEventListener('play', function () {
       syncPlayBtn();
       showFlash(ICONS.pause);
-      showControls(); // 按播放状态重算隐藏延迟
+      showControls(true); // 按播放状态重算隐藏延迟
     });
     video.addEventListener('pause', function () {
       syncPlayBtn();
       showFlash(ICONS.play);
-      showControls(); // 暂停后用短延迟：鼠标一停就藏起
+      showControls(true); // 暂停后用短延迟：鼠标一停就藏起
     });
     video.addEventListener('ended', function () {
       syncPlayBtn();
-      showControls();
+      showControls(true);
     });
     video.addEventListener('timeupdate', syncTime);
     video.addEventListener('loadedmetadata', function () {
@@ -340,7 +353,7 @@
     speed.addEventListener('change', function () {
       video.playbackRate = parseFloat(speed.value);
       saveSpeed(video.playbackRate);
-      showControls();
+      showControls(true);
     });
 
     // 进度拖拽
@@ -372,11 +385,11 @@
     });
     progress.addEventListener('pointerup', function () {
       scrubbing = false;
-      showControls();
+      showControls(true);
     });
     progress.addEventListener('pointercancel', function () {
       scrubbing = false;
-      showControls();
+      showControls(true);
     });
     progress.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowLeft') {
@@ -442,7 +455,7 @@
     syncPlayBtn();
     syncTime();
     syncBuffered();
-    showControls(); // 先露一下控制条，静止后自动藏起（暂停 0.8 秒、播放 2 秒）
+    showControls(true); // 先露一下控制条，静止后自动藏起（暂停 0.8 秒、播放 2 秒）
   }
 
   function init() {
