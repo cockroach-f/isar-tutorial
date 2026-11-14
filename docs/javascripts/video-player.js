@@ -158,8 +158,23 @@
       }
     }
 
-    wrap.addEventListener('mouseenter', showControls);
-    wrap.addEventListener('mousemove', showControls);
+    // 鼠标位置去重：控制条藏起后，指针下的元素会从控制条变成画面，
+    // 浏览器会补发一次坐标完全相同的 mousemove（悬停重算）；若不去重，
+    // 指针停在暂停按钮上时控制条刚藏起来又会被唤回，闪一下才再藏起。
+    // 只有坐标真正变化的移动才唤回控制条、重算计时。
+    var lastMouseX = null;
+    var lastMouseY = null;
+    wrap.addEventListener('mouseenter', function (e) {
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      showControls();
+    });
+    wrap.addEventListener('mousemove', function (e) {
+      if (e.clientX === lastMouseX && e.clientY === lastMouseY) return;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      showControls();
+    });
     wrap.addEventListener('mouseleave', hideNow); // 移开鼠标：立刻消失
     wrap.addEventListener('touchstart', showControls, { passive: true });
     // 只有焦点落在需要持续操作的控件（进度条、倍速下拉框）上时才钉住控制条；
