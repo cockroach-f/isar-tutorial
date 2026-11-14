@@ -24,7 +24,7 @@
 - 空间目标机动或调整姿态时，回波中出现**高阶相位项**，导致 ISAR 像散焦（原文 Fig. 1 给出天基 ISAR 成像几何以及机动目标与慢速目标的成像结果对比）；
 - 回波模型（原文式 (1)–(2)）：
 
-  $$s(t,t_m) = \sum_k A_k\,\mathrm{sinc}\Big(B\big(t - 2R_k(t_m)/c\big)\Big)\exp\big(j\varphi_k(t_m)\big),\qquad \varphi_k(t_m) = \varphi_0 + 2\pi\sum_q C_{k,q}\,t_m^q .$$
+$$s(t,t_m) = \sum_k A_k\,\mathrm{sinc}\Big(B\big(t - 2R_k(t_m)/c\big)\Big)\exp\big(j\varphi_k(t_m)\big),\qquad \varphi_k(t_m) = \varphi_0 + 2\pi\sum_q C_{k,q}\,t_m^q .$$
 
   第一项是距离压缩后的 sinc 峰（→ 式 (1.12)），第二项是相位。$q=1$ 的项就是普通多普勒（→ 第 2.2 节）；$q\ge2$ 的高阶项让多普勒随时间变化，造成散焦（→ 例题 2.4）；
 - 传统做法是先估计高阶系数、重聚焦（原文式 (3)），再分类。问题：重聚焦存在残余相位误差，且计算量大；
@@ -82,7 +82,9 @@
     一句话：查询节点输出每类的“复概率”，对实部、虚部分别算交叉熵类损失。交叉熵见第 5.2 节例题 5.3。
 
 输出为 $N\times n_{way}$ 的矩阵，第一行对应查询样本的各类复概率。损失函数（原文式 (7)）对实部和虚部分别计算交叉熵类损失再组合，形式为
+
 $$L = -\tfrac12\Big(\overline{\ln\sigma(\mathrm{Re})\odot l}\Big)^2 - \tfrac12\Big(\overline{\ln\sigma(\mathrm{Im})\odot l}\Big)^2,$$
+
 其中 $l$ 为 one-hot 标签，$\odot$ 只取正确类别的值。原文式 (8)–(13) 推导了复值 BN（2×2 协方差白化）和 CV-Linear 的反向传播。
 
 ![图 8-5 原文 Fig. 2：CV-GNN 对复值数据的图推理详细结构。](../paper_figs/p2_CVGNN_fig2.png)
