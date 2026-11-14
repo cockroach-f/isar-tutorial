@@ -1,7 +1,7 @@
 /* ISAR 教程自定义视频播放器（无依赖，与 stylesheets/video-player.css 配套）。
  *
  * v2：B 站 / YouTube 式悬浮控制条——控制条以半透明遮罩浮在画面底部，
- * 鼠标移开立刻消失；鼠标静止时也自动隐藏，暂停时藏得更快（约 1 秒），
+ * 鼠标移开立刻消失；鼠标静止时也自动隐藏，暂停时藏得更快（0.8 秒），
  * 暂停下来思考时字幕全程可见。遮罩刻意调淡（底部最深处 alpha 0.55），
  * 只求按钮在白色背景的 V 系列视频上仍能看清。控制条只留播放/暂停、
  * 进度、时间、倍速、全屏；快退快进与逐帧只保留键盘（J/L、,/。），
@@ -16,8 +16,8 @@
   var SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
   var STEP = 1 / 30; // 键盘逐帧步长（秒），按 30fps 计
   var SEEK = 5; // 键盘快退 / 快进秒数
-  var HIDE_DELAY_PLAYING = 2500; // 播放时鼠标静止多久后隐藏控制条（毫秒）
-  var HIDE_DELAY_PAUSED = 1200; // 暂停时鼠标静止多久后隐藏：停下约 1 秒就藏起，不挡字幕
+  var HIDE_DELAY_PLAYING = 2000; // 播放时鼠标静止多久后隐藏控制条（毫秒）
+  var HIDE_DELAY_PAUSED = 800; // 暂停时鼠标静止多久后隐藏：停下 0.8 秒就藏起，不挡字幕
   var SPEED_KEY = 'isar-vp-speed';
 
   var ICONS = {
@@ -134,7 +134,7 @@
     stage.appendChild(bar);
     wrap.appendChild(stage);
 
-    /* ---------- 控制条显隐：移开鼠标立刻消失，静止 2.5 秒也消失 ---------- */
+    /* ---------- 控制条显隐：移开鼠标立刻消失，静止也自动消失 ---------- */
     var hideTimer = null;
     var hasFocus = false;
     var scrubbing = false;
@@ -423,7 +423,7 @@
     syncPlayBtn();
     syncTime();
     syncBuffered();
-    showControls(); // 先露一下控制条，2.5 秒后自动藏起
+    showControls(); // 先露一下控制条，静止后自动藏起（暂停 0.8 秒、播放 2 秒）
   }
 
   function init() {
