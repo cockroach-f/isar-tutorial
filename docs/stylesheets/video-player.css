@@ -1,0 +1,252 @@
+/* ISAR 教程自定义视频播放器。
+ * 控制条在视频画面下方（不在画面内叠加），暂停时不遮挡烧录在画面底部的字幕。
+ * 与 javascripts/video-player.js 配套；JS 失效时原生 controls 仍在（渐进增强）。
+ */
+
+.vp {
+  margin: 1em 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.vp:focus {
+  outline: none;
+}
+
+.vp:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color, #448aff);
+  outline-offset: 2px;
+  border-radius: 0.3rem;
+}
+
+.vp-stage {
+  position: relative;
+  line-height: 0;
+  background: #000;
+}
+
+/* 视频本身只保留上方圆角，下方与控制条拼合 */
+.md-typeset .vp video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0.3rem 0.3rem 0 0;
+  background: #000;
+}
+
+/* 画面中央的播放/暂停闪示（居中，不碰底部字幕区） */
+.vp-flash {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.85);
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.vp-flash.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.vp-flash svg {
+  width: 2rem;
+  height: 2rem;
+  fill: currentColor;
+}
+
+/* ---- 控制条：画面下方常驻，不遮画面 ---- */
+.vp-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  background: #1c1c1e;
+  padding: 0.3rem 0.45rem;
+  border-radius: 0 0 0.3rem 0.3rem;
+  line-height: 1;
+}
+
+.vp-bar button {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #ececec;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.vp-bar button:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.vp-bar button:focus-visible,
+.vp-speed:focus-visible,
+.vp-progress:focus-visible {
+  outline: 2px solid #82b1ff;
+  outline-offset: 1px;
+}
+
+.vp-bar button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
+}
+
+.vp-seek-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ---- 进度条 ---- */
+.vp-progress {
+  position: relative;
+  flex: 1;
+  height: 1.6rem;
+  min-width: 3rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin: 0 0.3rem;
+}
+
+.vp-progress::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 0.3rem;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 0.15rem;
+}
+
+.vp-buffered,
+.vp-played {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 0.3rem;
+  transform: translateY(-50%);
+  border-radius: 0.15rem;
+  width: 0;
+  pointer-events: none;
+}
+
+.vp-buffered {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.vp-played {
+  background: var(--md-accent-fg-color, #448aff);
+}
+
+.vp-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.vp-progress:hover .vp-thumb,
+.vp-progress:focus-visible .vp-thumb {
+  opacity: 1;
+}
+
+/* ---- 时间与倍速 ---- */
+.vp-time {
+  color: #cfcfcf;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  padding: 0 0.25rem;
+}
+
+.vp-speed {
+  background: #2c2c2e;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 0.3rem;
+  height: 1.7rem;
+  font-size: 0.8rem;
+  padding: 0 0.15rem;
+  margin: 0 0.15rem;
+  cursor: pointer;
+}
+
+/* ---- 全屏：控制条跟随画面 ---- */
+.vp:fullscreen,
+.vp:-webkit-full-screen {
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vp:fullscreen .vp-stage,
+.vp:-webkit-full-screen .vp-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+}
+
+.vp:fullscreen video,
+.vp:-webkit-full-screen video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.vp:fullscreen .vp-bar,
+.vp:-webkit-full-screen .vp-bar {
+  border-radius: 0;
+  flex: none;
+}
+
+/* ---- 窄屏：收起逐帧按钮，保住进度条 ---- */
+@media screen and (max-width: 480px) {
+  .vp-bar button {
+    width: 1.8rem;
+    min-width: 1.8rem;
+  }
+
+  .vp-btn-prev,
+  .vp-btn-next {
+    display: none;
+  }
+
+  .vp-time {
+    font-size: 0.72rem;
+  }
+}
