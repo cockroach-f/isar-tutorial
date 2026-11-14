@@ -1,9 +1,11 @@
 /* ISAR 教程自定义视频播放器（无依赖，与 stylesheets/video-player.css 配套）。
  *
- * 解决的问题：浏览器原生 controls 暂停时常驻在画面底部，正好盖住烧录在
- * 画面最底部的字幕；且原生控制条没有倍速、逐帧，不适合"暂停下来想一想"
- * 的学习节奏。本播放器把控制条放在视频画面下方，永不遮挡画面，并提供
- * 倍速（0.5–2×）、±5 秒、逐帧（1/30 秒）、进度拖拽、全屏与键盘控制。
+ * v2：B 站 / YouTube 式悬浮控制条——控制条以半透明遮罩浮在画面底部，
+ * 鼠标移开立刻消失；鼠标静止时也自动隐藏，暂停时藏得更快（约 1 秒），
+ * 暂停下来思考时字幕全程可见。遮罩刻意调淡（底部最深处 alpha 0.55），
+ * 只求按钮在白色背景的 V 系列视频上仍能看清。控制条只留播放/暂停、
+ * 进度、时间、倍速、全屏；快退快进与逐帧只保留键盘（J/L、,/。），
+ * 不占控制条位置。
  *
  * 渐进增强：各章 <video controls> 标签不改；本脚本接管后才移除原生
  * controls，脚本失效时原生控制条仍在。视频均无音轨，故无音量控制。
@@ -12,15 +14,15 @@
   'use strict';
 
   var SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
-  var STEP = 1 / 30; // 逐帧步长（秒），按 30fps 计
-  var SEEK = 5; // 快退 / 快进秒数
+  var STEP = 1 / 30; // 键盘逐帧步长（秒），按 30fps 计
+  var SEEK = 5; // 键盘快退 / 快进秒数
+  var HIDE_DELAY_PLAYING = 2500; // 播放时鼠标静止多久后隐藏控制条（毫秒）
+  var HIDE_DELAY_PAUSED = 1200; // 暂停时鼠标静止多久后隐藏：停下约 1 秒就藏起，不挡字幕
   var SPEED_KEY = 'isar-vp-speed';
 
   var ICONS = {
     play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
     pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>',
-    prev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg>',
-    next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg>',
     full: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>'
   };
 
@@ -91,15 +93,9 @@
     video.parentNode.insertBefore(wrap, video);
     stage.appendChild(video);
     stage.appendChild(flash);
-    wrap.appendChild(stage);
 
+    /* ---------- 悬浮控制条：进度条全宽在上，按钮行在下 ---------- */
     var bar = el('div', 'vp-bar');
-    var btnPlay = makeButton('播放', ICONS.play, 'vp-btn-play');
-    var btnBack = makeButton('后退 5 秒', '<span class="vp-seek-label">−5s</span>', 'vp-btn-back');
-    var btnFwd = makeButton('前进 5 秒', '<span class="vp-seek-label">+5s</span>', 'vp-btn-fwd');
-    var btnPrev = makeButton('上一帧', ICONS.prev, 'vp-btn-prev');
-    var btnNext = makeButton('下一帧', ICONS.next, 'vp-btn-next');
-
     var progress = el('div', 'vp-progress');
     progress.setAttribute('role', 'slider');
     progress.setAttribute('tabindex', '0');
@@ -114,9 +110,11 @@
     progress.appendChild(played);
     progress.appendChild(thumb);
 
+    var row = el('div', 'vp-controls-row');
+    var btnPlay = makeButton('播放', ICONS.play, 'vp-btn-play');
     var time = el('span', 'vp-time');
     time.textContent = '0:00 / 0:00';
-
+    var spacer = el('span', 'vp-spacer');
     var speed = document.createElement('select');
     speed.className = 'vp-speed';
     speed.setAttribute('aria-label', '播放倍速');
@@ -127,13 +125,65 @@
       o.textContent = (s === 1 ? '1×' : s + '×');
       speed.appendChild(o);
     });
-
     var btnFull = makeButton('全屏', ICONS.full, 'vp-btn-full');
-
-    [btnPlay, btnBack, btnFwd, btnPrev, btnNext, progress, time, speed, btnFull].forEach(function (n) {
-      bar.appendChild(n);
+    [btnPlay, time, spacer, speed, btnFull].forEach(function (n) {
+      row.appendChild(n);
     });
-    wrap.appendChild(bar);
+    bar.appendChild(progress);
+    bar.appendChild(row);
+    stage.appendChild(bar);
+    wrap.appendChild(stage);
+
+    /* ---------- 控制条显隐：移开鼠标立刻消失，静止 2.5 秒也消失 ---------- */
+    var hideTimer = null;
+    var hasFocus = false;
+    var scrubbing = false;
+
+    function hideNow() {
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+        hideTimer = null;
+      }
+      wrap.classList.remove('show-controls');
+    }
+
+    function showControls() {
+      wrap.classList.add('show-controls');
+      if (hideTimer) clearTimeout(hideTimer);
+      // 焦点在播放器内或正在拖进度时不自动隐藏；
+      // 暂停时鼠标一停就藏（短延迟），播放时留正常延迟
+      if (!hasFocus && !scrubbing) {
+        var delay = (video.paused || video.ended) ? HIDE_DELAY_PAUSED : HIDE_DELAY_PLAYING;
+        hideTimer = setTimeout(hideNow, delay);
+      }
+    }
+
+    wrap.addEventListener('mouseenter', showControls);
+    wrap.addEventListener('mousemove', showControls);
+    wrap.addEventListener('mouseleave', hideNow); // 移开鼠标：立刻消失
+    wrap.addEventListener('touchstart', showControls, { passive: true });
+    // 只有焦点落在需要持续操作的控件（进度条、倍速下拉框）上时才钉住控制条；
+    // 焦点在容器或播放/全屏按钮上时不钉住——否则点一下画面获得焦点后，
+    // 控制条就再也不自动藏了，暂停时仍会挡住字幕。
+    function pinsBar(t) {
+      return t === progress || t === speed;
+    }
+    wrap.addEventListener('focusin', function (e) {
+      hasFocus = pinsBar(e.target);
+      showControls();
+    });
+    wrap.addEventListener('focusout', function (e) {
+      hasFocus = pinsBar(e.relatedTarget);
+      if (hasFocus) {
+        if (hideTimer) {
+          clearTimeout(hideTimer);
+          hideTimer = null;
+        }
+        wrap.classList.add('show-controls');
+      } else {
+        showControls();
+      }
+    });
 
     /* ---------- 状态同步 ---------- */
     var flashTimer = null;
@@ -204,7 +254,8 @@
         var exit = document.exitFullscreen || document.webkitExitFullscreen;
         if (exit) exit.call(document);
       } else if (wrap.requestFullscreen) {
-        wrap.requestFullscreen();
+        var req = wrap.requestFullscreen();
+        if (req && req.catch) req.catch(function () {});
       } else if (wrap.webkitRequestFullscreen) {
         wrap.webkitRequestFullscreen();
       } else if (video.webkitEnterFullscreen) {
@@ -224,12 +275,17 @@
     video.addEventListener('play', function () {
       syncPlayBtn();
       showFlash(ICONS.pause);
+      showControls(); // 按播放状态重算隐藏延迟
     });
     video.addEventListener('pause', function () {
       syncPlayBtn();
       showFlash(ICONS.play);
+      showControls(); // 暂停后用短延迟：鼠标一停就藏起
     });
-    video.addEventListener('ended', syncPlayBtn);
+    video.addEventListener('ended', function () {
+      syncPlayBtn();
+      showControls();
+    });
     video.addEventListener('timeupdate', syncTime);
     video.addEventListener('loadedmetadata', function () {
       syncTime();
@@ -238,9 +294,11 @@
     video.addEventListener('durationchange', syncTime);
     video.addEventListener('progress', syncBuffered);
 
-    // 单击切换播放/暂停，双击全屏（单击延迟 260ms 以区分双击）
+    // 单击画面切换播放/暂停，双击全屏（单击延迟 260ms 以区分双击）。
+    // 控制条现在浮在画面内，点控制条时不触发画面切换。
     var clickTimer = null;
-    stage.addEventListener('click', function () {
+    stage.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('.vp-bar')) return;
       focusWrap();
       if (clickTimer) return;
       clickTimer = setTimeout(function () {
@@ -249,6 +307,7 @@
       }, 260);
     });
     stage.addEventListener('dblclick', function (e) {
+      if (e.target.closest && e.target.closest('.vp-bar')) return;
       e.preventDefault();
       if (clickTimer) {
         clearTimeout(clickTimer);
@@ -258,26 +317,14 @@
     });
 
     btnPlay.addEventListener('click', toggle);
-    btnBack.addEventListener('click', function () {
-      seekBy(-SEEK);
-    });
-    btnFwd.addEventListener('click', function () {
-      seekBy(SEEK);
-    });
-    btnPrev.addEventListener('click', function () {
-      step(-1);
-    });
-    btnNext.addEventListener('click', function () {
-      step(1);
-    });
     btnFull.addEventListener('click', toggleFull);
     speed.addEventListener('change', function () {
       video.playbackRate = parseFloat(speed.value);
       saveSpeed(video.playbackRate);
+      showControls();
     });
 
     // 进度拖拽
-    var scrubbing = false;
     function fracFromEvent(e) {
       var r = progress.getBoundingClientRect();
       var x = (e.clientX - r.left) / (r.width || 1);
@@ -291,6 +338,7 @@
     }
     progress.addEventListener('pointerdown', function (e) {
       scrubbing = true;
+      if (hideTimer) clearTimeout(hideTimer);
       if (progress.setPointerCapture) {
         try {
           progress.setPointerCapture(e.pointerId);
@@ -305,9 +353,11 @@
     });
     progress.addEventListener('pointerup', function () {
       scrubbing = false;
+      showControls();
     });
     progress.addEventListener('pointercancel', function () {
       scrubbing = false;
+      showControls();
     });
     progress.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowLeft') {
@@ -333,6 +383,7 @@
 
     // 键盘：只在焦点位于播放器容器/画面/视频本身时响应，
     // 焦点在按钮或倍速下拉框时交给原生行为，避免空格双重触发。
+    // 快退快进（J/L）与逐帧（,/。）只保留键盘，不占控制条位置。
     wrap.addEventListener('keydown', function (e) {
       if (e.target !== wrap && e.target !== video && e.target !== stage) return;
       var k = e.key;
@@ -372,6 +423,7 @@
     syncPlayBtn();
     syncTime();
     syncBuffered();
+    showControls(); // 先露一下控制条，2.5 秒后自动藏起
   }
 
   function init() {
